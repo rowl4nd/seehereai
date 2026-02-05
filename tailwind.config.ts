@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Nunito', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -56,6 +60,13 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        // See Here custom colors
+        warm: {
+          glow: "hsl(var(--warm-glow))",
+          cream: "hsl(var(--cream-soft))",
+          amber: "hsl(var(--amber-light))",
+          peach: "hsl(var(--peach-soft))",
         },
       },
       borderRadius: {
