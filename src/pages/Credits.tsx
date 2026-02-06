@@ -64,7 +64,7 @@ const Credits = () => {
       }
 
       if (response.data?.url) {
-        window.location.href = response.data.url;
+        window.open(response.data.url, '_blank');
       }
     } catch (err) {
       console.error("Checkout error:", err);
