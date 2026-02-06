@@ -165,6 +165,12 @@ const Index = () => {
               </ScrollSection>
             ))}
           </div>
+
+          <ScrollSection delay={360}>
+            <p className="text-center text-sm text-muted-foreground mt-10">
+              Your first two sessions are free. No commitment.
+            </p>
+          </ScrollSection>
         </div>
       </section>
 
