@@ -70,7 +70,7 @@ const Index = () => {
   const { user, loading } = useAuth();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       {/* ── Header ── */}
       <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
         <Link
@@ -96,11 +96,18 @@ const Index = () => {
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative flex-1 min-h-[85vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden">
-        {/* Decorative orb */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <div className="w-[420px] h-[420px] md:w-[520px] md:h-[520px] rounded-full bg-accent/40 blur-[100px] animate-pulse" />
-        </div>
+      <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden">
+        {/* Layered gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-accent/20 via-background to-background" />
+
+        {/* Large warm orb - top right */}
+        <div className="absolute -top-20 -right-32 w-[500px] h-[500px] md:w-[600px] md:h-[600px] rounded-full bg-sage-soft/50 blur-[120px] animate-pulse pointer-events-none" />
+
+        {/* Secondary orb - bottom left */}
+        <div className="absolute -bottom-32 -left-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] rounded-full bg-accent/30 blur-[100px] pointer-events-none" style={{ animationDuration: "4s", animationName: "pulse" }} />
+
+        {/* Subtle warm orb - centre */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-warm-cream/40 blur-[80px] pointer-events-none" />
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-tight text-foreground">
@@ -121,22 +128,34 @@ const Index = () => {
       </section>
 
       {/* ── How It Works ── */}
-      <section className="py-24 px-6 md:px-10 bg-card/50">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative py-24 px-6 md:px-10">
+        {/* Warm gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-sage-soft/40 via-accent/15 to-background" />
+
+        {/* Subtle floating orb */}
+        <div className="absolute top-10 right-10 w-[200px] h-[200px] rounded-full bg-primary/5 blur-[60px] pointer-events-none" />
+
+        <div className="relative z-10 max-w-5xl mx-auto">
           <ScrollSection>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-16">
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">
               How it works
             </h2>
+            <p className="text-center text-muted-foreground mb-16 max-w-md mx-auto">
+              Three simple steps to a calmer mind
+            </p>
           </ScrollSection>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3">
             {steps.map((step, i) => (
               <ScrollSection key={step.title} delay={i * 120}>
-                <div className="flex flex-col items-center text-center p-6 rounded-2xl bg-background/60 border border-border/30 hover:border-primary/20 transition-colors">
-                  <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center mb-5">
-                    <step.icon className="w-5 h-5 text-accent-foreground" />
+                <div className="group flex flex-col items-center text-center p-8 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/20 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-1 transition-all duration-300">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-accent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <step.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-serif font-medium text-foreground mb-2">
+                  <span className="text-xs font-mono text-primary/60 mb-3 tracking-wider">
+                    0{i + 1}
+                  </span>
+                  <h3 className="text-lg font-serif font-medium text-foreground mb-3">
                     {step.title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -150,22 +169,31 @@ const Index = () => {
       </section>
 
       {/* ── Features ── */}
-      <section className="py-24 px-6 md:px-10">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative py-24 px-6 md:px-10 overflow-hidden">
+        {/* Warm ambient background */}
+        <div className="absolute inset-0 bg-gradient-to-tl from-warm-cream/30 via-background to-accent/10" />
+
+        {/* Decorative orb */}
+        <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] rounded-full bg-sage-soft/30 blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 max-w-5xl mx-auto">
           <ScrollSection>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-16">
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">
               What this space offers
             </h2>
+            <p className="text-center text-muted-foreground mb-16 max-w-md mx-auto">
+              Warmth, understanding, and room to breathe
+            </p>
           </ScrollSection>
 
-          <div className="space-y-12 md:space-y-0 md:grid md:grid-cols-3 md:gap-10">
+          <div className="space-y-8 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
             {features.map((feature, i) => (
               <ScrollSection key={feature.title} delay={i * 120}>
-                <div className="space-y-4">
-                  <div className="w-10 h-10 rounded-lg bg-accent/60 flex items-center justify-center">
+                <div className="group p-6 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/15 hover:bg-card/90 hover:shadow-sm transition-all duration-300">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-sage-soft/60 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
                     <feature.icon className="w-5 h-5 text-accent-foreground" />
                   </div>
-                  <h3 className="text-lg font-serif font-medium text-foreground">
+                  <h3 className="text-lg font-serif font-medium text-foreground mb-3">
                     {feature.title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -179,30 +207,42 @@ const Index = () => {
       </section>
 
       {/* ── Reassurance ── */}
-      <section className="py-20 px-6 md:px-10 bg-card/50">
+      <section className="relative py-24 px-6 md:px-10 overflow-hidden">
+        {/* Full warm gradient wash */}
+        <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/30 via-accent/20 to-sage-soft/30" />
+
+        {/* Soft centred glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] rounded-full bg-primary/8 blur-[80px] pointer-events-none" />
+
         <ScrollSection>
-          <div className="max-w-2xl mx-auto text-center space-y-6">
+          <div className="relative z-10 max-w-2xl mx-auto text-center space-y-8">
             <div className="flex justify-center">
-              <div className="w-16 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+              <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
             </div>
-            <blockquote className="text-xl md:text-2xl font-serif italic text-foreground/80 leading-relaxed">
+            <blockquote className="text-xl md:text-2xl font-serif italic text-foreground/80 leading-relaxed px-4">
               "This is not therapy. It's a companion for reflection — a space to think out loud, at your own pace."
             </blockquote>
             <div className="flex justify-center">
-              <div className="w-16 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+              <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
             </div>
           </div>
         </ScrollSection>
       </section>
 
       {/* ── Final CTA ── */}
-      <section className="py-24 px-6 md:px-10">
+      <section className="relative py-28 px-6 md:px-10 overflow-hidden">
+        {/* Warm gradient that draws the eye */}
+        <div className="absolute inset-0 bg-gradient-to-t from-accent/25 via-background to-background" />
+
+        {/* Gentle glow behind button */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[300px] h-[200px] rounded-full bg-primary/10 blur-[60px] pointer-events-none" />
+
         <ScrollSection>
-          <div className="max-w-md mx-auto text-center space-y-6">
+          <div className="relative z-10 max-w-md mx-auto text-center space-y-6">
             <Link to="/auth">
               <Button
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-base font-serif transition-transform hover:scale-[1.02]"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
               >
                 when you're ready, let's proceed
               </Button>
@@ -212,8 +252,9 @@ const Index = () => {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="py-8 px-6 text-center border-t border-border/20">
-        <p className="text-xs text-muted-foreground">A space for reflection</p>
+      <footer className="relative py-8 px-6 text-center border-t border-border/10">
+        <div className="absolute inset-0 bg-gradient-to-t from-sage-soft/20 to-transparent" />
+        <p className="relative z-10 text-xs text-muted-foreground">A space for reflection</p>
       </footer>
     </div>
   );
