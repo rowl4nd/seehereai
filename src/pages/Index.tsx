@@ -56,7 +56,7 @@ const Index = () => {
           {/* Call to action */}
           <div className="pt-4">
             <Link to="/auth">
-              <Button variant="ghost" className="text-sm text-muted-foreground/70 font-light hover:text-foreground">
+              <Button className="bg-sage-soft hover:bg-sage-muted text-foreground border border-sage-muted/50 px-8 py-2">
                 When you're ready, let's proceed
               </Button>
             </Link>
