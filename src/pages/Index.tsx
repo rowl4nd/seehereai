@@ -61,8 +61,7 @@ const features = [
   {
     icon: Clock,
     title: "Your pace, your space",
-    description:
-      "Sessions that respect your time. No pressure, no rush. You decide when and how to engage.",
+    description: "Sessions that respect your time. No pressure, no rush. You decide when and how to engage.",
   },
 ];
 
@@ -73,10 +72,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       {/* ── Header ── */}
       <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
-        <Link
-          to="/"
-          className="font-serif text-xl text-foreground hover:text-primary transition-colors"
-        >
+        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
           see here
         </Link>
         {!loading &&
@@ -104,7 +100,10 @@ const Index = () => {
         <div className="absolute -top-20 -right-32 w-[500px] h-[500px] md:w-[600px] md:h-[600px] rounded-full bg-sage-soft/50 blur-[120px] animate-pulse pointer-events-none" />
 
         {/* Secondary orb - bottom left */}
-        <div className="absolute -bottom-32 -left-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] rounded-full bg-accent/30 blur-[100px] pointer-events-none" style={{ animationDuration: "4s", animationName: "pulse" }} />
+        <div
+          className="absolute -bottom-32 -left-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] rounded-full bg-accent/30 blur-[100px] pointer-events-none"
+          style={{ animationDuration: "4s", animationName: "pulse" }}
+        />
 
         {/* Subtle warm orb - centre */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-warm-cream/40 blur-[80px] pointer-events-none" />
@@ -120,9 +119,7 @@ const Index = () => {
 
         {/* Scroll hint */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-xs text-muted-foreground tracking-widest uppercase">
-            scroll
-          </span>
+          <span className="text-xs text-muted-foreground tracking-widest uppercase">scroll</span>
           <div className="w-px h-6 bg-muted-foreground/40" />
         </div>
       </section>
@@ -152,15 +149,9 @@ const Index = () => {
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-accent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <step.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <span className="text-xs font-mono text-primary/60 mb-3 tracking-wider">
-                    0{i + 1}
-                  </span>
-                  <h3 className="text-lg font-serif font-medium text-foreground mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {step.description}
-                  </p>
+                  <span className="text-xs font-mono text-primary/60 mb-3 tracking-wider">0{i + 1}</span>
+                  <h3 className="text-lg font-serif font-medium text-foreground mb-3">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                 </div>
               </ScrollSection>
             ))}
@@ -199,12 +190,8 @@ const Index = () => {
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-sage-soft/60 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
                     <feature.icon className="w-5 h-5 text-accent-foreground" />
                   </div>
-                  <h3 className="text-lg font-serif font-medium text-foreground mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {feature.description}
-                  </p>
+                  <h3 className="text-lg font-serif font-medium text-foreground mb-3">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
                 </div>
               </ScrollSection>
             ))}
@@ -226,7 +213,8 @@ const Index = () => {
               <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
             </div>
             <blockquote className="text-xl md:text-2xl font-serif italic text-foreground/80 leading-relaxed px-4">
-              "This is not therapy. It's a companion for reflection — a space to think out loud, at your own pace."
+              "This is not therapy. It's a companion for reflection — a space to think out loud, at your own pace." -
+              Cecilia Gregory - Founder
             </blockquote>
             <div className="flex justify-center">
               <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
