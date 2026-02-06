@@ -10,7 +10,7 @@ const guidanceCards = [
     content: "Take a moment. This is your space.",
   },
   {
-    title: "You're speaking with an AI",
+    title: "You are speaking with an AI",
     content:
       "I'm here to listen and reflect, not to diagnose or treat. For professional support, please consult a qualified mental health professional.",
   },
@@ -20,15 +20,15 @@ const guidanceCards = [
   },
   {
     title: "Sessions have a gentle time limit",
-    content: "Free sessions last 25 minutes. Paid sessions give you 45 minutes. This helps you stay grounded.",
+    content: "Free sessions last 25 minutes. Paid sessions give you 45 minutes. This helps you to stay grounded.",
   },
   {
     title: "Rest between sessions",
-    content: "After each session, there's a 12-hour rest period. This gives you time to reflect on our conversation.",
+    content: "After each session, there is a 12-hour rest period. This gives you time to reflect on our conversation.",
   },
   {
     title: "Go at your own pace",
-    content: "There's no rush. Speak when you're ready. Silence is okay too.",
+    content: "There is  no rush. Speak when you are ready. Silence is okay too.",
   },
 ];
 
