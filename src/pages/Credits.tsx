@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import Logo from "@/components/Logo";
 
 const creditPackages = [
   {
@@ -87,9 +88,7 @@ const Credits = () => {
 
       {/* Header */}
       <header className="relative z-10 p-6 md:p-8">
-        <Link to="/dashboard" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
-          see here
-        </Link>
+        <Logo to="/dashboard" />
       </header>
 
       {/* Main content */}

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import Logo from "@/components/Logo";
 
 const Onboarding = () => {
   const { user, loading: authLoading } = useAuth();
@@ -63,9 +64,7 @@ const Onboarding = () => {
 
       {/* Header */}
       <header className="relative z-10 p-6 md:p-8">
-        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
-          see here
-        </Link>
+        <Logo />
       </header>
 
       {/* Main content */}

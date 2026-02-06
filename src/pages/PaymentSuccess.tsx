@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import Logo from "@/components/Logo";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -46,9 +47,7 @@ const PaymentSuccess = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="relative z-10 p-6 md:p-8">
-        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
-          see here
-        </Link>
+        <Logo />
       </header>
 
       <main className="relative z-10 flex-1 flex items-center justify-center px-6">

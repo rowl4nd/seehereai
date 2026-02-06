@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import Logo from "@/components/Logo";
 
 interface Message {
   id: string;
@@ -271,9 +272,7 @@ const Mirror = () => {
 
       {/* Header */}
       <header className="relative z-10 p-4 md:p-6 border-b border-border/30">
-        <Link to="/" className="font-serif text-lg text-foreground hover:text-primary transition-colors">
-          see here
-        </Link>
+        <Logo />
       </header>
 
       {/* Messages */}
