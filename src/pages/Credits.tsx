@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const creditPackages = [
   {
@@ -46,10 +48,30 @@ const Credits = () => {
     }
   }, [user, authLoading, navigate]);
 
+  const [purchasingId, setPurchasingId] = useState<string | null>(null);
+
   const handlePurchase = async (packageId: string) => {
-    // This will be connected to Stripe
-    // For now, show a message
-    alert("Stripe integration coming soon! Package: " + packageId);
+    setPurchasingId(packageId);
+    try {
+      const response = await supabase.functions.invoke("create-checkout", {
+        body: { packageId },
+      });
+
+      if (response.error) {
+        toast.error("Could not start checkout. Please try again.");
+        console.error("Checkout error:", response.error);
+        return;
+      }
+
+      if (response.data?.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setPurchasingId(null);
+    }
   };
 
   if (authLoading) {
@@ -115,6 +137,7 @@ const Credits = () => {
                   </div>
                   <Button
                     onClick={() => handlePurchase(pkg.id)}
+                    disabled={purchasingId !== null}
                     variant={pkg.popular ? "default" : "outline"}
                     className={`w-full ${
                       pkg.popular
@@ -122,7 +145,7 @@ const Credits = () => {
                         : "border-border/50 hover:bg-accent/50"
                     }`}
                   >
-                    Purchase
+                    {purchasingId === pkg.id ? "Redirecting..." : "Purchase"}
                   </Button>
                 </CardContent>
               </Card>
