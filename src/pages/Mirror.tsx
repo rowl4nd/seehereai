@@ -40,6 +40,13 @@ const Mirror = () => {
     }
   }, [user, authLoading, navigate]);
 
+  // Guard: redirect to onboarding if not completed
+  useEffect(() => {
+    if (profile && !profile.has_completed_onboarding) {
+      navigate("/onboarding");
+    }
+  }, [profile, navigate]);
+
   // Fetch past conversations on mount
   useEffect(() => {
     if (!user) return;

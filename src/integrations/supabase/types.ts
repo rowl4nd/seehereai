@@ -101,6 +101,7 @@ export type Database = {
           has_acknowledged_terms: boolean
           has_completed_onboarding: boolean
           id: string
+          onboarding_completed_at: string | null
           updated_at: string
           user_id: string
         }
@@ -112,6 +113,7 @@ export type Database = {
           has_acknowledged_terms?: boolean
           has_completed_onboarding?: boolean
           id?: string
+          onboarding_completed_at?: string | null
           updated_at?: string
           user_id: string
         }
@@ -123,6 +125,7 @@ export type Database = {
           has_acknowledged_terms?: boolean
           has_completed_onboarding?: boolean
           id?: string
+          onboarding_completed_at?: string | null
           updated_at?: string
           user_id?: string
         }
