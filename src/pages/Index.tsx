@@ -1,12 +1,20 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import lakeBackground from "@/assets/lake-background.jpg";
+
 const Index = () => {
   const {
     user,
     loading
   } = useAuth();
-  return <div className="min-h-screen flex flex-col bg-background">
+  return <div className="min-h-screen flex flex-col bg-background relative">
+      {/* Background image with soft overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${lakeBackground})` }}
+      />
+      <div className="absolute inset-0 bg-background/60" />
       
       {/* Header */}
       <header className="relative z-10 flex justify-end p-6 md:p-8">
