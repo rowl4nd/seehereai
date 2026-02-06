@@ -27,7 +27,7 @@ const Index = () => {
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center animate-fade-in-slow">
         <div className="max-w-2xl mx-auto space-y-8">
           {/* Main title */}
-          <h1 className="text-5xl font-serif text-foreground tracking-tight md:text-8xl font-semibold">see here</h1>
+          <h1 className="text-5xl font-serif text-foreground tracking-tight md:text-5xl font-medium">see here</h1>
           
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-muted-foreground font-light leading-relaxed max-w-lg mx-auto font-serif">
