@@ -28,6 +28,7 @@ const Mirror = () => {
   const [sessionStarted, setSessionStarted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [showEndWarning, setShowEndWarning] = useState(false);
+  const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Determine session duration (25 min free, 45 min paid)
@@ -38,6 +39,26 @@ const Mirror = () => {
       navigate("/auth");
     }
   }, [user, authLoading, navigate]);
+
+  // Fetch past conversations on mount
+  useEffect(() => {
+    if (!user) return;
+    
+    const fetchPastConversations = async () => {
+      const { data } = await supabase
+        .from("conversations")
+        .select("messages")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+      
+      if (data) {
+        setPastConversations(data as Array<{ messages: Array<{ role: string; content: string }> }>);
+      }
+    };
+    
+    fetchPastConversations();
+  }, [user]);
 
   // Start session on mount if possible
   useEffect(() => {
@@ -139,7 +160,22 @@ const Mirror = () => {
   }, [messages]);
 
   const handleEndSession = async () => {
-    if (activeSession) {
+    if (activeSession && user) {
+      // Save the conversation to the database before ending
+      const conversationMessages = messages.map(m => ({
+        role: m.role,
+        content: m.content,
+        timestamp: m.id
+      }));
+      
+      await supabase
+        .from("conversations")
+        .insert({
+          session_id: activeSession.id,
+          user_id: user.id,
+          messages: conversationMessages
+        });
+      
       await endSession(activeSession.id);
     }
     navigate("/cooldown");
@@ -171,14 +207,13 @@ const Mirror = () => {
         lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
       }
 
-      // Call the AI chat edge function
+      // Call the AI chat edge function with past conversations for context
       const response = await supabase.functions.invoke("chat", {
         body: {
           messages: messagesForAI,
+          pastConversations: pastConversations,
         },
       });
-
-      if (response.error) throw response.error;
 
       const assistantMessage: Message = {
         id: "assistant-" + Date.now(),

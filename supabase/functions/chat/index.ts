@@ -88,11 +88,35 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const { messages } = await req.json();
+    const { messages, pastConversations } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
       throw new Error("Messages array is required");
     }
+
+    // Build context from past conversations if available
+    let conversationContext = "";
+    if (pastConversations && Array.isArray(pastConversations) && pastConversations.length > 0) {
+      conversationContext = "\n\n## PAST SESSION CONTEXT\nHere are summaries of previous sessions with this person. Use this to provide continuity and remember what they've shared before:\n\n";
+      
+      pastConversations.slice(-5).forEach((conv: { messages: Array<{ role: string; content: string }> }, index: number) => {
+        conversationContext += `### Session ${index + 1}\n`;
+        const msgs = conv.messages || [];
+        // Include key exchanges (first few and last few messages)
+        const keyMessages = msgs.length > 6 
+          ? [...msgs.slice(0, 3), ...msgs.slice(-3)]
+          : msgs;
+        keyMessages.forEach((msg: { role: string; content: string }) => {
+          const speaker = msg.role === "user" ? "They said" : "You said";
+          // Remove the 5 minute warning tag if present
+          const cleanContent = msg.content.replace(/^\[5 MINUTE WARNING\]\s*/i, '');
+          conversationContext += `- ${speaker}: "${cleanContent.substring(0, 200)}${cleanContent.length > 200 ? '...' : ''}"\n`;
+        });
+        conversationContext += "\n";
+      });
+    }
+    // Combine system prompt with conversation history context
+    const fullSystemPrompt = SYSTEM_PROMPT + conversationContext;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -103,7 +127,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: fullSystemPrompt },
           ...messages,
         ],
         max_tokens: 300,
