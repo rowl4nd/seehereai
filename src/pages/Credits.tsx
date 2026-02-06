@@ -11,7 +11,6 @@ const creditPackages = [
     price: 500, // pence
     priceDisplay: "£5",
     pricePerSession: "£5",
-    originalPerSession: null,
   },
   {
     id: "four",
@@ -19,8 +18,6 @@ const creditPackages = [
     price: 1200,
     priceDisplay: "£12",
     pricePerSession: "£3",
-    originalPerSession: "£5",
-    popular: true,
   },
   {
     id: "eight",
@@ -28,7 +25,7 @@ const creditPackages = [
     price: 2000,
     priceDisplay: "£20",
     pricePerSession: "£2.50",
-    originalPerSession: "£5",
+    popular: true,
   },
   {
     id: "sixteen",
@@ -36,7 +33,6 @@ const creditPackages = [
     price: 3200,
     priceDisplay: "£32",
     pricePerSession: "£2",
-    originalPerSession: "£5",
   },
 ];
 
@@ -110,14 +106,7 @@ const Credits = () => {
                     {pkg.sessions} session{pkg.sessions > 1 ? "s" : ""}
                   </CardTitle>
                   <CardDescription>
-                    {pkg.originalPerSession ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <span className="line-through text-muted-foreground/60">{pkg.originalPerSession}</span>
-                        <span className="text-foreground font-medium">{pkg.pricePerSession}/session</span>
-                      </span>
-                    ) : (
-                      <span>{pkg.pricePerSession}/session</span>
-                    )}
+                    {pkg.pricePerSession}/session
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">

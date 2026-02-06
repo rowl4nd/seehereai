@@ -159,13 +159,22 @@ const Mirror = () => {
     setIsLoading(true);
 
     try {
+      // Prepare messages with wrap-up indicator if in final 5 minutes
+      const messagesForAI = [...messages, userMessage].map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+      
+      // Add wrap-up indicator to the latest user message if in wrap-up mode
+      if (showEndWarning && messagesForAI.length > 0) {
+        const lastMsg = messagesForAI[messagesForAI.length - 1];
+        lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
+      }
+
       // Call the AI chat edge function
       const response = await supabase.functions.invoke("chat", {
         body: {
-          messages: [...messages, userMessage].map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
+          messages: messagesForAI,
         },
       });
 
@@ -225,28 +234,14 @@ const Mirror = () => {
         <Link to="/" className="font-serif text-lg text-foreground hover:text-primary transition-colors">
           See Here
         </Link>
-        <div className="flex items-center gap-4">
-          {/* Subtle progress indicator */}
-          {timeRemaining !== null && (
-            <div className="flex items-center gap-2">
-              <div className="w-24 h-1 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary/60 transition-all duration-1000"
-                  style={{ width: `${(timeRemaining / sessionDuration) * 100}%` }}
-                />
-              </div>
-              <span className="text-xs text-muted-foreground">{formatTime(timeRemaining)}</span>
-            </div>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleEndSession}
-            className="text-sm text-muted-foreground"
-          >
-            End session
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleEndSession}
+          className="text-sm text-muted-foreground"
+        >
+          End session
+        </Button>
       </header>
 
       {/* Messages */}
@@ -285,24 +280,42 @@ const Mirror = () => {
         </div>
       </main>
 
-      {/* Input */}
-      <footer className="relative z-10 p-4 md:p-6 border-t border-border/30">
-        <div className="max-w-2xl mx-auto flex gap-3">
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Share what's on your mind..."
-            className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50"
-            disabled={isLoading}
-          />
-          <Button
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground self-end"
-          >
-            Send
-          </Button>
+      {/* Input and Timer */}
+      <footer className="relative z-10 border-t border-border/30">
+        {/* Timer bar - always visible at bottom */}
+        {timeRemaining !== null && (
+          <div className="px-4 md:px-6 py-2 bg-card/30 border-b border-border/20">
+            <div className="max-w-2xl mx-auto flex items-center gap-3">
+              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary/60 transition-all duration-1000"
+                  style={{ width: `${(timeRemaining / sessionDuration) * 100}%` }}
+                />
+              </div>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">{formatTime(timeRemaining)}</span>
+            </div>
+          </div>
+        )}
+        
+        {/* Input area */}
+        <div className="p-4 md:p-6">
+          <div className="max-w-2xl mx-auto flex gap-3">
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Share what's on your mind..."
+              className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50"
+              disabled={isLoading}
+            />
+            <Button
+              onClick={handleSend}
+              disabled={!input.trim() || isLoading}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground self-end"
+            >
+              Send
+            </Button>
+          </div>
         </div>
       </footer>
     </div>
