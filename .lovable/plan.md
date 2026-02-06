@@ -1,19 +1,22 @@
 
 
-# Add Founder Attribution to Homepage Quote
+# Bypass Cooldown for Your Account
 
 ## Overview
-Add a signature line below the quote in the Reassurance section of the homepage, reading "Cecilia Gregory -- see here Founder" on a separate line directly beneath the closing quotation mark.
+
+Update the database cooldown function so that your account (`rowland.jack@outlook.com`) can always start a new session, regardless of the daily cooldown rule. All other users remain unaffected.
 
 ## What Changes
 
-**File:** `src/pages/Index.tsx`
+### Database function update (1 migration)
 
-In the Reassurance section (around line 168), add a new line after the blockquote with the founder attribution, styled to complement the existing quote aesthetic -- smaller text, muted tone, serif font to match the brand.
+Modify the `has_cooldown_passed` function to check if the user's email matches yours. If it does, return `true` immediately (cooldown bypassed). Otherwise, run the normal cooldown logic.
 
-The result will look like:
+This is the cleanest approach because:
+- It's a single change in one place (the database)
+- No frontend code changes needed
+- All other users still get the normal cooldown
+- Easy to add more bypass accounts later if needed
 
-> *"This is not therapy. It's a companion for reflection -- a space to think out loud, at your own pace."*
->
-> Cecilia Gregory -- see here Founder
+No other files need to change -- the frontend already reads `canStartSession` from this function, so it will just work.
 
