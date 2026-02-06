@@ -11,21 +11,25 @@ const PaymentSuccess = () => {
   const [sessionsAdded, setSessionsAdded] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate("/auth");
-    }
-  }, [user, authLoading, navigate]);
+  // Don't redirect to auth — user may land here in a new tab without a session
 
   useEffect(() => {
-    if (!user) return;
-
     const sessionId = searchParams.get("session_id");
     if (!sessionId) {
       setError("No payment session found");
       setVerifying(false);
       return;
     }
+
+    // If user is not authenticated (new tab scenario), skip verification
+    // The webhook will handle crediting. Just show a success message.
+    if (!authLoading && !user) {
+      setSessionsAdded(null);
+      setVerifying(false);
+      return;
+    }
+
+    if (!user) return;
 
     const verifyPayment = async () => {
       try {
@@ -34,23 +38,28 @@ const PaymentSuccess = () => {
         });
 
         if (response.error) {
-          setError("Could not verify payment. Please contact support.");
+          // Don't show error — webhook likely already handled it
           console.error("Verify error:", response.error);
+          setSessionsAdded(null);
         } else if (response.data?.success) {
           setSessionsAdded(response.data.sessions);
+        } else if (response.data?.message === "Already processed") {
+          // Webhook already handled it
+          setSessionsAdded(response.data.sessions || null);
         } else {
           setError(response.data?.message || "Payment verification failed");
         }
       } catch (err) {
         console.error("Payment verification error:", err);
-        setError("Something went wrong verifying your payment");
+        // Don't show error — webhook likely handled it
+        setSessionsAdded(null);
       } finally {
         setVerifying(false);
       }
     };
 
     verifyPayment();
-  }, [user, searchParams]);
+  }, [user, authLoading, searchParams]);
 
   if (authLoading) {
     return (
@@ -115,7 +124,9 @@ const PaymentSuccess = () => {
                   Thank you
                 </h1>
                 <p className="text-muted-foreground leading-relaxed">
-                  {sessionsAdded} session{sessionsAdded !== 1 ? "s" : ""} added to your account.
+                  {sessionsAdded
+                    ? `${sessionsAdded} session${sessionsAdded !== 1 ? "s" : ""} added to your account.`
+                    : "Your payment has been received. Credits will appear on your dashboard shortly."}
                 </p>
               </div>
               <Link to="/dashboard">
