@@ -92,12 +92,16 @@ export default {
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
   			},
-  			warm: {
-  				glow: 'hsl(var(--warm-glow))',
-  				cream: 'hsl(var(--cream-soft))',
-  				amber: 'hsl(var(--amber-light))',
-  				peach: 'hsl(var(--peach-soft))'
-  			}
+			warm: {
+				glow: 'hsl(var(--warm-glow))',
+				cream: 'hsl(var(--cream-soft))',
+				amber: 'hsl(var(--amber-light))',
+				peach: 'hsl(var(--peach-soft))'
+			},
+			sage: {
+				soft: 'hsl(var(--sage-soft))',
+				muted: 'hsl(var(--sage-muted))'
+			}
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
