@@ -8,20 +8,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
-
 const Dashboard = () => {
-  const { user, loading: authLoading, signOut } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
-  const { credits, loading: creditsLoading } = useCredits();
-  const { canStartSession, nextSessionTime, loading: sessionsLoading } = useSessions();
+  const {
+    user,
+    loading: authLoading,
+    signOut
+  } = useAuth();
+  const {
+    profile,
+    loading: profileLoading
+  } = useProfile();
+  const {
+    credits,
+    loading: creditsLoading
+  } = useCredits();
+  const {
+    canStartSession,
+    nextSessionTime,
+    loading: sessionsLoading
+  } = useSessions();
   const navigate = useNavigate();
-
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/auth");
     }
   }, [user, authLoading, navigate]);
-
   const handleStartSession = () => {
     if (!profile?.has_completed_onboarding) {
       navigate("/onboarding");
@@ -29,37 +40,28 @@ const Dashboard = () => {
       navigate("/guidance");
     }
   };
-
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
   };
-
   const isLoading = authLoading || profileLoading || creditsLoading || sessionsLoading;
 
   // Calculate available sessions
   const freeSessionsRemaining = profile ? Math.max(0, 2 - (profile.free_sessions_used || 0)) : 0;
   const paidSessions = credits?.balance || 0;
   const totalAvailable = freeSessionsRemaining + paidSessions;
-
   if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+    return <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-fade-in text-muted-foreground">Loading...</div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
+  return <div className="min-h-screen flex flex-col bg-background">
       {/* Subtle warm border frame */}
       <div className="fixed inset-4 border border-border/50 rounded-2xl pointer-events-none" />
 
       {/* Header */}
       <header className="relative z-10 flex justify-between items-center p-6 md:p-8">
-        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
-          See Here
-        </Link>
+        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">see here</Link>
         <Button variant="ghost" onClick={handleSignOut} className="text-sm text-muted-foreground">
           Sign out
         </Button>
@@ -83,33 +85,18 @@ const Dashboard = () => {
             <CardHeader className="text-center pb-4">
               <CardTitle className="font-serif font-light text-xl">Sessions</CardTitle>
               <CardDescription>
-                {isLoading ? (
-                  <Skeleton className="h-4 w-32 mx-auto" />
-                ) : (
-                  <>
+                {isLoading ? <Skeleton className="h-4 w-32 mx-auto" /> : <>
                     {totalAvailable} session{totalAvailable !== 1 ? "s" : ""} available
-                    {freeSessionsRemaining > 0 && (
-                      <span className="block text-xs mt-1">
+                    {freeSessionsRemaining > 0 && <span className="block text-xs mt-1">
                         ({freeSessionsRemaining} free remaining)
-                      </span>
-                    )}
-                  </>
-                )}
+                      </span>}
+                  </>}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {isLoading ? (
-                <Skeleton className="h-10 w-full" />
-              ) : canStartSession ? (
-                totalAvailable > 0 ? (
-                  <Button
-                    onClick={handleStartSession}
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                  >
+              {isLoading ? <Skeleton className="h-10 w-full" /> : canStartSession ? totalAvailable > 0 ? <Button onClick={handleStartSession} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                     Begin a session
-                  </Button>
-                ) : (
-                  <div className="text-center space-y-4">
+                  </Button> : <div className="text-center space-y-4">
                     <p className="text-sm text-muted-foreground">
                       You've used all your sessions
                     </p>
@@ -118,20 +105,16 @@ const Dashboard = () => {
                         Get more sessions
                       </Button>
                     </Link>
-                  </div>
-                )
-              ) : (
-                <div className="text-center space-y-3">
+                  </div> : <div className="text-center space-y-3">
                   <p className="text-sm text-muted-foreground">
                     Give yourself time to reflect
                   </p>
-                  {nextSessionTime && (
-                    <p className="text-xs text-muted-foreground/70">
-                      Next session available {formatDistanceToNow(new Date(nextSessionTime), { addSuffix: true })}
-                    </p>
-                  )}
-                </div>
-              )}
+                  {nextSessionTime && <p className="text-xs text-muted-foreground/70">
+                      Next session available {formatDistanceToNow(new Date(nextSessionTime), {
+                  addSuffix: true
+                })}
+                    </p>}
+                </div>}
             </CardContent>
           </Card>
 
@@ -140,11 +123,7 @@ const Dashboard = () => {
             <CardHeader className="text-center pb-4">
               <CardTitle className="font-serif font-light text-xl">Credits</CardTitle>
               <CardDescription>
-                {isLoading ? (
-                  <Skeleton className="h-4 w-24 mx-auto" />
-                ) : (
-                  <>{paidSessions} credit{paidSessions !== 1 ? "s" : ""}</>
-                )}
+                {isLoading ? <Skeleton className="h-4 w-24 mx-auto" /> : <>{paidSessions} credit{paidSessions !== 1 ? "s" : ""}</>}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -157,8 +136,6 @@ const Dashboard = () => {
           </Card>
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default Dashboard;
