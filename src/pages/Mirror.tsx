@@ -32,6 +32,7 @@ const Mirror = () => {
   const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const initRef = useRef(false);
 
   // Determine session duration (25 min free, 45 min paid)
   const sessionDuration = activeSession?.session_type === "paid" ? 45 * 60 : 25 * 60;
@@ -71,7 +72,8 @@ const Mirror = () => {
 
   // Resume existing active session or start a new one
   useEffect(() => {
-    if (!user || sessionStarted || sessionsLoading) return;
+    if (!user || sessionStarted || sessionsLoading || initRef.current) return;
+    initRef.current = true;
 
     const initOrResumeSession = async () => {
       // If there's already an active session, try to resume it
@@ -88,12 +90,16 @@ const Mirror = () => {
         }
 
         // Session still has time — load existing messages
-        const { data: existingConvo } = await supabase
+        const { data: existingConvos } = await supabase
           .from("conversations")
           .select("id, messages")
           .eq("session_id", activeSession.id)
           .eq("user_id", user.id)
-          .maybeSingle();
+          .order("created_at", { ascending: false });
+
+        const existingConvo = existingConvos?.find(c => 
+          Array.isArray(c.messages) && c.messages.length > 1
+        ) || existingConvos?.[0] || null;
 
         if (existingConvo && Array.isArray(existingConvo.messages) && existingConvo.messages.length > 0) {
           // Resume with existing messages
@@ -187,7 +193,7 @@ const Mirror = () => {
     };
 
     initOrResumeSession();
-  }, [user, canStartSession, sessionsLoading, profile, credits, activeSession, sessionStarted, startSession, updateProfile, navigate, endSession]);
+  }, [user, sessionsLoading, sessionStarted]);
 
   // Timer countdown
   useEffect(() => {
