@@ -52,7 +52,7 @@ const Auth = () => {
       {/* Header */}
       <header className="relative z-10 p-6 md:p-8">
         <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
-          See Here
+          see here
         </Link>
       </header>
 
