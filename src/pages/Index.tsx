@@ -215,6 +215,9 @@ const Index = () => {
             <blockquote className="text-xl md:text-2xl font-serif italic text-foreground/80 leading-relaxed px-4">
               "This is not therapy. It's a companion for reflection — a space to think out loud, at your own pace."
             </blockquote>
+            <p className="text-sm text-muted-foreground font-serif">
+              Cecilia Gregory — <span className="italic">see here</span> Founder
+            </p>
             <div className="flex justify-center">
               <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
             </div>
