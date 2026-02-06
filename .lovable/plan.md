@@ -1,68 +1,24 @@
-# See Here — Implementation Plan
 
-## ✅ Completed
 
-### Phase 1: Foundation
-- [x] **Warm Design System** - Cream, amber, peach color tokens in index.css
-- [x] **Typography** - Cormorant Garamond (headings) + Nunito (body)
-- [x] **Subtle Animations** - fade-in, fade-in-up utilities
-- [x] **Custom Tailwind Config** - warm.* color tokens
+# Fix: Stripe Checkout Page Not Loading
 
-### Phase 2: Database
-- [x] **Profiles table** - user_id, onboarding flags, free_sessions_used
-- [x] **Sessions table** - session tracking with start/end times
-- [x] **Credits table** - credit balance per user  
-- [x] **Credit Purchases table** - purchase history
-- [x] **RLS Policies** - users only see their own data
-- [x] **Helper Functions** - has_cooldown_passed, get_next_session_time
-- [x] **Auto-creation Trigger** - profile + credits on user signup
+## Problem
+The `create-checkout` backend function works correctly and returns valid Stripe URLs. However, the app uses `window.location.href` to redirect, which fails because the app runs inside a preview iframe that blocks navigation to external domains (like `checkout.stripe.com`).
 
-### Phase 3: Frontend Pages
-- [x] **Homepage** (/) - Serene welcome with warm border frame
-- [x] **Auth** (/auth) - Email signup/login with gentle messaging
-- [x] **Dashboard** (/dashboard) - Session/credit overview
-- [x] **Onboarding** (/onboarding) - Terms & AI disclosure acknowledgement
-- [x] **Guidance** (/guidance) - Timed pre-session cards (10s each)
-- [x] **Mirror** (/mirror) - AI chat with visual timer
-- [x] **Credits** (/credits) - Purchase options (Stripe placeholder)
-- [x] **Cooldown** (/cooldown) - 12-hour rest screen
+## Solution
+Change the redirect method from `window.location.href` to `window.open(url, '_blank')` so the Stripe checkout opens in a new browser tab instead.
 
-### Phase 4: Core Features
-- [x] **Auth Hook** - useAuth with session management
-- [x] **Profile Hook** - useProfile with update function
-- [x] **Credits Hook** - useCredits balance fetching
-- [x] **Sessions Hook** - useSessions with start/end, cooldown check
-- [x] **Chat Edge Function** - Lovable AI with therapeutic prompt
+## Changes Required
 
----
+**File: `src/pages/Credits.tsx`**
+- Replace `window.location.href = response.data.url` with `window.open(response.data.url, '_blank')`
+- This is a single-line change
 
-## 🔲 Remaining (Stripe Integration)
+## Why This Works
+- `window.open` with `_blank` opens a new browser tab, bypassing the iframe's navigation restrictions
+- The Stripe checkout will load normally in its own tab
+- After payment, Stripe redirects the user back to your `/payment-success` page
 
-### Phase 5: Payments
-- [ ] Enable Stripe integration
-- [ ] Create checkout session edge function
-- [ ] Create Stripe webhook for credit granting
-- [ ] Connect Credits page to Stripe checkout
+## Technical Note
+This is a known limitation of iframe-based preview environments. Once you publish the app to its own domain (not inside an iframe), `window.location.href` would also work. But using `window.open` is the recommended approach regardless, as it provides a better user experience.
 
----
-
-## Architecture Notes
-
-### Session Flow
-1. User signs up → auto-creates profile + credits record
-2. First visit → Onboarding (acknowledge terms/AI disclosure)
-3. Start session → Guidance sequence (6 cards, 10s each)
-4. Chat → Mirror with visual timer (25min free / 45min paid)
-5. Session ends → Cooldown screen (12hr wait)
-
-### Credit Logic
-- 2 free sessions for new users
-- Paid sessions consume 1 credit
-- Credits never expire
-- One session per calendar day (UTC)
-
-### Design Tokens
-- --background: warm cream (40 40% 97%)
-- --primary: amber (32 80% 50%)
-- --accent: peach (20 60% 85%)
-- Serif headings, sans body text
