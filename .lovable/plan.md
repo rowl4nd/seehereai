@@ -1,55 +1,71 @@
 
 
-# Resume Active Sessions
+# Fix Session Resume — Load Chat History
 
 ## The Problem
 
-Right now, if you navigate away from the Mirror page mid-session, your messages are lost and there's no way to get back. The timer is already based on the session start time in the database, so it would count down correctly -- but the page doesn't support resuming.
+Two bugs are causing the chat history to disappear when you resume a session:
+
+1. **Duplicate conversations**: The initialization effect has many dependencies (`profile`, `credits`, `canStartSession`, etc.) which change as data loads, causing it to fire multiple times before `sessionStarted` gets set. Each run creates a new conversation record. Your current session already has 5 conversation records — only one has the actual chat (5 messages), the rest are greeting-only duplicates.
+
+2. **`.maybeSingle()` fails silently with multiple rows**: When the resume code queries for the conversation, `.maybeSingle()` returns an error (not data) if more than one row matches. So the code thinks there's no conversation and creates yet another greeting-only one.
 
 ## What Changes
 
-### 1. Dashboard -- Show "Resume session" button
+### File: `src/pages/Mirror.tsx`
 
-When there's an active session with time remaining, the Dashboard will show a **"Resume session"** button instead of "Begin a session". This takes you straight back to the Mirror, skipping the guidance screens.
+**Fix 1 — Use `.order().limit(1)` instead of `.maybeSingle()`**
 
-If the active session has expired (started too long ago and the timer has run out), it will be automatically ended in the background so you see the normal dashboard.
+When loading an existing conversation for the active session, replace:
 
-**File:** `src/pages/Dashboard.tsx`
+```ts
+const { data: existingConvo } = await supabase
+  .from("conversations")
+  .select("id, messages")
+  .eq("session_id", activeSession.id)
+  .eq("user_id", user.id)
+  .maybeSingle();
+```
 
-### 2. Mirror -- Handle resuming an existing session
+with a query that orders by `created_at` descending and takes the first result. This way, even if duplicates exist, it picks the most recent one (which will have the most messages):
 
-When the Mirror page loads and detects an existing active session (from the database), it will:
+```ts
+const { data: existingConvos } = await supabase
+  .from("conversations")
+  .select("id, messages")
+  .eq("session_id", activeSession.id)
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false });
 
-- Skip the "start new session" logic (it already does this)
-- Load the conversation messages from the database for that session
-- Resume the timer from where it left off (already works due to `started_at` calculation)
-- Show a "Welcome back" message if messages were loaded
-- If the session has expired while you were away, automatically end it and redirect to cooldown
+const existingConvo = existingConvos?.find(c => 
+  Array.isArray(c.messages) && c.messages.length > 1
+) || existingConvos?.[0] || null;
+```
 
-**File:** `src/pages/Mirror.tsx`
+This finds the conversation with actual chat content first, falling back to the most recent one.
 
-### 3. Save messages during the session (not just at the end)
+**Fix 2 — Prevent duplicate effect runs**
 
-Currently, messages are only saved to the `conversations` table when you click "End session". To support resuming, we need to save messages as they happen:
+Add a `useRef` flag to ensure the initialization logic only runs once, even if the effect fires multiple times due to dependency changes:
 
-- Create (or update) the conversation record when the session starts
-- Update the conversation's `messages` field after each new message exchange
-- This way, if you navigate away, the messages are already saved and can be loaded back
+```ts
+const initRef = useRef(false);
+```
 
-**File:** `src/pages/Mirror.tsx`
+Then at the top of the effect:
 
-### 4. Auto-end expired sessions
+```ts
+if (!user || sessionStarted || sessionsLoading || initRef.current) return;
+initRef.current = true;
+```
 
-Add logic so that if an active session exists but its timer has fully elapsed (e.g., you left 2 hours ago), it gets automatically ended rather than letting you back into a dead session.
+This prevents multiple conversation records from being created.
 
-**Files:** `src/pages/Mirror.tsx`, `src/pages/Dashboard.tsx`
+**Fix 3 — Clean up the dependency array**
 
-## Summary of flow
+Remove unnecessary dependencies from the effect (`profile`, `credits`, `canStartSession`, `startSession`, `updateProfile`, `endSession`) that cause it to re-fire. These values are only read inside the function and don't need to trigger it. The key triggers are just `user`, `sessionsLoading`, and `sessionStarted`.
 
-1. You're in a session on the Mirror page, 10 minutes in
-2. You accidentally close or navigate away
-3. You land on the Dashboard -- it shows "Resume session" with the time remaining
-4. You click it, go straight to Mirror (no guidance screens)
-5. Mirror loads your messages from the database, resumes the timer with the correct time left
-6. You continue your conversation as normal
+## Data Cleanup
+
+The existing duplicate conversation records won't cause issues going forward since the new query picks the one with the most messages. No database migration needed.
 
