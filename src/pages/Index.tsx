@@ -42,7 +42,7 @@ const Index = () => {
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center animate-fade-in-slow">
         <div className="max-w-2xl mx-auto space-y-8">
           {/* Subtitle */}
-          <p className="text-2xl md:text-3xl text-foreground/80 font-light leading-relaxed max-w-2xl mx-auto font-serif drop-shadow-md whitespace-nowrap" style={{ textShadow: '0 2px 10px rgba(255,255,255,0.3)' }}>
+          <p className="text-2xl md:text-3xl text-foreground/80 font-semibold leading-relaxed max-w-2xl mx-auto font-serif drop-shadow-md whitespace-nowrap" style={{ textShadow: '0 2px 10px rgba(255,255,255,0.3), 0 0 20px rgba(255,255,255,0.5), 0 1px 3px rgba(0,0,0,0.3)' }}>
             a psychologically informed listening ear
           </p>
 
