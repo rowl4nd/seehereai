@@ -78,10 +78,10 @@ const Cooldown = () => {
           {timeUntilNext && (
             <div className="bg-card/50 border border-border/50 rounded-xl p-6">
               <p className="text-sm text-muted-foreground mb-2">
-                Your next session is available in
+                Your next session is available
               </p>
               <p className="text-2xl font-serif text-foreground">
-                {timeUntilNext}
+                Tomorrow
               </p>
             </div>
           )}

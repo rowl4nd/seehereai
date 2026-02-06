@@ -19,7 +19,7 @@ const Mirror = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, updateProfile } = useProfile();
   const { credits } = useCredits();
-  const { activeSession, startSession, endSession, canStartSession } = useSessions();
+  const { activeSession, startSession, endSession, canStartSession, loading: sessionsLoading } = useSessions();
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -41,7 +41,8 @@ const Mirror = () => {
 
   // Start session on mount if possible
   useEffect(() => {
-    if (!user || sessionStarted || activeSession) return;
+    // Wait for sessions data to load before checking
+    if (!user || sessionStarted || activeSession || sessionsLoading) return;
 
     const initSession = async () => {
       if (!canStartSession) {
@@ -94,7 +95,7 @@ const Mirror = () => {
     };
 
     initSession();
-  }, [user, canStartSession, profile, credits, activeSession, sessionStarted, startSession, updateProfile, navigate]);
+  }, [user, canStartSession, sessionsLoading, profile, credits, activeSession, sessionStarted, startSession, updateProfile, navigate]);
 
   // Timer countdown
   useEffect(() => {

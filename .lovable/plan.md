@@ -59,7 +59,7 @@
 - 2 free sessions for new users
 - Paid sessions consume 1 credit
 - Credits never expire
-- 12-hour cooldown between all sessions
+- One session per calendar day (UTC)
 
 ### Design Tokens
 - --background: warm cream (40 40% 97%)
