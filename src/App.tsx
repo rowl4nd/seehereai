@@ -12,6 +12,7 @@ import Guidance from "./pages/Guidance";
 import Mirror from "./pages/Mirror";
 import Credits from "./pages/Credits";
 import Cooldown from "./pages/Cooldown";
+import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/mirror" element={<Mirror />} />
             <Route path="/credits" element={<Credits />} />
             <Route path="/cooldown" element={<Cooldown />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

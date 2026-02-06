@@ -10,6 +10,7 @@ export interface Profile {
   has_acknowledged_terms: boolean;
   has_acknowledged_ai_disclosure: boolean;
   free_sessions_used: number;
+  onboarding_completed_at: string | null;
   created_at: string;
   updated_at: string;
 }

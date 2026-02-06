@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
 
 const guidanceCards = [
@@ -32,6 +33,7 @@ const guidanceCards = [
 
 const Guidance = () => {
   const { user, loading: authLoading } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
   const navigate = useNavigate();
   const [currentCard, setCurrentCard] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -41,6 +43,13 @@ const Guidance = () => {
       navigate("/auth");
     }
   }, [user, authLoading, navigate]);
+
+  // Guard: redirect to onboarding if not completed
+  useEffect(() => {
+    if (!profileLoading && profile && !profile.has_completed_onboarding) {
+      navigate("/onboarding");
+    }
+  }, [profile, profileLoading, navigate]);
 
   // Auto-advance cards every 10 seconds
   useEffect(() => {
@@ -73,7 +82,7 @@ const Guidance = () => {
     navigate("/mirror");
   };
 
-  if (authLoading) {
+  if (authLoading || profileLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-fade-in text-muted-foreground">Loading...</div>

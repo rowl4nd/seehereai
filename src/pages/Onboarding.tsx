@@ -39,6 +39,7 @@ const Onboarding = () => {
       has_acknowledged_terms: true,
       has_acknowledged_ai_disclosure: true,
       has_completed_onboarding: true,
+      onboarding_completed_at: new Date().toISOString(),
     });
 
     if (error) {
@@ -93,9 +94,17 @@ const Onboarding = () => {
                 className="mt-1"
               />
               <div className="space-y-1">
-                <Label htmlFor="terms" className="text-sm font-normal leading-relaxed cursor-pointer">
-                  I understand and accept the terms of use
-                </Label>
+                 <Label htmlFor="terms" className="text-sm font-normal leading-relaxed cursor-pointer">
+                   I understand and accept the{" "}
+                   <a
+                     href="/terms"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="text-primary underline hover:text-primary/80 transition-colors"
+                   >
+                     terms and conditions
+                   </a>
+                 </Label>
                 <p className="text-xs text-muted-foreground">
                   This service is not a replacement for professional mental health care
                 </p>
