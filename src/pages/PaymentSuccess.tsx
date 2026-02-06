@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 const PaymentSuccess = () => {
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [verifying, setVerifying] = useState(true);
   const [sessionsAdded, setSessionsAdded] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  // Don't redirect to auth — user may land here in a new tab without a session
 
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
@@ -21,16 +16,6 @@ const PaymentSuccess = () => {
       return;
     }
 
-    // If user is not authenticated (new tab scenario), skip verification
-    // The webhook will handle crediting. Just show a success message.
-    if (!authLoading && !user) {
-      setSessionsAdded(null);
-      setVerifying(false);
-      return;
-    }
-
-    if (!user) return;
-
     const verifyPayment = async () => {
       try {
         const response = await supabase.functions.invoke("verify-payment", {
@@ -38,20 +23,17 @@ const PaymentSuccess = () => {
         });
 
         if (response.error) {
-          // Don't show error — webhook likely already handled it
           console.error("Verify error:", response.error);
           setSessionsAdded(null);
         } else if (response.data?.success) {
           setSessionsAdded(response.data.sessions);
         } else if (response.data?.message === "Already processed") {
-          // Webhook already handled it
           setSessionsAdded(response.data.sessions || null);
         } else {
           setError(response.data?.message || "Payment verification failed");
         }
       } catch (err) {
         console.error("Payment verification error:", err);
-        // Don't show error — webhook likely handled it
         setSessionsAdded(null);
       } finally {
         setVerifying(false);
@@ -59,15 +41,7 @@ const PaymentSuccess = () => {
     };
 
     verifyPayment();
-  }, [user, authLoading, searchParams]);
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-fade-in text-muted-foreground">Loading...</div>
-      </div>
-    );
-  }
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

@@ -13,11 +13,6 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-  );
-
   // Service role client for updating credits
   const supabaseAdmin = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
@@ -25,13 +20,6 @@ serve(async (req) => {
   );
 
   try {
-    // Authenticate user
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data: authData } = await supabaseClient.auth.getUser(token);
-    const user = authData.user;
-    if (!user) throw new Error("User not authenticated");
-
     const { sessionId } = await req.json();
     if (!sessionId) throw new Error("Session ID required");
 
@@ -40,7 +28,7 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Retrieve the checkout session
+    // Retrieve the checkout session — get user_id from metadata
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status !== "paid") {
@@ -50,20 +38,20 @@ serve(async (req) => {
       );
     }
 
-    // Verify this session belongs to this user
-    if (session.metadata?.user_id !== user.id) {
-      throw new Error("Payment session does not belong to this user");
+    const userId = session.metadata?.user_id;
+    const sessionsToAdd = parseInt(session.metadata?.sessions || "0");
+    const amountPaid = session.amount_total || 0;
+    const paymentIntentId = session.payment_intent as string;
+
+    if (!userId || sessionsToAdd <= 0) {
+      throw new Error("Missing required metadata in checkout session");
     }
 
-    const sessionsToAdd = parseInt(session.metadata?.sessions || "0");
-    const packageId = session.metadata?.package_id || "";
-    const amountPaid = session.amount_total || 0;
-
-    // Check if already processed (idempotency)
+    // Idempotency check: see if this payment was already processed
     const { data: existingPurchase } = await supabaseAdmin
       .from("credit_purchases")
       .select("id")
-      .eq("stripe_payment_id", session.payment_intent as string)
+      .eq("stripe_payment_id", paymentIntentId)
       .maybeSingle();
 
     if (existingPurchase) {
@@ -77,7 +65,7 @@ serve(async (req) => {
     const { data: currentCredits } = await supabaseAdmin
       .from("credits")
       .select("balance")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .single();
 
     const newBalance = (currentCredits?.balance || 0) + sessionsToAdd;
@@ -86,15 +74,17 @@ serve(async (req) => {
     await supabaseAdmin
       .from("credits")
       .update({ balance: newBalance })
-      .eq("user_id", user.id);
+      .eq("user_id", userId);
 
     // Record purchase
     await supabaseAdmin.from("credit_purchases").insert({
-      user_id: user.id,
+      user_id: userId,
       sessions_purchased: sessionsToAdd,
       amount_paid: amountPaid,
-      stripe_payment_id: session.payment_intent as string,
+      stripe_payment_id: paymentIntentId,
     });
+
+    console.log(`Verified & credited ${sessionsToAdd} sessions for user ${userId}. New balance: ${newBalance}`);
 
     return new Response(
       JSON.stringify({ success: true, sessions: sessionsToAdd, newBalance }),
