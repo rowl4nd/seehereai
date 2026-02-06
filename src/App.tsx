@@ -13,6 +13,7 @@ import Mirror from "./pages/Mirror";
 import Credits from "./pages/Credits";
 import Cooldown from "./pages/Cooldown";
 import Terms from "./pages/Terms";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/credits" element={<Credits />} />
             <Route path="/cooldown" element={<Cooldown />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
