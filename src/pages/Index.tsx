@@ -17,13 +17,14 @@ const Index = () => {
       <div className="absolute inset-0 bg-background/60" />
       
       {/* Header */}
-      <header className="relative z-10 flex justify-end p-6 md:p-8">
+      <header className="relative z-10 flex justify-between items-center p-6 md:p-8 bg-sage-soft">
+        <span className="font-serif text-xl text-foreground">see here</span>
         {!loading && (user ? <Link to="/dashboard">
-              <Button variant="ghost" className="font-sans text-sm hover:bg-accent/50">
+              <Button variant="ghost" className="text-sm hover:bg-sage-muted/50">
                 Dashboard
               </Button>
             </Link> : <Link to="/auth">
-              <Button variant="ghost" className="font-sans text-sm hover:bg-accent/50">
+              <Button variant="ghost" className="text-sm hover:bg-sage-muted/50">
                 Log in
               </Button>
             </Link>)}
@@ -33,30 +34,39 @@ const Index = () => {
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center animate-fade-in-slow">
         <div className="max-w-2xl mx-auto space-y-8">
           {/* Main title */}
-          <h1 className="text-5xl font-serif text-foreground tracking-tight md:text-5xl font-medium">see here</h1>
-          
-          {/* Subtitle */}
-          <p className="text-lg md:text-xl text-muted-foreground font-light leading-relaxed max-w-lg mx-auto font-serif">
+          <h1 className="text-4xl font-serif text-foreground tracking-tight md:text-5xl font-medium">
             A psychologically informed listening ear
-          </p>
-
+          </h1>
+          
           {/* Warm decorative element */}
-          <div className="flex justify-center pt-4">
+          <div className="flex justify-center">
             <div className="w-16 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
           </div>
 
-          {/* Gentle call to action */}
-          <Link to="/auth">
-            <Button variant="ghost" className="text-sm text-muted-foreground/70 pt-8 font-light hover:text-foreground">
-              When you're ready, let's proceed
-            </Button>
-          </Link>
+          {/* Description */}
+          <div className="space-y-4 max-w-lg mx-auto">
+            <p className="text-lg text-foreground font-medium">
+              A calming space for reflection where YOU set the pace.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              The AI reflective mirror offers gentle and compassionate questions, supporting awareness of emotions, patterns, and core beliefs as they emerge.
+            </p>
+          </div>
+
+          {/* Call to action */}
+          <div className="pt-4">
+            <Link to="/auth">
+              <Button variant="ghost" className="text-sm text-muted-foreground/70 font-light hover:text-foreground">
+                When you're ready, let's proceed
+              </Button>
+            </Link>
+          </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 p-6 text-center">
-        <p className="text-xs text-muted-foreground/50">
+      <footer className="relative z-10 p-6 text-center bg-sage-soft">
+        <p className="text-xs text-foreground/70">
           A space for reflection
         </p>
       </footer>
