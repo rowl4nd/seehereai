@@ -60,8 +60,6 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {/* Subtle warm border frame */}
-      <div className="fixed inset-4 border border-border/50 rounded-2xl pointer-events-none" />
 
       {/* Header */}
       <header className="relative z-10 p-6 md:p-8">
