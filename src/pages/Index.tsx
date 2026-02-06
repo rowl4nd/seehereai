@@ -109,16 +109,6 @@ const Index = () => {
           <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
             A calm, private space to think out loud — supported by gentle reflections grounded in psychology.
           </p>
-          <div className="pt-4">
-            <Link to="/auth">
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-base font-serif transition-transform hover:scale-[1.02]"
-              >
-                when you're ready, let's proceed
-              </Button>
-            </Link>
-          </div>
         </div>
 
         {/* Scroll hint */}
