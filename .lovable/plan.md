@@ -1,30 +1,23 @@
 
 
-# Add Free Sessions Line Below "How It Works"
+# Add Restrictive UPDATE Policy to Conversations Table
 
 ## What Changes
 
-A single line of reassurance text will be added at the bottom of the "How it works" section, just after the three step cards.
+A single database migration to add a Row Level Security (RLS) UPDATE policy to the `conversations` table.
 
-**Text:** "Your first two sessions are free. No commitment."
+## SQL Migration
 
-## Placement
-
-The line sits inside the "How it works" section, below the 3-card grid — acting as a natural follow-up to "here's how it works." It answers the unspoken question ("what does it cost?") at the moment the user is most likely thinking it.
-
-```text
-How it works
-Three simple steps to a calmer mind
-
-[ Step 1 ]  [ Step 2 ]  [ Step 3 ]
-
-Your first two sessions are free. No commitment.   <-- NEW
+```sql
+CREATE POLICY "Users can update own conversations"
+  ON public.conversations
+  FOR UPDATE
+  USING (auth.uid() = user_id);
 ```
 
-## Technical Detail
+## What This Does
 
-- **File:** `src/pages/Index.tsx`
-- A `<ScrollSection>` wrapping a `<p>` tag will be inserted after the step cards grid (after line 167, inside the `max-w-5xl` container)
-- Styling: `text-center text-sm text-muted-foreground mt-10` — subtle, warm, and consistent with the page tone
-- Wrapped in `ScrollSection` so it fades in with the rest of the content
-- No new files, no new dependencies
+- Ensures that if anyone tries to update a conversation record via the API, they can only modify their own records (matched by `user_id`).
+- This is a security safeguard only -- no app code changes are needed since the app never updates conversations.
+- No performance impact.
+
