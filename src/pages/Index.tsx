@@ -111,7 +111,7 @@ const Index = () => {
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-tight text-foreground">
-            a psychologically informed listening ear
+            A psychologically informed listening ear
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
             A calm, private space to think out loud — supported by gentle reflections grounded in psychology.
