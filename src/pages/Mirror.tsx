@@ -270,18 +270,10 @@ const Mirror = () => {
     <div className="min-h-screen flex flex-col bg-background">
 
       {/* Header */}
-      <header className="relative z-10 flex justify-between items-center p-4 md:p-6 border-b border-border/30">
+      <header className="relative z-10 p-4 md:p-6 border-b border-border/30">
         <Link to="/" className="font-serif text-lg text-foreground hover:text-primary transition-colors">
           see here
         </Link>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleEndSession}
-          className="text-sm text-muted-foreground"
-        >
-          End session
-        </Button>
       </header>
 
       {/* Messages */}
@@ -322,20 +314,32 @@ const Mirror = () => {
 
       {/* Input and Timer */}
       <footer className="relative z-10 border-t border-border/30">
-        {/* Timer bar - always visible at bottom */}
-        {timeRemaining !== null && (
-          <div className="px-4 md:px-6 py-2 bg-card/30 border-b border-border/20">
-            <div className="max-w-2xl mx-auto flex items-center gap-3">
-              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary/60 transition-all duration-1000"
-                  style={{ width: `${(timeRemaining / sessionDuration) * 100}%` }}
-                />
+        {/* Timer and End session */}
+        <div className="px-4 md:px-6 py-2 bg-card/30 border-b border-border/20">
+          <div className="max-w-2xl mx-auto space-y-2">
+            {timeRemaining !== null && (
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary/60 transition-all duration-1000"
+                    style={{ width: `${(timeRemaining / sessionDuration) * 100}%` }}
+                  />
+                </div>
+                <span className="text-xs text-muted-foreground whitespace-nowrap">{formatTime(timeRemaining)}</span>
               </div>
-              <span className="text-xs text-muted-foreground whitespace-nowrap">{formatTime(timeRemaining)}</span>
+            )}
+            <div className="flex justify-end">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleEndSession}
+                className="text-xs text-muted-foreground"
+              >
+                End session
+              </Button>
             </div>
           </div>
-        )}
+        </div>
         
         {/* Input area */}
         <div className="p-4 md:p-6">
