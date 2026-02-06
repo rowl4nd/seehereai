@@ -250,7 +250,7 @@ const Index = () => {
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
               >
-                when you're ready, let's proceed
+                When you're ready, let's proceed
               </Button>
             </Link>
           </div>
