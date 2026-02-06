@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
+import Logo from "@/components/Logo";
 
 const ScrollSection = ({
   children,
@@ -72,9 +73,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       {/* ── Header ── */}
       <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
-        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
-          see here
-        </Link>
+        <Logo />
         {!loading &&
           (user ? (
             <Link to="/dashboard">

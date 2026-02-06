@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/Logo";
 
 const guidanceCards = [
   {
@@ -98,9 +99,7 @@ const Guidance = () => {
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
       <header className="relative z-10 p-6 md:p-8">
-        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
-          see here
-        </Link>
+        <Logo />
       </header>
 
       {/* Main content */}

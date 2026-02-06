@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import Logo from "@/components/Logo";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -51,9 +52,7 @@ const Auth = () => {
 
       {/* Header */}
       <header className="relative z-10 p-6 md:p-8">
-        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
-          see here
-        </Link>
+        <Logo />
       </header>
 
       {/* Main content */}

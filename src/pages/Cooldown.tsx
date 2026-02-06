@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSessions } from "@/hooks/useSessions";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
+import Logo from "@/components/Logo";
 
 const Cooldown = () => {
   const { user, loading: authLoading } = useAuth();
@@ -47,9 +48,7 @@ const Cooldown = () => {
 
       {/* Header */}
       <header className="relative z-10 p-6 md:p-8">
-        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
-          see here
-        </Link>
+        <Logo />
       </header>
 
       {/* Main content */}

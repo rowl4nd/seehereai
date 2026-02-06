@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
+import Logo from "@/components/Logo";
 const Dashboard = () => {
   const {
     user,
@@ -59,7 +60,7 @@ const Dashboard = () => {
 
       {/* Header */}
       <header className="relative z-10 flex justify-between items-center p-6 md:p-8">
-        <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">see here</Link>
+        <Logo />
         <Button variant="ghost" onClick={handleSignOut} className="text-sm text-muted-foreground">
           Sign out
         </Button>
