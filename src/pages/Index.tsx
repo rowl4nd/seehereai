@@ -54,7 +54,7 @@ const Index = () => {
           {/* CTA Button */}
           <div className="pt-8">
             <Link to="/auth">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-base font-sans">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-base font-serif">
                 When you're ready, let's proceed
               </Button>
             </Link>
