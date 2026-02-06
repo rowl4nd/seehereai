@@ -7,8 +7,6 @@ const Index = () => {
     loading
   } = useAuth();
   return <div className="min-h-screen flex flex-col bg-background">
-      {/* Subtle warm border frame */}
-      <div className="fixed inset-4 border border-border/50 rounded-2xl pointer-events-none" />
       
       {/* Header */}
       <header className="relative z-10 flex justify-end p-6 md:p-8">
@@ -40,7 +38,11 @@ const Index = () => {
           </div>
 
           {/* Gentle call to action */}
-          <p className="text-sm text-muted-foreground/70 pt-8 font-light">When you're ready, lets proceed</p>
+          <Link to="/auth">
+            <Button variant="ghost" className="text-sm text-muted-foreground/70 pt-8 font-light hover:text-foreground">
+              When you're ready, let's proceed
+            </Button>
+          </Link>
         </div>
       </main>
 
