@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 const guidanceCards = [
   {
     title: "Some important notes before we begin",
-    content: "Take a deep breath. This is your space.",
+    content: "Take a moment. This is your space.",
   },
   {
     title: "You're speaking with an AI",
-    content: "I'm here to listen and reflect, not to diagnose or treat. For professional support, please consult a qualified mental health professional.",
+    content:
+      "I'm here to listen and reflect, not to diagnose or treat. For professional support, please consult a qualified mental health professional.",
   },
   {
     title: "Your privacy matters",
@@ -95,7 +96,6 @@ const Guidance = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-
       {/* Header */}
       <header className="relative z-10 p-6 md:p-8">
         <Link to="/" className="font-serif text-xl text-foreground hover:text-primary transition-colors">
@@ -112,37 +112,22 @@ const Guidance = () => {
               <div
                 key={index}
                 className={`w-2 h-2 rounded-full transition-all duration-500 ${
-                  index === currentCard
-                    ? "bg-primary w-6"
-                    : index < currentCard
-                    ? "bg-primary/40"
-                    : "bg-border"
+                  index === currentCard ? "bg-primary w-6" : index < currentCard ? "bg-primary/40" : "bg-border"
                 }`}
               />
             ))}
           </div>
 
           {/* Card */}
-          <div
-            className={`space-y-6 transition-opacity duration-500 ${
-              isTransitioning ? "opacity-0" : "opacity-100"
-            }`}
-          >
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-foreground">
-              {card.title}
-            </h2>
-            <p className="text-muted-foreground leading-relaxed max-w-md mx-auto">
-              {card.content}
-            </p>
+          <div className={`space-y-6 transition-opacity duration-500 ${isTransitioning ? "opacity-0" : "opacity-100"}`}>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-foreground">{card.title}</h2>
+            <p className="text-muted-foreground leading-relaxed max-w-md mx-auto">{card.content}</p>
           </div>
 
           {/* Actions */}
           <div className="space-y-4">
             {isLastCard ? (
-              <Button
-                onClick={handleContinue}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8"
-              >
+              <Button onClick={handleContinue} className="bg-primary hover:bg-primary/90 text-primary-foreground px-8">
                 Continue to the Reflective Mirror
               </Button>
             ) : (
