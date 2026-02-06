@@ -30,6 +30,7 @@ const Mirror = () => {
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [showEndWarning, setShowEndWarning] = useState(false);
   const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Determine session duration (25 min free, 45 min paid)
@@ -68,19 +69,74 @@ const Mirror = () => {
     fetchPastConversations();
   }, [user]);
 
-  // Start session on mount if possible
+  // Resume existing active session or start a new one
   useEffect(() => {
-    // Wait for sessions data to load before checking
-    if (!user || sessionStarted || activeSession || sessionsLoading) return;
+    if (!user || sessionStarted || sessionsLoading) return;
 
-    const initSession = async () => {
+    const initOrResumeSession = async () => {
+      // If there's already an active session, try to resume it
+      if (activeSession) {
+        const startTime = new Date(activeSession.started_at).getTime();
+        const duration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
+        const endTime = startTime + duration * 1000;
+
+        if (Date.now() >= endTime) {
+          // Session expired while away — auto-end and redirect
+          await endSession(activeSession.id);
+          navigate("/cooldown");
+          return;
+        }
+
+        // Session still has time — load existing messages
+        const { data: existingConvo } = await supabase
+          .from("conversations")
+          .select("id, messages")
+          .eq("session_id", activeSession.id)
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (existingConvo && Array.isArray(existingConvo.messages) && existingConvo.messages.length > 0) {
+          // Resume with existing messages
+          const loadedMessages: Message[] = (existingConvo.messages as Array<{ role: string; content: string; timestamp?: string }>).map((m, i) => ({
+            id: m.timestamp || `loaded-${i}`,
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          }));
+          setMessages(loadedMessages);
+          setConversationId(existingConvo.id);
+        } else {
+          // Active session but no conversation yet — show greeting
+          setMessages([
+            {
+              id: "greeting",
+              role: "assistant",
+              content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?",
+            },
+          ]);
+          // Create conversation record
+          const { data: newConvo } = await supabase
+            .from("conversations")
+            .insert({
+              session_id: activeSession.id,
+              user_id: user.id,
+              messages: [{ role: "assistant", content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?", timestamp: "greeting" }],
+            })
+            .select("id")
+            .single();
+          if (newConvo) setConversationId(newConvo.id);
+        }
+
+        setSessionStarted(true);
+        return;
+      }
+
+      // No active session — start a new one
       if (!canStartSession) {
         toast.error("You need to wait before starting another session");
         navigate("/dashboard");
         return;
       }
 
-      // Determine session type
       const freeRemaining = profile ? Math.max(0, 2 - (profile.free_sessions_used || 0)) : 0;
       const sessionType = freeRemaining > 0 ? "free" : "paid";
 
@@ -91,19 +147,16 @@ const Mirror = () => {
       }
 
       const { error, session } = await startSession(sessionType);
-      if (error) {
+      if (error || !session) {
         toast.error("Failed to start session");
         navigate("/dashboard");
         return;
       }
 
-      // If using a free session, increment counter
       if (sessionType === "free" && profile) {
         await updateProfile({ free_sessions_used: (profile.free_sessions_used || 0) + 1 });
       }
 
-      // If using paid, decrement credits (handled via edge function in production)
-      // For now, we'll handle this client-side
       if (sessionType === "paid" && credits) {
         await supabase
           .from("credits")
@@ -113,18 +166,28 @@ const Mirror = () => {
 
       setSessionStarted(true);
 
-      // Initial greeting
-      setMessages([
-        {
-          id: "greeting",
-          role: "assistant",
-          content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?",
-        },
-      ]);
+      const greetingMessage = {
+        id: "greeting",
+        role: "assistant" as const,
+        content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?",
+      };
+      setMessages([greetingMessage]);
+
+      // Create conversation record immediately
+      const { data: newConvo } = await supabase
+        .from("conversations")
+        .insert({
+          session_id: session.id,
+          user_id: user.id,
+          messages: [{ role: "assistant", content: greetingMessage.content, timestamp: greetingMessage.id }],
+        })
+        .select("id")
+        .single();
+      if (newConvo) setConversationId(newConvo.id);
     };
 
-    initSession();
-  }, [user, canStartSession, sessionsLoading, profile, credits, activeSession, sessionStarted, startSession, updateProfile, navigate]);
+    initOrResumeSession();
+  }, [user, canStartSession, sessionsLoading, profile, credits, activeSession, sessionStarted, startSession, updateProfile, navigate, endSession]);
 
   // Timer countdown
   useEffect(() => {
@@ -169,24 +232,36 @@ const Mirror = () => {
 
   const handleEndSession = async () => {
     if (activeSession && user) {
-      // Save the conversation to the database before ending
-      const conversationMessages = messages.map(m => ({
-        role: m.role,
-        content: m.content,
-        timestamp: m.id
-      }));
-      
-      await supabase
-        .from("conversations")
-        .insert({
-          session_id: activeSession.id,
-          user_id: user.id,
-          messages: conversationMessages
-        });
+      // Final save of conversation messages
+      if (conversationId) {
+        const conversationMessages = messages.map(m => ({
+          role: m.role,
+          content: m.content,
+          timestamp: m.id
+        }));
+        await supabase
+          .from("conversations")
+          .update({ messages: conversationMessages })
+          .eq("id", conversationId);
+      }
       
       await endSession(activeSession.id);
     }
     navigate("/cooldown");
+  };
+
+  // Helper to save messages to the database incrementally
+  const saveMessagesToDb = async (updatedMessages: Message[]) => {
+    if (!conversationId) return;
+    const conversationMessages = updatedMessages.map(m => ({
+      role: m.role,
+      content: m.content,
+      timestamp: m.id
+    }));
+    await supabase
+      .from("conversations")
+      .update({ messages: conversationMessages })
+      .eq("id", conversationId);
   };
 
   const handleSend = async () => {
@@ -198,13 +273,17 @@ const Mirror = () => {
       content: input.trim(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedWithUser = [...messages, userMessage];
+    setMessages(updatedWithUser);
     setInput("");
     setIsLoading(true);
 
+    // Save user message immediately
+    saveMessagesToDb(updatedWithUser);
+
     try {
       // Prepare messages with wrap-up indicator if in final 5 minutes
-      const messagesForAI = [...messages, userMessage].map((m) => ({
+      const messagesForAI = updatedWithUser.map((m) => ({
         role: m.role,
         content: m.content,
       }));
@@ -229,17 +308,21 @@ const Mirror = () => {
         content: response.data.message || "I hear you. Tell me more when you're ready.",
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      const updatedWithAssistant = [...updatedWithUser, assistantMessage];
+      setMessages(updatedWithAssistant);
+
+      // Save assistant message
+      saveMessagesToDb(updatedWithAssistant);
     } catch (error) {
       console.error("Chat error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: "error-" + Date.now(),
-          role: "assistant",
-          content: "I'm having trouble connecting right now. Please try again in a moment.",
-        },
-      ]);
+      const errorMessage: Message = {
+        id: "error-" + Date.now(),
+        role: "assistant",
+        content: "I'm having trouble connecting right now. Please try again in a moment.",
+      };
+      const updatedWithError = [...updatedWithUser, errorMessage];
+      setMessages(updatedWithError);
+      saveMessagesToDb(updatedWithError);
     } finally {
       setIsLoading(false);
     }

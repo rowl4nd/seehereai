@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import Logo from "@/components/Logo";
+
 const Dashboard = () => {
   const {
     user,
@@ -24,16 +25,46 @@ const Dashboard = () => {
     loading: creditsLoading
   } = useCredits();
   const {
+    activeSession,
     canStartSession,
     nextSessionTime,
-    loading: sessionsLoading
+    loading: sessionsLoading,
+    endSession
   } = useSessions();
   const navigate = useNavigate();
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/auth");
     }
   }, [user, authLoading, navigate]);
+
+  // Auto-end expired active sessions
+  useEffect(() => {
+    if (!activeSession || sessionsLoading) return;
+
+    const sessionDuration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
+    const startTime = new Date(activeSession.started_at).getTime();
+    const endTime = startTime + sessionDuration * 1000;
+
+    if (Date.now() >= endTime) {
+      // Session has expired while away — auto-end it
+      endSession(activeSession.id);
+    }
+  }, [activeSession, sessionsLoading, endSession]);
+
+  // Calculate time remaining on active session
+  const getActiveSessionTimeRemaining = () => {
+    if (!activeSession) return 0;
+    const sessionDuration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
+    const startTime = new Date(activeSession.started_at).getTime();
+    const endTime = startTime + sessionDuration * 1000;
+    return Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+  };
+
+  const activeTimeRemaining = activeSession ? getActiveSessionTimeRemaining() : 0;
+  const hasActiveResumableSession = !!activeSession && activeTimeRemaining > 0;
+
   const handleStartSession = () => {
     if (!profile?.has_completed_onboarding) {
       navigate("/onboarding");
@@ -41,6 +72,11 @@ const Dashboard = () => {
       navigate("/guidance");
     }
   };
+
+  const handleResumeSession = () => {
+    navigate("/mirror");
+  };
+
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
@@ -93,7 +129,16 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {isLoading ? <Skeleton className="h-10 w-full" /> : canStartSession ? totalAvailable > 0 ? <Button onClick={handleStartSession} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+              {isLoading ? <Skeleton className="h-10 w-full" /> : hasActiveResumableSession ? (
+                <div className="text-center space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    You have an active session — {Math.floor(activeTimeRemaining / 60)} min remaining
+                  </p>
+                  <Button onClick={handleResumeSession} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                    Resume session
+                  </Button>
+                </div>
+              ) : canStartSession ? totalAvailable > 0 ? <Button onClick={handleStartSession} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                     Begin a session
                   </Button> : <div className="text-center space-y-4">
                     <p className="text-sm text-muted-foreground">
