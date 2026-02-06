@@ -199,9 +199,6 @@ const Index = () => {
       <section className="py-24 px-6 md:px-10">
         <ScrollSection>
           <div className="max-w-md mx-auto text-center space-y-6">
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-foreground">
-              Ready to begin?
-            </h2>
             <Link to="/auth">
               <Button
                 size="lg"
