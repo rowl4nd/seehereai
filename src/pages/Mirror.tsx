@@ -287,8 +287,9 @@ const Mirror = () => {
                 className={`max-w-[80%] px-4 py-3 rounded-2xl ${
                   message.role === "user"
                     ? "bg-primary text-primary-foreground rounded-br-md"
-                    : "bg-card border border-border/50 text-foreground rounded-bl-md"
+                    : "rounded-bl-md"
                 }`}
+                style={message.role === "assistant" ? { backgroundColor: '#806e84', color: '#ffedd5' } : undefined}
               >
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
               </div>
