@@ -219,7 +219,18 @@ const Index = () => {
       {/* ── Footer ── */}
       <footer className="relative py-8 px-6 text-center border-t border-border/10">
         <div className="absolute inset-0 bg-gradient-to-t from-sage-soft/20 to-transparent" />
-        <p className="relative z-10 text-xs text-muted-foreground">A space for reflection</p>
+        <div className="relative z-10 space-y-2">
+          <p className="text-xs text-muted-foreground">A space for reflection</p>
+          <div className="flex justify-center gap-4">
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-200">
+              Terms &amp; Conditions
+            </a>
+            <span className="text-xs text-muted-foreground/30">·</span>
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-200">
+              Privacy Policy
+            </a>
+          </div>
+        </div>
       </footer>
     </div>;
 };
