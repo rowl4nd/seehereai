@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
 import Logo from "@/components/Logo";
+import heroLogo from "@/assets/see-here-logo.png";
 const ScrollSection = ({
   children,
   className = "",
@@ -86,7 +87,8 @@ const Index = () => {
         {/* Subtle warm orb - centre */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-warm-cream/40 blur-[80px] pointer-events-none" />
 
-        <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in flex flex-col items-center">
+          <img src={heroLogo} alt="see here" className="h-32 md:h-40 w-auto mb-2" />
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-tight text-foreground">
             A psychologically informed listening ear
           </h1>
