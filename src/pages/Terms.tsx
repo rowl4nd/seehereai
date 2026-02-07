@@ -57,7 +57,7 @@ const Terms = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">5. Sessions &amp; Credits</h2>
               <p>
-                New users receive 2 free sessions. Additional sessions can be purchased using credits. Free sessions last 25 minutes; paid sessions last 45 minutes. A rest period of at least 12 hours is required between sessions to encourage reflection.
+                New users receive 2 free sessions. Additional sessions can be purchased using credits. Free sessions last 25 minutes; paid sessions last 45 minutes. Only one session per user per day is allowed to encourage a cooldown period and time for reflection.
               </p>
             </section>
 
