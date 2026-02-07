@@ -8,11 +8,11 @@ import { toast } from "sonner";
 import Logo from "@/components/Logo";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user, signUp, signIn } = useAuth();
+  const { user, signUp, signIn, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +26,15 @@ const Auth = () => {
     setIsSubmitting(true);
 
     try {
-      if (isLogin) {
+      if (mode === "forgot") {
+        const { error } = await resetPassword(email);
+        if (error) {
+          toast.error(error.message);
+        } else {
+          toast.success("Check your email for a reset link");
+          setMode("login");
+        }
+      } else if (mode === "login") {
         const { error } = await signIn(email, password);
         if (error) {
           toast.error(error.message);
@@ -47,6 +55,26 @@ const Auth = () => {
     }
   };
 
+  const title = mode === "forgot"
+    ? "Reset your password"
+    : mode === "login"
+    ? "Welcome back"
+    : "Begin your journey";
+
+  const subtitle = mode === "forgot"
+    ? "We'll send you a link to reset it"
+    : mode === "login"
+    ? "Take your time"
+    : "Create a space for yourself";
+
+  const buttonLabel = isSubmitting
+    ? "Please wait..."
+    : mode === "forgot"
+    ? "Send reset link"
+    : mode === "login"
+    ? "Sign in"
+    : "Create account";
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
 
@@ -61,10 +89,10 @@ const Auth = () => {
           {/* Title */}
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-serif font-light text-foreground">
-              {isLogin ? "Welcome back" : "Begin your journey"}
+              {title}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {isLogin ? "Take your time" : "Create a space for yourself"}
+              {subtitle}
             </p>
           </div>
 
@@ -86,47 +114,67 @@ const Auth = () => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-normal text-muted-foreground">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  className="bg-card border-border/50 focus:border-primary/50"
-                  placeholder="••••••••"
-                />
-              </div>
+              {mode !== "forgot" && (
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-normal text-muted-foreground">
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    className="bg-card border-border/50 focus:border-primary/50"
+                    placeholder="••••••••"
+                  />
+                </div>
+              )}
             </div>
+
+            {mode === "login" && (
+              <div className="text-right -mt-2">
+                <button
+                  type="button"
+                  onClick={() => setMode("forgot")}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Forgot your password?
+                </button>
+              </div>
+            )}
 
             <Button
               type="submit"
               disabled={isSubmitting}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              {isSubmitting
-                ? "Please wait..."
-                : isLogin
-                ? "Sign in"
-                : "Create account"}
+              {buttonLabel}
             </Button>
           </form>
 
           {/* Toggle */}
           <div className="text-center">
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {isLogin
-                ? "New here? Create an account"
-                : "Already have an account? Sign in"}
-            </button>
+            {mode === "forgot" ? (
+              <button
+                type="button"
+                onClick={() => setMode("login")}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Back to sign in
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setMode(mode === "login" ? "signup" : "login")}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {mode === "login"
+                  ? "New here? Create an account"
+                  : "Already have an account? Sign in"}
+              </button>
+            )}
           </div>
         </div>
       </main>
