@@ -20,7 +20,7 @@ const Privacy = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">1. Who We Are</h2>
               <p>
-                See Here is an AI-powered listening companion operated by Cecilia Gregory ("we", "us", "our"). We act as the data controller for your personal information. If you have any questions about how we handle your data, please contact us through the application.
+                See Here is an AI-powered listening companion operated by See Here Ltd ("we", "us", "our"). We act as the data controller for your personal information. If you have any questions about how we handle your data, please contact us through the application.
               </p>
             </section>
 
