@@ -50,7 +50,7 @@ const Terms = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">4. Privacy &amp; Data</h2>
               <p>
-                Your conversations are stored securely and are only accessible to you. Conversation history is used solely to provide continuity between sessions — allowing the AI to remember previous discussions and offer more personalised support. Your data is never shared with third parties for marketing or advertising purposes.
+                Your conversations are stored securely and are only accessible to you. Conversation messages are <strong>encrypted at rest</strong> using industry-standard encryption (AES-256-GCM), meaning they are not stored in a readable format — even at the database level. Conversation history is used solely to provide continuity between sessions — allowing the AI to remember previous discussions and offer more personalised support. Your data is never shared with third parties for marketing or advertising purposes.
               </p>
             </section>
 
@@ -85,7 +85,13 @@ const Terms = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">9. Contact</h2>
               <p>
-                If you have questions about these terms, please reach out through the application.
+                If you have questions about these terms, please contact us at{" "}
+                <a
+                  href="mailto:cecilia@seehere.ai"
+                  className="text-primary underline hover:text-primary/80 transition-colors"
+                >
+                  cecilia@seehere.ai
+                </a>.
               </p>
             </section>
           </div>

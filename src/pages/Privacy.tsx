@@ -20,7 +20,13 @@ const Privacy = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">1. Who We Are</h2>
               <p>
-                See Here is an AI-powered listening companion operated by See Here Ltd ("we", "us", "our"). We act as the data controller for your personal information. If you have any questions about how we handle your data, please contact us through the application.
+                See Here is an AI-powered listening companion operated by See Here Ltd ("we", "us", "our"). We act as the data controller for your personal information. If you have any questions about how we handle your data, please contact us at{" "}
+                <a
+                  href="mailto:cecilia@seehere.ai"
+                  className="text-primary underline hover:text-primary/80 transition-colors"
+                >
+                  cecilia@seehere.ai
+                </a>.
               </p>
             </section>
 
@@ -49,7 +55,7 @@ const Privacy = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">4. How Your Data Is Stored &amp; Protected</h2>
               <p>
-                Your data is stored in a secure, encrypted database. We implement <strong>row-level security</strong>, which means your conversations, sessions, and profile data are technically isolated — only your authenticated account can access your own records. Data is transmitted over encrypted connections (HTTPS/TLS) at all times.
+                Your data is stored in a secure, encrypted database. Your conversation messages are protected with <strong>AES-256-GCM encryption at rest</strong> — meaning they are encrypted before being written to the database and cannot be read in their raw stored form, even by database administrators. We also implement <strong>row-level security</strong>, which means your sessions, profile data, and encrypted conversations are technically isolated — only your authenticated account can access your own records. Data is transmitted over encrypted connections (HTTPS/TLS) at all times.
               </p>
             </section>
 
@@ -57,7 +63,7 @@ const Privacy = () => {
               <h2 className="text-xl font-serif text-foreground">5. Who Can Access Your Data</h2>
               <ul className="list-disc list-inside space-y-1 ml-2">
                 <li><strong>You:</strong> Only you can view your conversations, session history, and profile through the application</li>
-                <li><strong>Nominated administrator:</strong> A single nominated administrator has limited access to the database for service administration, troubleshooting, and legal compliance purposes only</li>
+                <li><strong>Nominated administrator:</strong> A single nominated administrator has limited access to the database for service administration, troubleshooting, and legal compliance purposes only. However, conversation content is encrypted at rest and cannot be read at the database level — the administrator can see metadata (such as timestamps and session identifiers) but not message content</li>
                 <li><strong>Third parties:</strong> We do not sell, rent, or share your personal data with any third party for marketing or advertising purposes</li>
               </ul>
             </section>
@@ -85,7 +91,13 @@ const Privacy = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">8. How to Exercise Your Rights</h2>
               <p>
-                To exercise any of your rights, please contact us through the application. We will respond to your request within one calendar month. If your request is complex, we may extend this by a further two months, and we will inform you of any such extension. You also have the right to lodge a complaint with the Information Commissioner's Office (ICO) at{" "}
+                To exercise any of your rights, please contact us at{" "}
+                <a
+                  href="mailto:cecilia@seehere.ai"
+                  className="text-primary underline hover:text-primary/80 transition-colors"
+                >
+                  cecilia@seehere.ai
+                </a>. We will respond to your request within one calendar month. If your request is complex, we may extend this by a further two months, and we will inform you of any such extension. You also have the right to lodge a complaint with the Information Commissioner's Office (ICO) at{" "}
                 <a
                   href="https://ico.org.uk"
                   target="_blank"
@@ -139,7 +151,13 @@ const Privacy = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">13. Contact</h2>
               <p>
-                If you have questions about this privacy policy or wish to exercise your data rights, please reach out through the application.
+                If you have questions about this privacy policy or wish to exercise your data rights, please contact us at{" "}
+                <a
+                  href="mailto:cecilia@seehere.ai"
+                  className="text-primary underline hover:text-primary/80 transition-colors"
+                >
+                  cecilia@seehere.ai
+                </a>.
               </p>
             </section>
           </div>
