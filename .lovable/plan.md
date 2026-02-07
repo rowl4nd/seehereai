@@ -1,45 +1,72 @@
 
-# Add Forgot Password Flow
+
+# Add Privacy Policy and GDPR Compliance
 
 ## Overview
-Add a "Forgot password?" link on the login page that lets users reset their password via email. This uses the built-in password reset feature from the authentication system — no extra email services needed.
+
+Create a comprehensive Privacy Policy page, simplify onboarding to two checkboxes (terms and privacy -- folding the AI disclosure into the terms), add a new database column to track privacy acknowledgement, and add footer links on the landing page.
 
 ## What Changes
 
-### 1. Auth page — Add "Forgot password?" link and reset mode
-**File:** `src/pages/Auth.tsx`
+### 1. Update Terms & Conditions -- fold in AI disclosure
+**File:** `src/pages/Terms.tsx`
 
-Add a third mode to the auth page: "forgot password". When clicked:
-- The form changes to show just the email field (no password)
-- The title changes to "Reset your password"
-- The button says "Send reset link"
-- It calls the password reset function, which sends an email with a link
-- After sending, it shows a success message telling the user to check their email
-- A "Back to sign in" link lets them return to the login form
+The existing "AI Disclosure" section (section 2) already covers this well. We will add a stronger, clearer line to it so that by accepting the terms, the user is explicitly acknowledging they are speaking with an AI. The updated wording will read:
 
-### 2. Auth hook — Add `resetPassword` function
-**File:** `src/hooks/useAuth.tsx`
+> "By using See Here, you acknowledge and accept that you are interacting with an artificial intelligence system, not a human."
 
-Add a `resetPassword(email)` function to the auth context that calls the built-in password reset method. The reset email will contain a link that brings the user back to the app.
+This replaces the need for a separate AI checkbox.
 
-### 3. New page — Reset Password form
-**File:** `src/pages/ResetPassword.tsx` (new)
+### 2. New page -- Privacy Policy
+**File:** `src/pages/Privacy.tsx` (new)
 
-When the user clicks the link in their email, they arrive at `/reset-password`. This page:
-- Detects the reset token from the URL (handled automatically by the auth system)
-- Shows a simple form with "New password" and "Confirm password" fields
-- Updates the password and redirects to the dashboard
+A comprehensive, GDPR-compliant privacy policy page styled identically to the Terms page. Sections will include:
 
-### 4. App routes — Add the new route
+1. **Who we are** -- data controller details
+2. **What data we collect** -- email, conversation messages, session history, payment info (via Stripe)
+3. **Why we collect it (lawful basis)** -- contractual necessity for service delivery, consent for optional data
+4. **How data is stored and protected** -- encrypted, row-level security, only you can access your own data
+5. **Who can access your data** -- only you; nominated admin for service administration only; no third-party marketing access
+6. **Data retention** -- how long data is kept
+7. **Your rights under GDPR** -- access, rectification, erasure ("right to be forgotten"), restrict processing, data portability, objection
+8. **How to exercise your rights** -- clear instructions
+9. **Cookies** -- what cookies are used (authentication only)
+10. **Third-party services** -- Stripe for payments, AI model for conversations
+11. **Children's privacy** -- service is for users 18+
+12. **Changes to this policy** -- notification process
+13. **Contact** -- how to reach the data controller
+
+### 3. Simplify onboarding -- remove AI checkbox, add privacy checkbox
+**File:** `src/pages/Onboarding.tsx`
+
+- Remove the "I understand I am speaking with an AI" checkbox entirely
+- Remove the `aiDisclosureAccepted` state variable
+- Add a new `privacyAccepted` state variable and checkbox: "I have read and accept the privacy policy" (with a link opening `/privacy` in a new tab)
+- The Continue button requires both `termsAccepted` and `privacyAccepted` to be ticked
+- On submit, set `has_acknowledged_terms: true`, `has_acknowledged_ai_disclosure: true` (kept true for backward compatibility), and `has_acknowledged_privacy_policy: true`
+
+### 4. Database -- add privacy acknowledgement column
+**Migration:**
+
+```sql
+ALTER TABLE public.profiles
+ADD COLUMN has_acknowledged_privacy_policy boolean NOT NULL DEFAULT false;
+```
+
+No new RLS policies needed -- the existing policies already restrict users to their own profile row.
+
+### 5. Update profile hook
+**File:** `src/hooks/useProfile.tsx`
+
+Add `has_acknowledged_privacy_policy: boolean` to the `Profile` interface.
+
+### 6. Register the route
 **File:** `src/App.tsx`
 
-Add a route for `/reset-password` pointing to the new ResetPassword page.
+Add `<Route path="/privacy" element={<Privacy />} />` and import the new page.
 
-## User Flow
+### 7. Add footer links to landing page
+**File:** `src/pages/Index.tsx`
 
-1. On the login page, user clicks "Forgot your password?"
-2. They enter their email and click "Send reset link"
-3. They see a message: "Check your email for a reset link"
-4. They click the link in the email, which brings them to `/reset-password`
-5. They enter a new password and confirm it
-6. They're logged in and redirected to the dashboard
+Update the footer to include links to both "Terms & Conditions" and "Privacy Policy", keeping the existing warm styling.
+
