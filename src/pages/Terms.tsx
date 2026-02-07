@@ -30,6 +30,9 @@ const Terms = () => {
               <p>
                 All conversations on See Here are conducted with an artificial intelligence system. You are not speaking with a human therapist, counsellor, or mental health professional. The AI is designed to listen, reflect, and ask supportive questions, but it cannot diagnose, treat, or prescribe.
               </p>
+              <p>
+                <strong>By using See Here, you acknowledge and accept that you are interacting with an artificial intelligence system, not a human.</strong>
+              </p>
             </section>
 
             <section className="space-y-2">

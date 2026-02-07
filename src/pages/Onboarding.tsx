@@ -14,7 +14,7 @@ const Onboarding = () => {
   const navigate = useNavigate();
   
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [aiDisclosureAccepted, setAiDisclosureAccepted] = useState(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const Onboarding = () => {
   }, [profile, navigate]);
 
   const handleComplete = async () => {
-    if (!termsAccepted || !aiDisclosureAccepted) {
+    if (!termsAccepted || !privacyAccepted) {
       toast.error("Please acknowledge all items to continue");
       return;
     }
@@ -39,6 +39,7 @@ const Onboarding = () => {
     const { error } = await updateProfile({
       has_acknowledged_terms: true,
       has_acknowledged_ai_disclosure: true,
+      has_acknowledged_privacy_policy: true,
       has_completed_onboarding: true,
       onboarding_completed_at: new Date().toISOString(),
     });
@@ -108,20 +109,28 @@ const Onboarding = () => {
               </div>
             </div>
 
-            {/* AI Disclosure */}
+            {/* Privacy Policy */}
             <div className="flex items-start space-x-3">
               <Checkbox
-                id="ai-disclosure"
-                checked={aiDisclosureAccepted}
-                onCheckedChange={(checked) => setAiDisclosureAccepted(checked === true)}
+                id="privacy"
+                checked={privacyAccepted}
+                onCheckedChange={(checked) => setPrivacyAccepted(checked === true)}
                 className="mt-1"
               />
               <div className="space-y-1">
-                <Label htmlFor="ai-disclosure" className="text-sm font-normal leading-relaxed cursor-pointer">
-                  I understand I am speaking with an AI
+                <Label htmlFor="privacy" className="text-sm font-normal leading-relaxed cursor-pointer">
+                  I have read and accept the{" "}
+                  <a
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline hover:text-primary/80 transition-colors"
+                  >
+                    privacy policy
+                  </a>
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  See Here is an AI companion, not a human therapist or counsellor
+                  How we collect, store, and protect your personal data
                 </p>
               </div>
             </div>
@@ -130,7 +139,7 @@ const Onboarding = () => {
           {/* Continue button */}
           <Button
             onClick={handleComplete}
-            disabled={!termsAccepted || !aiDisclosureAccepted || isSubmitting}
+            disabled={!termsAccepted || !privacyAccepted || isSubmitting}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
           >
             {isSubmitting ? "Please wait..." : "Continue"}

@@ -13,6 +13,7 @@ import Mirror from "./pages/Mirror";
 import Credits from "./pages/Credits";
 import Cooldown from "./pages/Cooldown";
 import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/credits" element={<Credits />} />
             <Route path="/cooldown" element={<Cooldown />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />
