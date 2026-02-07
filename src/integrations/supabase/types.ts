@@ -98,6 +98,7 @@ export type Database = {
           display_name: string | null
           free_sessions_used: number
           has_acknowledged_ai_disclosure: boolean
+          has_acknowledged_privacy_policy: boolean
           has_acknowledged_terms: boolean
           has_completed_onboarding: boolean
           id: string
@@ -110,6 +111,7 @@ export type Database = {
           display_name?: string | null
           free_sessions_used?: number
           has_acknowledged_ai_disclosure?: boolean
+          has_acknowledged_privacy_policy?: boolean
           has_acknowledged_terms?: boolean
           has_completed_onboarding?: boolean
           id?: string
@@ -122,6 +124,7 @@ export type Database = {
           display_name?: string | null
           free_sessions_used?: number
           has_acknowledged_ai_disclosure?: boolean
+          has_acknowledged_privacy_policy?: boolean
           has_acknowledged_terms?: boolean
           has_completed_onboarding?: boolean
           id?: string
