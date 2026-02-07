@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
+import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
 
 interface Message {
   id: string;
@@ -21,6 +22,7 @@ const Mirror = () => {
   const { profile, updateProfile } = useProfile();
   const { credits } = useCredits();
   const { activeSession, startSession, endSession, canStartSession, loading: sessionsLoading } = useSessions();
+  const { createConversation: createEncryptedConversation, saveMessages, loadSessionMessages, loadHistory } = useEncryptedMessages();
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -55,16 +57,8 @@ const Mirror = () => {
     if (!user) return;
     
     const fetchPastConversations = async () => {
-      const { data } = await supabase
-        .from("conversations")
-        .select("messages")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(5);
-      
-      if (data) {
-        setPastConversations(data as Array<{ messages: Array<{ role: string; content: string }> }>);
-      }
+      const conversations = await loadHistory();
+      setPastConversations(conversations as Array<{ messages: Array<{ role: string; content: string }> }>);
     };
     
     fetchPastConversations();
@@ -90,16 +84,11 @@ const Mirror = () => {
         }
 
         // Session still has time — load existing messages
-        const { data: existingConvos } = await supabase
-          .from("conversations")
-          .select("id, messages")
-          .eq("session_id", activeSession.id)
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false });
+        const existingConvos = await loadSessionMessages(activeSession.id);
 
-        const existingConvo = existingConvos?.find(c => 
+        const existingConvo = existingConvos.find((c) => 
           Array.isArray(c.messages) && c.messages.length > 1
-        ) || existingConvos?.[0] || null;
+        ) || existingConvos[0] || null;
 
         if (existingConvo && Array.isArray(existingConvo.messages) && existingConvo.messages.length > 0) {
           // Resume with existing messages
@@ -120,16 +109,10 @@ const Mirror = () => {
             },
           ]);
           // Create conversation record
-          const { data: newConvo } = await supabase
-            .from("conversations")
-            .insert({
-              session_id: activeSession.id,
-              user_id: user.id,
-              messages: [{ role: "assistant", content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?", timestamp: "greeting" }],
-            })
-            .select("id")
-            .single();
-          if (newConvo) setConversationId(newConvo.id);
+          const newConvoId = await createEncryptedConversation(activeSession.id, [
+            { role: "assistant", content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?", timestamp: "greeting" },
+          ]);
+          if (newConvoId) setConversationId(newConvoId);
         }
 
         setSessionStarted(true);
@@ -180,16 +163,10 @@ const Mirror = () => {
       setMessages([greetingMessage]);
 
       // Create conversation record immediately
-      const { data: newConvo } = await supabase
-        .from("conversations")
-        .insert({
-          session_id: session.id,
-          user_id: user.id,
-          messages: [{ role: "assistant", content: greetingMessage.content, timestamp: greetingMessage.id }],
-        })
-        .select("id")
-        .single();
-      if (newConvo) setConversationId(newConvo.id);
+      const newConvoId = await createEncryptedConversation(session.id, [
+        { role: "assistant", content: greetingMessage.content, timestamp: greetingMessage.id },
+      ]);
+      if (newConvoId) setConversationId(newConvoId);
     };
 
     initOrResumeSession();
@@ -245,10 +222,7 @@ const Mirror = () => {
           content: m.content,
           timestamp: m.id
         }));
-        await supabase
-          .from("conversations")
-          .update({ messages: conversationMessages })
-          .eq("id", conversationId);
+        await saveMessages(conversationId, conversationMessages);
       }
       
       await endSession(activeSession.id);
@@ -264,10 +238,7 @@ const Mirror = () => {
       content: m.content,
       timestamp: m.id
     }));
-    await supabase
-      .from("conversations")
-      .update({ messages: conversationMessages })
-      .eq("id", conversationId);
+    await saveMessages(conversationId, conversationMessages);
   };
 
   const handleSend = async () => {
