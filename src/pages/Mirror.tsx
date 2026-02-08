@@ -34,6 +34,7 @@ const Mirror = () => {
   const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initRef = useRef(false);
 
   // Determine session duration (25 min free, 45 min paid)
@@ -302,6 +303,7 @@ const Mirror = () => {
       saveMessagesToDb(updatedWithError);
     } finally {
       setIsLoading(false);
+      setTimeout(() => textareaRef.current?.focus(), 0);
     }
   };
 
@@ -405,12 +407,14 @@ const Mirror = () => {
         <div className="p-4 md:p-6">
           <div className="max-w-2xl mx-auto flex gap-3">
             <Textarea
+              ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Share what's on your mind..."
               className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50"
               disabled={isLoading}
+              autoFocus
             />
             <Button
               onClick={handleSend}
