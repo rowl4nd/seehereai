@@ -33,7 +33,7 @@
     --popover-foreground: 0 0% 9%;
 
     /* Warm Amber Primary */
-    --primary: 126 19% 61%;
+    --primary: 163 88.1188% 19.8039%;
     --primary-foreground: 34 100% 91.7647%;
 
     /* Soft Peach Secondary */
@@ -46,7 +46,7 @@
 
     /* Gentle Peach Accent */
     --accent: 216 12.1951% 83.9216%;
-    --accent-foreground: 173 80% 40%;
+    --accent-foreground: 126 19% 61%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 85% 97%;
