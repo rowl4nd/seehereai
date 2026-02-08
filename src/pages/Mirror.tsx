@@ -377,7 +377,7 @@ const Mirror = () => {
                 style={
                   message.role === "user"
                     ? { backgroundColor: '#8aaf8e', color: '#ffffff' }
-                    : { backgroundColor: '#806e84', color: '#ffedd5' }
+                    : { backgroundColor: '#9a86be', color: '#ffedd5' }
                 }
               >
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
