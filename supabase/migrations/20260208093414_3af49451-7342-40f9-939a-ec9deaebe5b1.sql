@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN name_declined boolean NOT NULL DEFAULT false;

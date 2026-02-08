@@ -6,6 +6,7 @@ export interface Profile {
   id: string;
   user_id: string;
   display_name: string | null;
+  name_declined: boolean;
   has_completed_onboarding: boolean;
   has_acknowledged_terms: boolean;
   has_acknowledged_ai_disclosure: boolean;

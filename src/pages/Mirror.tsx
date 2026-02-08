@@ -37,6 +37,17 @@ const Mirror = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initRef = useRef(false);
 
+  // Build personalised greeting based on profile state
+  const getGreeting = () => {
+    if (profile?.display_name) {
+      return `Hello, ${profile.display_name}. Welcome back. I'm here to listen. Take your time — there's no rush. What's on your mind today?`;
+    }
+    if (profile?.name_declined) {
+      return "Hello. Welcome back. I'm here to listen. Take your time — there's no rush. What's on your mind today?";
+    }
+    return "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?";
+  };
+
   // Determine session duration (25 min free, 45 min paid)
   const sessionDuration = activeSession?.session_type === "paid" ? 45 * 60 : 25 * 60;
 
@@ -102,16 +113,17 @@ const Mirror = () => {
           setConversationId(existingConvo.id);
         } else {
           // Active session but no conversation yet — show greeting
+          const greetingText = getGreeting();
           setMessages([
             {
               id: "greeting",
               role: "assistant",
-              content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?",
+              content: greetingText,
             },
           ]);
           // Create conversation record
           const newConvoId = await createEncryptedConversation(activeSession.id, [
-            { role: "assistant", content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?", timestamp: "greeting" },
+            { role: "assistant", content: greetingText, timestamp: "greeting" },
           ]);
           if (newConvoId) setConversationId(newConvoId);
         }
@@ -156,16 +168,17 @@ const Mirror = () => {
 
       setSessionStarted(true);
 
+      const greetingText = getGreeting();
       const greetingMessage = {
         id: "greeting",
         role: "assistant" as const,
-        content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?",
+        content: greetingText,
       };
       setMessages([greetingMessage]);
 
       // Create conversation record immediately
       const newConvoId = await createEncryptedConversation(session.id, [
-        { role: "assistant", content: greetingMessage.content, timestamp: greetingMessage.id },
+        { role: "assistant", content: greetingText, timestamp: greetingMessage.id },
       ]);
       if (newConvoId) setConversationId(newConvoId);
     };
@@ -272,13 +285,23 @@ const Mirror = () => {
         lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
       }
 
-      // Call the AI chat edge function with past conversations for context
+      // Call the AI chat edge function with past conversations and name context
       const response = await supabase.functions.invoke("chat", {
         body: {
           messages: messagesForAI,
           pastConversations: pastConversations,
+          userName: profile?.display_name || undefined,
+          nameDeclined: profile?.name_declined || false,
         },
       });
+
+      // Handle name detection from AI response
+      if (response.data?.detectedName && !profile?.display_name) {
+        updateProfile({ display_name: response.data.detectedName, name_declined: false });
+      }
+      if (response.data?.nameDeclined && !profile?.name_declined) {
+        updateProfile({ name_declined: true });
+      }
 
       const assistantMessage: Message = {
         id: "assistant-" + Date.now(),
