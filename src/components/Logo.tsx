@@ -8,7 +8,7 @@ interface LogoProps {
 const Logo = ({ to = "/" }: LogoProps) => {
   return (
     <Link to={to} className="inline-block hover:opacity-80 transition-opacity">
-      <img src={logo} alt="see here" className="h-24 w-auto" />
+      <img src={logo} alt="see here" className="h-20 w-auto" />
     </Link>
   );
 };
