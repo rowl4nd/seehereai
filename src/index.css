@@ -45,8 +45,8 @@
     --muted-foreground: 0 0% 9%;
 
     /* Gentle Peach Accent */
-    --accent: 216 12.1951% 83.9216%;
-    --accent-foreground: 173 80% 40%;
+    --accent: 210 40% 98.0392%;
+    --accent-foreground: 126 19% 61%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 85% 97%;
@@ -56,7 +56,7 @@
     --input: 0 0% 83%;
     --ring: 161 93% 30%;
 
-    --radius: 1.375rem;
+    --radius: 0.75rem;
 
     /* Sidebar - Warm tones */
     --sidebar-background: 40 35% 95%;
@@ -155,7 +155,7 @@
     --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
     --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
-    --radius: 1.375rem;
+    --radius: 0rem;
     --font-serif: "Crimson Pro", ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
     --font-sans: Montserrat, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   }
