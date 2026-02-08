@@ -132,7 +132,15 @@ Be attentive to:
 ## When Crisis is Detected
 Example response: "I can hear how much pain you're in right now, and I'm grateful you're sharing this with me. What you're feeling matters. I want you to know that there are people who specialise in supporting moments like this. The Samaritans are available 24/7 on 116 123, and they're there to listen without judgment. Would you like to talk about what's been weighing on you?"
 
-Remember: You are an AI companion, not a therapist. Be honest about your nature if asked. Your purpose is to provide a safe space for reflection — and to guide people toward professional support when they need it most.`;
+Remember: You are an AI companion, not a therapist. Be honest about your nature if asked. Your purpose is to provide a safe space for reflection — and to guide people toward professional support when they need it most.
+
+## USER NAME
+- If a userName is provided below, use it naturally and warmly. Do NOT ask for their name.
+- If nameDeclined is true, the person has previously chosen not to share their name. Respect this completely. Do NOT ask for their name. Do not reference it. Just be warm and present.
+- If neither userName nor nameDeclined is set, gently invite them to share their name early in the conversation. Frame it as purely optional (e.g., "Is there a name you'd like me to call you? No pressure at all if you'd prefer not to."). Only ask once per session. If they decline, respect it immediately and move on.
+- If the user shares their name during conversation, append [NAME: TheirName] at the very end of your message.
+- If the user explicitly declines to share their name, append [NAME_DECLINED] at the very end of your message.
+- These tags must come AFTER your actual response text. They will be hidden from the user.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -145,7 +153,7 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const { messages, pastConversations } = await req.json();
+    const { messages, pastConversations, userName, nameDeclined } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
       throw new Error("Messages array is required");
@@ -172,8 +180,18 @@ serve(async (req) => {
         conversationContext += "\n";
       });
     }
-    // Combine system prompt with conversation history context
-    const fullSystemPrompt = SYSTEM_PROMPT + conversationContext;
+    // Build user name context
+    let nameContext = "\n\n## USER NAME CONTEXT\n";
+    if (userName) {
+      nameContext += `The person's name is: ${userName}. Use it naturally.`;
+    } else if (nameDeclined) {
+      nameContext += "The person has previously declined to share their name. Do NOT ask for it.";
+    } else {
+      nameContext += "No name has been provided yet. You may gently invite them to share their name early in the conversation.";
+    }
+
+    // Combine system prompt with conversation history and name context
+    const fullSystemPrompt = SYSTEM_PROMPT + conversationContext + nameContext;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -199,10 +217,25 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const message = data.choices?.[0]?.message?.content || "I'm here with you. Take your time.";
+    let message = data.choices?.[0]?.message?.content || "I'm here with you. Take your time.";
+
+    // Detect and strip name tags
+    let detectedName: string | null = null;
+    let detectedNameDeclined = false;
+
+    const nameMatch = message.match(/\[NAME:\s*(.+?)\]/);
+    if (nameMatch) {
+      detectedName = nameMatch[1].trim();
+      message = message.replace(/\[NAME:\s*.+?\]/g, "").trim();
+    }
+
+    if (/\[NAME_DECLINED\]/.test(message)) {
+      detectedNameDeclined = true;
+      message = message.replace(/\[NAME_DECLINED\]/g, "").trim();
+    }
 
     return new Response(
-      JSON.stringify({ message }),
+      JSON.stringify({ message, detectedName, nameDeclined: detectedNameDeclined }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
