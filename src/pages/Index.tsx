@@ -114,7 +114,7 @@ const Index = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto">
           <ScrollSection>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">How See Here works</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">How SeeHere works</h2>
             <p className="text-center text-muted-foreground mb-16 max-w-md mx-auto">
               Three simple steps to a calmer mind
             </p>
