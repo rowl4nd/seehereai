@@ -55,12 +55,12 @@ const features = [
     icon: Shield,
     title: "Gentle, practical support",
     description:
-      "CBT-informed techniques offered as invitations, never prescriptions. Take what resonates, leave what doesn't.",
+      "Psychologically informed techniques offered as invitations, never prescriptions. Take what resonates, leave what doesn't.",
   },
   {
     icon: Clock,
     title: "Your pace, your space",
-    description: "Sessions that respect your time. No pressure, no rush. They are private and confidential.",
+    description: "Sessions that respect your time. No pressure, no rush. You decide when and how to engage.",
   },
 ];
 const Index = () => {
