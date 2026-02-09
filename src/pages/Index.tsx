@@ -60,7 +60,7 @@ const features = [
   {
     icon: Clock,
     title: "Your pace, your space",
-    description: "Sessions that respect your time. No pressure, no rush. You decide when and how to engage.",
+    description: "Sessions that respect your time. No pressure, no rush. They are private and confidential.",
   },
 ];
 const Index = () => {
@@ -163,6 +163,12 @@ const Index = () => {
               </ScrollSection>
             ))}
           </div>
+
+          <ScrollSection delay={360}>
+            <p className="text-center text-sm text-muted-foreground mt-10">
+              Your first two sessions are free. No commitment.
+            </p>
+          </ScrollSection>
         </div>
       </section>
 
