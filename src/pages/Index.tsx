@@ -68,8 +68,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
-        <Logo />
+      <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-3 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
         {!loading &&
           (user ? (
             <Link to="/dashboard">
@@ -87,7 +86,7 @@ const Index = () => {
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden">
+      <section className="relative min-h-[70vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden">
         {/* Layered gradient background */}
         <div className="absolute inset-0 bg-gradient-to-b from-accent/20 via-background to-background" />
 
