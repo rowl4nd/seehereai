@@ -366,7 +366,7 @@ const Mirror = () => {
     <div className="min-h-screen flex flex-col bg-background">
 
       {/* Header */}
-      <header className="relative z-10 p-4 md:p-6 border-b border-border/30">
+      <header className="relative z-10 px-4 md:px-6 py-[10px] border-b border-border/30">
         <Logo />
       </header>
 
