@@ -112,7 +112,7 @@ const Index = () => {
             A quiet space to talk
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-            SeeHere listens, then gently reflects your words back to you — privately and without judgement.
+            The SeeHere mirror listens first, then offers gentle reflection — privately and without judgement.
           </p>
         </div>
 
