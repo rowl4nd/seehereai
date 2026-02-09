@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,6 +44,13 @@ const Auth = () => {
           navigate("/dashboard");
         }
       } else {
+        // Check allowlist before sign-up
+        const { data: isAllowed } = await supabase.rpc('is_email_allowed', { _email: email });
+        if (!isAllowed) {
+          toast.error("Registration is currently invite-only. Please contact us for access.");
+          setIsSubmitting(false);
+          return;
+        }
         const { error } = await signUp(email, password);
         if (error) {
           toast.error(error.message);
