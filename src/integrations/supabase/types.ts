@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      allowed_testers: {
+        Row: {
+          added_at: string | null
+          email: string
+          id: string
+        }
+        Insert: {
+          added_at?: string | null
+          email: string
+          id?: string
+        }
+        Update: {
+          added_at?: string | null
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -177,6 +195,7 @@ export type Database = {
     Functions: {
       get_next_session_time: { Args: { _user_id: string }; Returns: string }
       has_cooldown_passed: { Args: { _user_id: string }; Returns: boolean }
+      is_email_allowed: { Args: { _email: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
