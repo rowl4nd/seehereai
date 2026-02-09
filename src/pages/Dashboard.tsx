@@ -162,22 +162,12 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Credits Card */}
-          <Card className="bg-card/50 border-border/50">
-            <CardHeader className="text-center pb-4">
-              <CardTitle className="font-serif font-light text-xl">Credits</CardTitle>
-              <CardDescription>
-                {isLoading ? <Skeleton className="h-4 w-24 mx-auto" /> : <>{paidSessions} credit{paidSessions !== 1 ? "s" : ""}</>}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link to="/credits">
-                <Button variant="outline" className="w-full border-border/50 hover:bg-accent/50">
-                  Purchase credits
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          {/* Purchase credits button */}
+          <Link to="/credits">
+            <Button variant="outline" className="w-full border-border/50 hover:bg-accent/50">
+              Purchase credits
+            </Button>
+          </Link>
         </div>
       </main>
     </div>;
