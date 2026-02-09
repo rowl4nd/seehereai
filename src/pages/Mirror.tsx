@@ -31,6 +31,7 @@ const Mirror = () => {
   const [sessionStarted, setSessionStarted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [showEndWarning, setShowEndWarning] = useState(false);
+  const [sessionEnded, setSessionEnded] = useState(false);
   const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -211,9 +212,20 @@ const Mirror = () => {
         ]);
       }
 
-      // End session when timer hits 0
-      if (remaining <= 0) {
-        handleEndSession();
+      // End session when timer hits 0 — stay on page
+      if (remaining <= 0 && !sessionEnded) {
+        setSessionEnded(true);
+        if (activeSession) {
+          if (conversationId) {
+            const conversationMessages = messages.map(m => ({
+              role: m.role,
+              content: m.content,
+              timestamp: m.id
+            }));
+            saveMessages(conversationId, conversationMessages);
+          }
+          endSession(activeSession.id);
+        }
       }
     };
 
@@ -228,8 +240,7 @@ const Mirror = () => {
   }, [messages]);
 
   const handleEndSession = async () => {
-    if (activeSession && user) {
-      // Final save of conversation messages
+    if (!sessionEnded && activeSession && user) {
       if (conversationId) {
         const conversationMessages = messages.map(m => ({
           role: m.role,
@@ -238,7 +249,6 @@ const Mirror = () => {
         }));
         await saveMessages(conversationId, conversationMessages);
       }
-      
       await endSession(activeSession.id);
     }
     navigate("/cooldown");
@@ -421,10 +431,10 @@ const Mirror = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={handleEndSession}
+                onClick={sessionEnded ? () => navigate("/cooldown") : handleEndSession}
                 className="text-xs text-muted-foreground"
               >
-                End session
+                {sessionEnded ? "Return to Dashboard" : "End session"}
               </Button>
             </div>
           </div>
@@ -440,12 +450,12 @@ const Mirror = () => {
               onKeyDown={handleKeyDown}
               placeholder="Share what's on your mind..."
               className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50"
-              disabled={isLoading}
+              disabled={isLoading || sessionEnded}
               autoFocus
             />
             <Button
               onClick={handleSend}
-              disabled={!input.trim() || isLoading}
+              disabled={!input.trim() || isLoading || sessionEnded}
               className="bg-primary hover:bg-primary/90 text-primary-foreground self-end"
             >
               Send
