@@ -163,8 +163,8 @@ const Dashboard = () => {
           </Card>
 
           {/* Purchase credits button */}
-          <Link to="/credits">
-            <Button variant="outline" className="w-full border-border/50 hover:bg-accent/50">
+          <Link to="/credits" className="mt-2 block">
+            <Button variant="outline" className="w-full border-border hover:bg-accent/50">
               Purchase credits
             </Button>
           </Link>
