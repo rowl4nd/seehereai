@@ -140,9 +140,6 @@ const Index = () => {
               </ScrollSection>)}
           </div>
 
-          <ScrollSection delay={360}>
-            
-          </ScrollSection>
         </div>
       </section>
 

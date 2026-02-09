@@ -165,7 +165,7 @@ const Dashboard = () => {
           {/* Purchase credits button */}
           <Link to="/credits" className="mt-2 block">
             <Button variant="outline" className="w-full border-border hover:bg-accent/50">
-              Purchase credits
+              Purchase sessions
             </Button>
           </Link>
         </div>
