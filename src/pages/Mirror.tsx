@@ -390,7 +390,7 @@ const Mirror = () => {
                     : { backgroundColor: '#9a86be', color: '#ffedd5' }
                 }
               >
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
               </div>
             </div>
           ))}
