@@ -164,14 +164,6 @@ const Index = () => {
             ))}
           </div>
 
-          <ScrollSection delay={360}>
-            <p className="text-center text-sm text-muted-foreground mt-10">
-              Your first two sessions are free. No commitment.
-            </p>
-          </ScrollSection>
-        </div>
-      </section>
-
       {/* ── Features ── */}
       <section className="relative py-24 px-6 md:px-10 overflow-hidden">
         {/* Warm ambient background */}
