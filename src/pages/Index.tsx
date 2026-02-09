@@ -87,7 +87,7 @@ const Index = () => {
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative min-h-[70vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden">
+      <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden pb-16">
         {/* Layered gradient background */}
         <div className="absolute inset-0 bg-gradient-to-b from-accent/20 via-background to-background" />
 
