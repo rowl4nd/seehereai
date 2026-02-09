@@ -68,7 +68,8 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-3 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
+      <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
+        <Logo />
         {!loading &&
           (user ? (
             <Link to="/dashboard">
