@@ -1,22 +1,15 @@
 
 
-## Increase Chat Text Size on Mirror Page
+## Reduce Gap Between Header and Hero Content
 
-The message text currently uses Tailwind's `text-sm` class (14px). The change is to increase it to `text-base` (16px) -- a slight, readable bump.
+### Current Spacing
+- Header has `py-5` (20px top/bottom padding) -- this is fine
+- Hero section uses `min-h-[85vh]` which makes it take up 85% of the viewport, and `justify-center` places the content in the middle of that tall section -- this is what creates the large gap
 
-### What Changes
+### Changes (src/pages/Index.tsx)
 
-In `src/pages/Mirror.tsx`, line 393, change:
+1. **Reduce hero section height** from `min-h-[85vh]` to `min-h-[70vh]` -- this pulls all the content up by reducing the overall section height while still keeping a comfortable hero area
+2. **Reduce header vertical padding** from `py-5` (20px) to `py-3` (12px) for a tighter header
 
-```
-text-sm leading-relaxed
-```
-
-to:
-
-```
-text-base leading-relaxed
-```
-
-This affects both user and assistant message bubbles. No other files need changing.
+These two changes together will noticeably move everything up without making it feel cramped.
 
