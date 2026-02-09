@@ -1,15 +1,21 @@
 
 
-## Reduce Gap Between Header and Hero Content
+## Fix: Restore Header Logo and Adjust Only Hero Height
 
-### Current Spacing
-- Header has `py-5` (20px top/bottom padding) -- this is fine
-- Hero section uses `min-h-[85vh]` which makes it take up 85% of the viewport, and `justify-center` places the content in the middle of that tall section -- this is what creates the large gap
+The last edit accidentally removed the `<Logo />` component from the header (line 71) and changed the header padding. We need to:
 
-### Changes (src/pages/Index.tsx)
+1. **Restore the Logo** -- add `<Logo />` back as the first child inside the `<header>` tag
+2. **Restore header padding** -- change `py-3` back to `py-5` (the header was not supposed to change)
+3. **Keep the hero height reduction** -- `min-h-[70vh]` is already applied and is the only change we wanted
 
-1. **Reduce hero section height** from `min-h-[85vh]` to `min-h-[70vh]` -- this pulls all the content up by reducing the overall section height while still keeping a comfortable hero area
-2. **Reduce header vertical padding** from `py-5` (20px) to `py-3` (12px) for a tighter header
+### Technical Detail
 
-These two changes together will noticeably move everything up without making it feel cramped.
+In `src/pages/Index.tsx`, the header (line 71) should become:
 
+```
+<header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
+  <Logo />
+  {!loading && ...
+```
+
+The hero section at line 89 stays as-is with `min-h-[70vh]`.
