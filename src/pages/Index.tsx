@@ -109,7 +109,7 @@ const Index = () => {
         <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in flex flex-col items-center">
           <img src={heroLogo} alt="see here" className="h-32 md:h-40 w-auto mb-2" />
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-tight text-foreground">
-            A quiet space to reflect
+            A quiet space to talk
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
             SeeHere listens, then gently reflects your words back to you — privately and without judgement.
