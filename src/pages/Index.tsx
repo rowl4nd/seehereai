@@ -114,14 +114,6 @@ const Index = () => {
           <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
             The SeeHere mirror listens first, then offers gentle reflection — privately and without judgement.
           </p>
-          <Link to="/auth">
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-5 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-            >
-              Try 2 free sessions
-            </Button>
-          </Link>
         </div>
 
         {/* Scroll hint */}
@@ -163,6 +155,8 @@ const Index = () => {
               </ScrollSection>
             ))}
           </div>
+        </div>
+      </section>
 
       {/* ── Features ── */}
       <section className="relative py-24 px-6 md:px-10 overflow-hidden">
