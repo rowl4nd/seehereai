@@ -274,7 +274,7 @@ const Index = () => {
 
             <Accordion type="single" collapsible className="space-y-3">
               <AccordionItem value="therapy" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
-                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                <AccordionTrigger className="text-lg md:text-xl font-serif font-medium text-foreground hover:no-underline">
                   Is this therapy?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed">
@@ -283,7 +283,7 @@ const Index = () => {
               </AccordionItem>
 
               <AccordionItem value="confidential" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
-                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                <AccordionTrigger className="text-lg md:text-xl font-serif font-medium text-foreground hover:no-underline">
                   Are my conversations confidential?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed">
@@ -292,7 +292,7 @@ const Index = () => {
               </AccordionItem>
 
               <AccordionItem value="cost" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
-                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                <AccordionTrigger className="text-lg md:text-xl font-serif font-medium text-foreground hover:no-underline">
                   How much does it cost?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed">
@@ -301,7 +301,7 @@ const Index = () => {
               </AccordionItem>
 
               <AccordionItem value="who" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
-                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                <AccordionTrigger className="text-lg md:text-xl font-serif font-medium text-foreground hover:no-underline">
                   Who is this for?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed">
@@ -310,7 +310,7 @@ const Index = () => {
               </AccordionItem>
 
               <AccordionItem value="crisis" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
-                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                <AccordionTrigger className="text-lg md:text-xl font-serif font-medium text-foreground hover:no-underline">
                   What if I'm struggling or in crisis?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed">
