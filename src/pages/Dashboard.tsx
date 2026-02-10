@@ -164,6 +164,13 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
+          {/* Purchase credits button */}
+          <Link to="/credits" className="block">
+            <Button variant="outline" className="w-full border-2 border-border hover:bg-accent/50">
+              Purchase sessions
+            </Button>
+          </Link>
+
           {/* Past Sessions */}
           <Card className="bg-card/50 border-border/50">
             <CardHeader className="text-center pb-4">
@@ -206,13 +213,6 @@ const Dashboard = () => {
               })()}
             </CardContent>
           </Card>
-
-          {/* Purchase credits button */}
-          <Link to="/credits" className="mt-2 block">
-            <Button variant="outline" className="w-full border-border hover:bg-accent/50">
-              Purchase sessions
-            </Button>
-          </Link>
         </div>
       </main>
     </div>;
