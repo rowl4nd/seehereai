@@ -72,20 +72,25 @@ const Index = () => {
       {/* ── Header ── */}
       <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md">
         <Logo />
-        {!loading &&
-          (user ? (
-            <Link to="/dashboard">
-              <Button variant="ghost" className="text-sm hover:bg-accent/50">
-                Dashboard
-              </Button>
-            </Link>
-          ) : (
-            <Link to="/auth">
-              <Button variant="ghost" className="text-sm hover:bg-accent/50">
-                Log in
-              </Button>
-            </Link>
-          ))}
+        <div className="flex items-center gap-2">
+          <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 px-3 py-2">
+            FAQs
+          </a>
+          {!loading &&
+            (user ? (
+              <Link to="/dashboard">
+                <Button variant="ghost" className="text-sm hover:bg-accent/50">
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/auth">
+                <Button variant="ghost" className="text-sm hover:bg-accent/50">
+                  Log in
+                </Button>
+              </Link>
+            ))}
+        </div>
       </header>
 
       {/* ── Hero ── */}
@@ -259,7 +264,7 @@ const Index = () => {
       {/* ── FAQ ── */}
       <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.25)" />
 
-      <section className="relative py-24 px-6 md:px-10 overflow-hidden">
+      <section id="faq" className="relative py-24 px-6 md:px-10 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/25 via-accent/15 to-[#ffedd5]" />
         <div className="absolute top-1/3 right-1/4 w-[250px] h-[250px] rounded-full bg-primary/5 blur-[80px] pointer-events-none" />
 
