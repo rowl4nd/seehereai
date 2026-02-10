@@ -112,6 +112,7 @@ If someone asks for such information:
 2. Gently acknowledge that you sense they may be going through something difficult
 3. Redirect with care: "I'm not able to help with that, but I'm here to listen to what you're feeling right now."
 4. Offer crisis resources if appropriate
+5. If crisis resources have already been provided once during this session and are triggered again, gently let the person know that you care about their safety but are not equipped to continue, and that the session will now end. Append [END_SESSION] at the very end of your message. Example: "I really care about your safety, and I can hear how much pain you're in. I'm not the right support for what you're going through right now. Please do reach out to the Samaritans on 116 123 — they're available 24/7 and are there for exactly this. I'm going to close our session now so you can focus on getting the support you deserve."
 
 ### Warning Signs to Watch For
 Be attentive to:
@@ -234,8 +235,14 @@ serve(async (req) => {
       message = message.replace(/\[NAME_DECLINED\]/g, "").trim();
     }
 
+    let endSessionFlag = false;
+    if (/\[END_SESSION\]/.test(message)) {
+      endSessionFlag = true;
+      message = message.replace(/\[END_SESSION\]/g, "").trim();
+    }
+
     return new Response(
-      JSON.stringify({ message, detectedName, nameDeclined: detectedNameDeclined }),
+      JSON.stringify({ message, detectedName, nameDeclined: detectedNameDeclined, endSession: endSessionFlag }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }

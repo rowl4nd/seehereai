@@ -324,6 +324,19 @@ const Mirror = () => {
 
       // Save assistant message
       saveMessagesToDb(updatedWithAssistant);
+
+      // Handle END_SESSION flag — end the session after displaying the message
+      if (response.data?.endSession && activeSession) {
+        setSessionEnded(true);
+        if (conversationId) {
+          await saveMessages(conversationId, updatedWithAssistant.map(m => ({
+            role: m.role,
+            content: m.content,
+            timestamp: m.id
+          })));
+        }
+        await endSession(activeSession.id);
+      }
     } catch (error) {
       console.error("Chat error:", error);
       const errorMessage: Message = {
