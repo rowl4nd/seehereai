@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
 import Logo from "@/components/Logo";
+import WaveDivider from "@/components/WaveDivider";
 import heroLogo from "@/assets/see-here-logo.png";
 const ScrollSection = ({
   children,
@@ -68,7 +69,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
+      <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md">
         <Logo />
         {!loading &&
           (user ? (
@@ -131,6 +132,8 @@ const Index = () => {
         </div>
       </section>
 
+      <WaveDivider variant={1} fillColor="hsl(var(--sage-soft) / 0.4)" />
+
       {/* ── How It Works ── */}
       <section className="relative py-24 px-6 md:px-10">
         {/* Warm gradient background */}
@@ -166,6 +169,8 @@ const Index = () => {
         </div>
       </section>
 
+      <WaveDivider variant={2} fillColor="hsl(var(--background))" flip />
+
       {/* ── Features ── */}
       <section className="relative py-24 px-6 md:px-10 overflow-hidden">
         {/* Warm ambient background */}
@@ -200,6 +205,8 @@ const Index = () => {
         </div>
       </section>
 
+      <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.3)" />
+
       {/* ── Reassurance ── */}
       <section className="relative py-24 px-6 md:px-10 overflow-hidden">
         {/* Full warm gradient wash */}
@@ -224,6 +231,8 @@ const Index = () => {
         </ScrollSection>
       </section>
 
+      <WaveDivider variant={1} fillColor="hsl(var(--background))" flip />
+
       {/* ── Final CTA ── */}
       <section className="relative py-28 px-6 md:px-10 overflow-hidden">
         {/* Warm gradient that draws the eye */}
@@ -247,7 +256,9 @@ const Index = () => {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="relative py-8 px-6 text-center border-t border-border/10">
+      <WaveDivider variant={2} fillColor="hsl(var(--sage-soft) / 0.2)" />
+
+      <footer className="relative py-8 px-6 text-center">
         <div className="absolute inset-0 bg-gradient-to-t from-sage-soft/20 to-transparent" />
         <div className="relative z-10 space-y-2">
           <p className="text-xs text-muted-foreground">A space for reflection</p>
