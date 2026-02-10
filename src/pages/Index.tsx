@@ -97,7 +97,7 @@ const Index = () => {
           </p>
           <Link to="/auth">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-5 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
-              Try 2 free sessions
+              Try for free...
             </Button>
           </Link>
         </div>
