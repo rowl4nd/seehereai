@@ -90,7 +90,7 @@ const Index = () => {
       {/* ── Hero ── */}
       <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden pb-16">
         {/* Layered gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-accent/20 via-background to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-accent/20 via-background to-sage-soft/40" />
 
         {/* Large warm orb - top right */}
         <div className="absolute -top-20 -right-32 w-[500px] h-[500px] md:w-[600px] md:h-[600px] rounded-full bg-sage-soft/50 blur-[120px] animate-pulse pointer-events-none" />
@@ -137,7 +137,7 @@ const Index = () => {
       {/* ── How It Works ── */}
       <section className="relative py-24 px-6 md:px-10">
         {/* Warm gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-sage-soft/40 via-accent/15 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/40 via-accent/15 to-background" />
 
         {/* Subtle floating orb */}
         <div className="absolute top-10 right-10 w-[200px] h-[200px] rounded-full bg-primary/5 blur-[60px] pointer-events-none" />
@@ -174,7 +174,7 @@ const Index = () => {
       {/* ── Features ── */}
       <section className="relative py-24 px-6 md:px-10 overflow-hidden">
         {/* Warm ambient background */}
-        <div className="absolute inset-0 bg-gradient-to-tl from-warm-cream/30 via-background to-accent/10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-warm-cream/20 to-sage-soft/30" />
 
         {/* Decorative orb */}
         <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] rounded-full bg-sage-soft/30 blur-[100px] pointer-events-none" />
@@ -210,7 +210,7 @@ const Index = () => {
       {/* ── Reassurance ── */}
       <section className="relative py-24 px-6 md:px-10 overflow-hidden">
         {/* Full warm gradient wash */}
-        <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/30 via-accent/20 to-sage-soft/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/30 via-accent/20 to-background" />
 
         {/* Soft centred glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] rounded-full bg-primary/8 blur-[80px] pointer-events-none" />
@@ -236,7 +236,7 @@ const Index = () => {
       {/* ── Final CTA ── */}
       <section className="relative py-28 px-6 md:px-10 overflow-hidden">
         {/* Warm gradient that draws the eye */}
-        <div className="absolute inset-0 bg-gradient-to-t from-accent/25 via-background to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-sage-soft/20" />
 
         {/* Gentle glow behind button */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[300px] h-[200px] rounded-full bg-primary/10 blur-[60px] pointer-events-none" />
