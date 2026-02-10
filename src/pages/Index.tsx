@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
 import WaveDivider from "@/components/WaveDivider";
 import heroLogo from "@/assets/see-here-logo.png";
@@ -251,6 +252,72 @@ const Index = () => {
                 When you're ready, let's talk
               </Button>
             </Link>
+          </div>
+        </ScrollSection>
+      </section>
+
+      {/* ── FAQ ── */}
+      <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.25)" />
+
+      <section className="relative py-24 px-6 md:px-10 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/25 via-accent/15 to-[#ffedd5]" />
+        <div className="absolute top-1/3 right-1/4 w-[250px] h-[250px] rounded-full bg-primary/5 blur-[80px] pointer-events-none" />
+
+        <ScrollSection>
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">
+              Common questions
+            </h2>
+            <p className="text-center text-muted-foreground mb-12 max-w-md mx-auto">
+              Everything you might want to know
+            </p>
+
+            <Accordion type="single" collapsible className="space-y-3">
+              <AccordionItem value="therapy" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
+                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                  Is this therapy?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  No. SeeHere is a reflective companion, not a substitute for professional therapy. It offers a space to think out loud, grounded in psychological principles, but it is not a clinical service and does not provide diagnoses or treatment.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="confidential" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
+                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                  Are my conversations confidential?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  Yes. Your conversations are encrypted and private. We do not share your data with third parties, and sessions are designed to be a safe, confidential space.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="cost" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
+                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                  How much does it cost?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  You get 2 free sessions to try SeeHere with no commitment. After that, sessions can be purchased in credit packs starting from £5. Credits never expire.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="who" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
+                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                  Who is this for?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  Anyone looking for a quiet, judgement-free space to reflect. Whether you're navigating a difficult time, working through everyday stress, or simply want to understand yourself better.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="crisis" className="border border-border/20 rounded-xl bg-card/70 backdrop-blur-sm px-6">
+                <AccordionTrigger className="text-base font-serif font-medium text-foreground hover:no-underline">
+                  What if I'm struggling or in crisis?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  SeeHere is not a crisis service. If you are in immediate danger or experiencing a mental health crisis, please contact the Samaritans on 116 123 (24/7), text SHOUT to 85258, or call 999.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </ScrollSection>
       </section>
