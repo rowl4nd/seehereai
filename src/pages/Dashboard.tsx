@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
+import { Link as RouterLink } from "react-router-dom";
 import Logo from "@/components/Logo";
 
 const Dashboard = () => {
@@ -25,6 +26,7 @@ const Dashboard = () => {
     loading: creditsLoading
   } = useCredits();
   const {
+    sessions,
     activeSession,
     canStartSession,
     nextSessionTime,
@@ -159,6 +161,49 @@ const Dashboard = () => {
                 })}
                     </p>}
                 </div>}
+            </CardContent>
+          </Card>
+
+          {/* Past Sessions */}
+          <Card className="bg-card/50 border-border/50">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="font-serif font-light text-xl">Past Sessions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (() => {
+                const pastSessions = sessions
+                  .filter((s) => !s.is_active && s.ended_at)
+                  .slice(0, 5);
+
+                if (pastSessions.length === 0) {
+                  return (
+                    <p className="text-sm text-muted-foreground text-center">
+                      No sessions yet
+                    </p>
+                  );
+                }
+
+                return (
+                  <div className="space-y-2">
+                    {pastSessions.map((s) => (
+                      <RouterLink
+                        key={s.id}
+                        to={`/history/${s.id}`}
+                        className="flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-accent/30 transition-colors group"
+                      >
+                        <span className="text-sm text-foreground group-hover:text-primary transition-colors">
+                          {formatDistanceToNow(new Date(s.ended_at!), { addSuffix: true })}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {s.duration_minutes ? `${s.duration_minutes} min` : "—"}
+                        </span>
+                      </RouterLink>
+                    ))}
+                  </div>
+                );
+              })()}
             </CardContent>
           </Card>
 
