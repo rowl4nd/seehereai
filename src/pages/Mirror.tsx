@@ -37,6 +37,7 @@ const Mirror = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initRef = useRef(false);
+  const messagesRef = useRef<Message[]>([]);
 
   // Build personalised greeting based on profile state
   const getGreeting = () => {
@@ -202,14 +203,23 @@ const Mirror = () => {
       // Show warning at 5 minutes
       if (remaining <= 300 && remaining > 0 && !showEndWarning) {
         setShowEndWarning(true);
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: "warning-" + Date.now(),
-            role: "assistant",
-            content: "We have about 5 minutes left. Take your time to share anything else on your mind, or we can begin to wrap up.",
-          },
-        ]);
+        const warningMsg: Message = {
+          id: "warning-" + Date.now(),
+          role: "assistant",
+          content: "We have about 5 minutes left. Take your time to share anything else on your mind, or we can begin to wrap up.",
+        };
+        setMessages((prev) => {
+          const updated = [...prev, warningMsg];
+          // Save warning message to DB immediately
+          if (conversationId) {
+            saveMessages(conversationId, updated.map(m => ({
+              role: m.role,
+              content: m.content,
+              timestamp: m.id
+            })));
+          }
+          return updated;
+        });
       }
 
       // End session when timer hits 0 — stay on page
@@ -233,6 +243,11 @@ const Mirror = () => {
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
   }, [activeSession, sessionDuration, showEndWarning]);
+
+  // Keep messagesRef in sync with state
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -274,7 +289,7 @@ const Mirror = () => {
       content: input.trim(),
     };
 
-    const updatedWithUser = [...messages, userMessage];
+    const updatedWithUser = [...messagesRef.current, userMessage];
     setMessages(updatedWithUser);
     setInput("");
     setIsLoading(true);
