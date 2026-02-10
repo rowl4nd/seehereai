@@ -25,7 +25,7 @@ const guidanceCards = [
   },
   {
     title: "Rest between sessions",
-    content: "After each session, there is a 12-hour rest period. This gives you time to reflect on our conversation.",
+    content: "One session per day only. This gives you a cooldown period to reflect on our conversation.",
   },
   {
     title: "Go at your own pace",
