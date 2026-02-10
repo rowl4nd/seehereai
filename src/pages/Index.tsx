@@ -8,66 +8,82 @@ import heroLogo from "@/assets/see-here-logo.png";
 const ScrollSection = ({
   children,
   className = "",
-  delay = 0
+  delay = 0,
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
 }) => {
-  const {
-    ref,
-    isVisible
-  } = useScrollAnimation();
-  return <div ref={ref} className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`} style={{
-    transitionDelay: `${delay}ms`
-  }}>
+  const { ref, isVisible } = useScrollAnimation();
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
+      style={{
+        transitionDelay: `${delay}ms`,
+      }}
+    >
       {children}
-    </div>;
+    </div>
+  );
 };
-const steps = [{
-  icon: MessageCircle,
-  title: "Share what's on your mind",
-  description: "A safe space with no judgment. Say as much or as little as you like."
-}, {
-  icon: Sparkles,
-  title: "Receive thoughtful reflections",
-  description: "Responses informed by psychology, designed to help you feel heard."
-}, {
-  icon: Compass,
-  title: "Build self-awareness",
-  description: "Gently explore your emotions, patterns, and beliefs — at your own pace."
-}];
-const features = [{
-  icon: Heart,
-  title: "Person-centred listening",
-  description: "Grounded in unconditional positive regard and empathic understanding. You are accepted fully, without judgment."
-}, {
-  icon: Shield,
-  title: "Gentle, practical support",
-  description: "Psychologically informed techniques offered as invitations, never prescriptions. Take what resonates, leave what doesn't."
-}, {
-  icon: Clock,
-  title: "Your pace, your space",
-  description: "Sessions that respect your time. No pressure, no rush. You decide when and how to engage."
-}];
+const steps = [
+  {
+    icon: MessageCircle,
+    title: "Share what's on your mind",
+    description: "A safe space with no judgment. Say as much or as little as you like.",
+  },
+  {
+    icon: Sparkles,
+    title: "Receive thoughtful reflections",
+    description: "Responses informed by psychology, designed to help you feel heard.",
+  },
+  {
+    icon: Compass,
+    title: "Build self-awareness",
+    description: "Gently explore your emotions, patterns, and beliefs — at your own pace.",
+  },
+];
+const features = [
+  {
+    icon: Heart,
+    title: "Person-centred listening",
+    description:
+      "Grounded in unconditional positive regard and empathic understanding. You are accepted fully, without judgment.",
+  },
+  {
+    icon: Shield,
+    title: "Gentle, practical support",
+    description:
+      "Psychologically informed techniques offered as invitations, never prescriptions. Take what resonates, leave what doesn't.",
+  },
+  {
+    icon: Clock,
+    title: "Your pace, your space",
+    description: "Sessions that respect your time. No pressure, no rush. You decide when and how to engage.",
+  },
+];
 const Index = () => {
-  const {
-    user,
-    loading
-  } = useAuth();
-  return <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
+  const { user, loading } = useAuth();
+  return (
+    <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       {/* ── Header ── */}
       <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md border-b border-border/20">
         <Logo />
-        {!loading && (user ? <Link to="/dashboard">
+        {!loading &&
+          (user ? (
+            <Link to="/dashboard">
               <Button variant="ghost" className="text-sm hover:bg-accent/50">
                 Dashboard
               </Button>
-            </Link> : <Link to="/auth">
+            </Link>
+          ) : (
+            <Link to="/auth">
               <Button variant="ghost" className="text-sm hover:bg-accent/50">
                 Log in
               </Button>
-            </Link>)}
+            </Link>
+          ))}
       </header>
 
       {/* ── Hero ── */}
@@ -79,10 +95,13 @@ const Index = () => {
         <div className="absolute -top-20 -right-32 w-[500px] h-[500px] md:w-[600px] md:h-[600px] rounded-full bg-sage-soft/50 blur-[120px] animate-pulse pointer-events-none" />
 
         {/* Secondary orb - bottom left */}
-        <div className="absolute -bottom-32 -left-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] rounded-full bg-accent/30 blur-[100px] pointer-events-none" style={{
-        animationDuration: "4s",
-        animationName: "pulse"
-      }} />
+        <div
+          className="absolute -bottom-32 -left-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] rounded-full bg-accent/30 blur-[100px] pointer-events-none"
+          style={{
+            animationDuration: "4s",
+            animationName: "pulse",
+          }}
+        />
 
         {/* Subtle warm orb - centre */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-warm-cream/40 blur-[80px] pointer-events-none" />
@@ -96,7 +115,10 @@ const Index = () => {
             The SeeHere mirror listens first, then offers gentle reflection — privately and without judgement.
           </p>
           <Link to="/auth">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-5 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-5 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+            >
               Try for free...
             </Button>
           </Link>
@@ -128,7 +150,8 @@ const Index = () => {
           </ScrollSection>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {steps.map((step, i) => <ScrollSection key={step.title} delay={i * 120}>
+            {steps.map((step, i) => (
+              <ScrollSection key={step.title} delay={i * 120}>
                 <div className="group flex flex-col items-center text-center p-8 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/20 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-1 transition-all duration-300">
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-accent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <step.icon className="w-6 h-6 text-primary" />
@@ -137,9 +160,9 @@ const Index = () => {
                   <h3 className="text-lg font-serif font-medium text-foreground mb-3">{step.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                 </div>
-              </ScrollSection>)}
+              </ScrollSection>
+            ))}
           </div>
-
         </div>
       </section>
 
@@ -162,7 +185,8 @@ const Index = () => {
           </ScrollSection>
 
           <div className="space-y-8 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
-            {features.map((feature, i) => <ScrollSection key={feature.title} delay={i * 120}>
+            {features.map((feature, i) => (
+              <ScrollSection key={feature.title} delay={i * 120}>
                 <div className="group p-6 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/15 hover:bg-card/90 hover:shadow-sm transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-sage-soft/60 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
                     <feature.icon className="w-5 h-5 text-accent-foreground" />
@@ -170,7 +194,8 @@ const Index = () => {
                   <h3 className="text-lg font-serif font-medium text-foreground mb-3">{feature.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
                 </div>
-              </ScrollSection>)}
+              </ScrollSection>
+            ))}
           </div>
         </div>
       </section>
@@ -210,8 +235,11 @@ const Index = () => {
         <ScrollSection>
           <div className="relative z-10 max-w-md mx-auto text-center space-y-6">
             <Link to="/auth">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
-                When you're ready, let's proceed
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+              >
+                When you're ready, let's talk
               </Button>
             </Link>
           </div>
@@ -224,16 +252,27 @@ const Index = () => {
         <div className="relative z-10 space-y-2">
           <p className="text-xs text-muted-foreground">A space for reflection</p>
           <div className="flex justify-center gap-4">
-            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-200">
+            <a
+              href="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-200"
+            >
               Terms &amp; Conditions
             </a>
             <span className="text-xs text-muted-foreground/30">·</span>
-            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-200">
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-200"
+            >
               Privacy Policy
             </a>
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
 export default Index;
