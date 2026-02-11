@@ -150,22 +150,26 @@ const Mirror = () => {
         return;
       }
 
-      const { error, session } = await startSession(sessionType);
-      if (error || !session) {
-        toast.error("Failed to start session");
-        navigate("/dashboard");
+      // Use atomic server-side function for session creation and credit deduction
+      const { data: rpcResult, error: rpcError } = await supabase.rpc('start_paid_session', {
+        _session_type: sessionType
+      });
+
+      const result = rpcResult?.[0];
+      if (rpcError || result?.error_msg || !result?.session_id) {
+        toast.error(result?.error_msg || "Failed to start session");
+        if (result?.error_msg === 'Insufficient credits') {
+          navigate("/credits");
+        } else {
+          navigate("/dashboard");
+        }
         return;
       }
 
+      const session = { id: result.session_id, session_type: sessionType, started_at: new Date().toISOString(), is_active: true };
+
       if (sessionType === "free" && profile) {
         await updateProfile({ free_sessions_used: (profile.free_sessions_used || 0) + 1 });
-      }
-
-      if (sessionType === "paid" && credits) {
-        await supabase
-          .from("credits")
-          .update({ balance: credits.balance - 1 })
-          .eq("user_id", user.id);
       }
 
       setSessionStarted(true);
