@@ -1,0 +1,1 @@
+DROP POLICY "Users can update own credits" ON public.credits;
