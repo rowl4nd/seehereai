@@ -41,6 +41,8 @@ const Mirror = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initRef = useRef(false);
   const messagesRef = useRef<Message[]>([]);
+  const conversationIdRef = useRef<string | null>(null);
+  const pendingSaveRef = useRef<Message[] | null>(null);
   const [voiceModeEnabled, setVoiceModeEnabled] = useState(false);
   const pendingVoiceResponseRef = useRef(false);
   const playTTSRef = useRef<((text: string) => Promise<void>) | null>(null);
@@ -238,8 +240,9 @@ const Mirror = () => {
         setMessages((prev) => {
           const updated = [...prev, warningMsg];
           // Save warning message to DB immediately
-          if (conversationId) {
-            saveMessages(conversationId, updated.map(m => ({
+          const cId = conversationIdRef.current;
+          if (cId) {
+            saveMessages(cId, updated.map(m => ({
               role: m.role,
               content: m.content,
               timestamp: m.id
@@ -253,13 +256,14 @@ const Mirror = () => {
       if (remaining <= 0 && !sessionEnded) {
         setSessionEnded(true);
         if (currentSession) {
-          if (conversationId) {
-            const conversationMessages = messages.map(m => ({
+          const cId = conversationIdRef.current;
+          if (cId) {
+            const conversationMessages = messagesRef.current.map(m => ({
               role: m.role,
               content: m.content,
               timestamp: m.id
             }));
-            saveMessages(conversationId, conversationMessages);
+            saveMessages(cId, conversationMessages);
           }
           endSession(currentSession.id);
         }
@@ -275,6 +279,17 @@ const Mirror = () => {
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+
+  // Keep conversationIdRef in sync and flush any pending saves
+  useEffect(() => {
+    conversationIdRef.current = conversationId;
+    if (conversationId && pendingSaveRef.current) {
+      console.log("[Mirror] conversationId now available — flushing pending save");
+      const pending = pendingSaveRef.current;
+      pendingSaveRef.current = null;
+      saveMessagesToDb(pending);
+    }
+  }, [conversationId]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -292,7 +307,7 @@ const Mirror = () => {
     // If we're already past the 5-minute warning, just end immediately and stay on page
     if (showEndWarning) {
       setSessionEnded(true);
-      if (conversationId) {
+      if (conversationIdRef.current) {
         await saveMessagesToDb(messagesRef.current);
       }
       await endSession(currentSession.id);
@@ -333,7 +348,7 @@ const Mirror = () => {
       const finalMessages = [...messagesRef.current, wrapUpMessage];
       setMessages(finalMessages);
 
-      if (conversationId) {
+      if (conversationIdRef.current) {
         await saveMessagesToDb(finalMessages);
       }
 
@@ -352,13 +367,18 @@ const Mirror = () => {
 
   // Helper to save messages to the database incrementally
   const saveMessagesToDb = async (updatedMessages: Message[]) => {
-    if (!conversationId) return;
+    const cId = conversationIdRef.current;
+    if (!cId) {
+      console.warn("[Mirror] saveMessagesToDb called but conversationId not yet set — queuing save");
+      pendingSaveRef.current = updatedMessages;
+      return;
+    }
     const conversationMessages = updatedMessages.map(m => ({
       role: m.role,
       content: m.content,
       timestamp: m.id
     }));
-    await saveMessages(conversationId, conversationMessages);
+    await saveMessages(cId, conversationMessages);
   };
 
   const handleSend = async () => {
@@ -424,8 +444,8 @@ const Mirror = () => {
       // Handle END_SESSION flag — end the session after displaying the message
       if (response.data?.endSession && currentSession) {
         setSessionEnded(true);
-        if (conversationId) {
-          await saveMessages(conversationId, updatedWithAssistant.map(m => ({
+        if (conversationIdRef.current) {
+          await saveMessages(conversationIdRef.current, updatedWithAssistant.map(m => ({
             role: m.role,
             content: m.content,
             timestamp: m.id
