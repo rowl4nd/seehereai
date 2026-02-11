@@ -145,15 +145,17 @@ const Index = () => {
 
       <WaveDivider variant={1} fillColor="hsl(var(--sage-soft) / 0.4)" topColor="#ffedd5" />
 
-      {/* ── How It Works ── */}
-      <section className="relative pt-24 pb-12 px-6 md:px-10">
-        {/* Warm gradient background */}
+      {/* ── Combined Middle Section ── */}
+      <section className="relative py-24 px-6 md:px-10 overflow-hidden">
+        {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/40 via-accent/15 to-[#ffedd5]" />
 
-        {/* Subtle floating orb */}
+        {/* Decorative orbs */}
         <div className="absolute top-10 right-10 w-[200px] h-[200px] rounded-full bg-primary/5 blur-[60px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] rounded-full bg-sage-soft/30 blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 max-w-5xl mx-auto">
+          {/* SeeHere cards */}
           <ScrollSection>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">
               SeeHere
@@ -176,20 +178,10 @@ const Index = () => {
               </ScrollSection>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ── Features ── */}
-      <section className="relative pt-0 pb-24 px-6 md:px-10 overflow-hidden">
-        {/* Warm ambient background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-warm-cream/20 to-[#ffedd5]" />
-
-        {/* Decorative orb */}
-        <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] rounded-full bg-sage-soft/30 blur-[100px] pointer-events-none" />
-
-        <div className="relative z-10 max-w-5xl mx-auto">
+          {/* What you will get */}
           <ScrollSection>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4 mt-24">
               What you will get
             </h2>
             <p className="text-center text-muted-foreground mb-16 max-w-md mx-auto">
@@ -211,6 +203,7 @@ const Index = () => {
             ))}
           </div>
 
+          {/* CTA Button */}
           <ScrollSection>
             <div className="mt-12 text-center">
               <Link to="/auth">
@@ -223,33 +216,22 @@ const Index = () => {
               </Link>
             </div>
           </ScrollSection>
+
+          {/* Quote */}
+          <ScrollSection>
+            <div className="max-w-2xl mx-auto text-center space-y-8 mt-24">
+              <div className="flex justify-center">
+                <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+              </div>
+              <blockquote className="text-xl md:text-2xl font-serif italic text-foreground/80 leading-relaxed px-4">
+                "SeeHere is not therapy. It's a companion for reflection — a space to think out loud, at your own pace."
+              </blockquote>
+              <div className="flex justify-center">
+                <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+              </div>
+            </div>
+          </ScrollSection>
         </div>
-      </section>
-
-      <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.3)" topColor="#ffedd5" />
-
-      {/* ── Reassurance ── */}
-      <section className="relative py-24 px-6 md:px-10 overflow-hidden">
-        {/* Full warm gradient wash */}
-        <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/30 via-accent/20 to-[#ffedd5]" />
-
-        {/* Soft centred glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] rounded-full bg-primary/8 blur-[80px] pointer-events-none" />
-
-        <ScrollSection>
-          <div className="relative z-10 max-w-2xl mx-auto text-center space-y-8">
-            <div className="flex justify-center">
-              <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-            </div>
-            <blockquote className="text-xl md:text-2xl font-serif italic text-foreground/80 leading-relaxed px-4">
-              "SeeHere is not therapy. It's a companion for reflection — a space to think out loud, at your own pace."
-            </blockquote>
-
-            <div className="flex justify-center">
-              <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-            </div>
-          </div>
-        </ScrollSection>
       </section>
 
 
