@@ -259,18 +259,67 @@ const Mirror = () => {
   }, [messages]);
 
   const handleEndSession = async () => {
-    if (!sessionEnded && activeSession && user) {
+    if (sessionEnded) {
+      navigate("/cooldown");
+      return;
+    }
+
+    if (!activeSession || !user) return;
+
+    // If we're already past the 5-minute warning, just end immediately and stay on page
+    if (showEndWarning) {
+      setSessionEnded(true);
       if (conversationId) {
-        const conversationMessages = messages.map(m => ({
-          role: m.role,
-          content: m.content,
-          timestamp: m.id
-        }));
-        await saveMessages(conversationId, conversationMessages);
+        await saveMessagesToDb(messagesRef.current);
       }
       await endSession(activeSession.id);
+      return;
     }
-    navigate("/cooldown");
+
+    // Before the 5-minute warning: get AI wrap-up first
+    setSessionEnded(true); // Disable input immediately
+    setIsLoading(true);
+
+    try {
+      const messagesForAI = messagesRef.current.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
+      // Add early-end trigger as a user message for the AI
+      messagesForAI.push({
+        role: "user",
+        content: "[EARLY_END] The user has chosen to end the session early. Please provide a warm wrap-up.",
+      });
+
+      const response = await supabase.functions.invoke("chat", {
+        body: {
+          messages: messagesForAI,
+          pastConversations: pastConversations,
+          userName: profile?.display_name || undefined,
+          nameDeclined: profile?.name_declined || false,
+        },
+      });
+
+      const wrapUpMessage: Message = {
+        id: "wrapup-" + Date.now(),
+        role: "assistant",
+        content: response.data?.message || "Thank you for sharing with me today. Take care of yourself.",
+      };
+
+      const finalMessages = [...messagesRef.current, wrapUpMessage];
+      setMessages(finalMessages);
+
+      if (conversationId) {
+        await saveMessagesToDb(finalMessages);
+      }
+    } catch (error) {
+      console.error("Wrap-up error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+
+    await endSession(activeSession.id);
   };
 
   // Helper to save messages to the database incrementally
