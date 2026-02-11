@@ -74,6 +74,16 @@ const Index = () => {
   const { user, loading } = useAuth();
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background via-[hsl(var(--sage-soft)/0.15)] via-60% to-[hsl(var(--peach-soft))] overflow-x-hidden">
+      {/* Flowing background shapes */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-20 -left-32 w-[500px] h-[400px] rounded-[60%_40%_30%_70%/60%_30%_70%_40%] bg-[#cbb7ef]/15 blur-[100px] animate-[gentleFloat_20s_ease-in-out_infinite]" />
+        <div className="absolute top-[20%] -right-20 w-[450px] h-[350px] rounded-[40%_60%_70%_30%/40%_70%_30%_60%] bg-[#b1cfac]/15 blur-[90px]" />
+        <div className="absolute top-[40%] left-[10%] w-[400px] h-[400px] rounded-[50%_50%_40%_60%/60%_40%_50%_50%] bg-[#fae5da]/20 blur-[100px]" />
+        <div className="absolute top-[55%] right-[15%] w-[350px] h-[300px] rounded-[60%_40%_50%_50%/50%_60%_40%_50%] bg-[#cbb7ef]/12 blur-[110px] animate-[gentleFloat_25s_ease-in-out_infinite_reverse]" />
+        <div className="absolute top-[75%] -left-10 w-[500px] h-[350px] rounded-[40%_60%_60%_40%/50%_40%_60%_50%] bg-[#b1cfac]/12 blur-[100px]" />
+        <div className="absolute top-[90%] right-[5%] w-[400px] h-[400px] rounded-[50%_40%_60%_50%/40%_60%_50%_40%] bg-[#fae5da]/18 blur-[90px]" />
+      </div>
+
       {/* ── Header ── */}
       <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/60 backdrop-blur-md">
         <Logo />
@@ -101,20 +111,6 @@ const Index = () => {
       {/* ── Hero ── */}
       <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden pb-16">
 
-        {/* Large warm orb - top right */}
-        <div className="absolute -top-20 -right-32 w-[500px] h-[500px] md:w-[600px] md:h-[600px] rounded-full bg-sage-soft/30 blur-[120px] animate-pulse pointer-events-none" />
-
-        {/* Secondary orb - bottom left */}
-        <div
-          className="absolute -bottom-32 -left-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] rounded-full bg-accent/20 blur-[100px] pointer-events-none"
-          style={{
-            animationDuration: "4s",
-            animationName: "pulse",
-          }}
-        />
-
-        {/* Subtle warm orb - centre */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-warm-cream/25 blur-[80px] pointer-events-none" />
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in flex flex-col items-center">
           <img src={heroLogo} alt="see here" className="h-32 md:h-40 w-auto mb-2" />
@@ -145,9 +141,6 @@ const Index = () => {
 
       {/* ── Combined Middle Section ── */}
       <section className="relative py-24 px-6 md:px-10 overflow-hidden">
-        {/* Decorative orbs */}
-        <div className="absolute top-10 right-10 w-[200px] h-[200px] rounded-full bg-primary/5 blur-[60px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] rounded-full bg-sage-soft/20 blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 max-w-5xl mx-auto">
           {/* SeeHere cards */}
@@ -237,7 +230,7 @@ const Index = () => {
 
       <section id="faq" className="relative py-24 px-6 md:px-10 overflow-hidden">
         
-        <div className="absolute top-1/3 right-1/4 w-[250px] h-[250px] rounded-full bg-primary/3 blur-[80px] pointer-events-none" />
+        
 
         <ScrollSection>
           <div className="relative z-10 max-w-2xl mx-auto">
