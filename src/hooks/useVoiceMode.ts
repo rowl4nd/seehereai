@@ -94,6 +94,7 @@ export function useVoiceMode({ onTranscriptCommit, enabled }: UseVoiceModeOption
 
   // Called after AI responds — set back to listening
   const onResponseComplete = useCallback(() => {
+    console.log("[Voice] onResponseComplete called, enabled:", enabled, "voiceState:", voiceState);
     if (enabled && voiceState === "processing") {
       setVoiceState("listening");
     }
@@ -112,7 +113,7 @@ export function useVoiceMode({ onTranscriptCommit, enabled }: UseVoiceModeOption
         audioUrlRef.current = null;
       }
 
-      console.log("[TTS] Fetching audio for text:", text.substring(0, 60) + "...");
+      console.log("[TTS] playTTS called for text:", text.substring(0, 60) + "...");
 
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
