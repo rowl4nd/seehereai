@@ -25,7 +25,7 @@ export default {
   				'Noto Color Emoji'
   			],
   			serif: [
-  				'Libre Caslon Text',
+  				'Crimson Pro',
   				'ui-serif',
   				'Georgia',
   				'Cambria',
