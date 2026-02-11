@@ -1,27 +1,28 @@
 
-## Fix: Messages After 5-Minute Warning Not Saved
 
-### The Problem
+## Fix: Remove User UPDATE Policy on Credits Table
 
-When the 5-minute warning fires, the warning message is added to the screen but never saved to the database. Additionally, messages sent after the warning may not save correctly because `handleSend` captures a stale copy of the `messages` array (a React closure issue), so subsequent saves can overwrite or lose messages.
+### Problem
 
-### The Fix
+The `credits` table currently has an RLS policy called "Users can update own credits" that allows any authenticated user to directly modify their own credit balance via the API. This means a technically savvy customer could grant themselves unlimited credits by making direct API calls, bypassing the payment flow entirely.
 
-**Modified file: `src/pages/Mirror.tsx`**
+### Solution
 
-1. **Save the warning message to the database** -- After appending the warning message in the timer `useEffect`, call `saveMessagesToDb()` with the updated message list so the warning (and the full conversation up to that point) is persisted.
+1. **Remove the UPDATE policy** on the `credits` table so customers cannot modify their balance directly
+2. **Verify that all legitimate credit modifications already go through server-side functions** (edge functions using the service role key), which bypass RLS entirely
 
-2. **Fix stale closure in `handleSend`** -- Change `handleSend` to read from a `useRef` that always holds the latest messages, rather than relying on the `messages` state variable captured at render time. This ensures that when a user sends a message after the warning, the save includes all prior messages (including the warning).
+### Technical Details
 
-   Specifically:
-   - Add a `messagesRef` that syncs with `messages` via a `useEffect`
-   - In `handleSend`, build `updatedWithUser` from `messagesRef.current` instead of `messages`
-   - This guarantees the save always reflects the true current conversation
+**Database migration:**
+- Drop the policy `Users can update own credits` from the `credits` table
+- The `handle_new_user` trigger already creates credits server-side
+- The Stripe webhook edge function (which processes payments) uses the service role key, so it is unaffected by RLS and will continue to work
 
-### Why This Happened
+**No code changes needed** -- the frontend never calls `supabase.from("credits").update(...)` directly. Credit balance changes are handled by the `stripe-webhook` and `verify-payment` edge functions, which use the service role key.
 
-React state updates inside `setMessages((prev) => [...prev, newMsg])` update the state correctly for rendering, but other functions like `handleSend` still see the old `messages` value from when they were last rendered. So the warning message (and anything after it) gets "lost" from the database perspective even though it appears on screen.
+### What stays the same
 
-### Files Changed
+- Users can still **read** their own credit balance (SELECT policy remains)
+- Users can still **insert** their own credits row (INSERT policy remains, used by the signup trigger)
+- Server-side functions continue to modify credits using the service role key, which bypasses RLS
 
-- `src/pages/Mirror.tsx` -- two targeted fixes as described above
