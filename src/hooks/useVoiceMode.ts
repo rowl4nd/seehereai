@@ -4,6 +4,24 @@ import { supabase } from "@/integrations/supabase/client";
 
 type VoiceState = "off" | "listening" | "processing";
 
+/** Play a silent buffer to unlock audio playback for the page (must be called from a user gesture) */
+function unlockAudio() {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const buffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+    source.start(0);
+    // Also create + play a silent HTML Audio element to cover all browser engines
+    const silentAudio = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=");
+    silentAudio.play().catch(() => {});
+    console.log("[Audio] Unlocked audio playback via user gesture");
+  } catch (e) {
+    console.warn("[Audio] Failed to unlock audio:", e);
+  }
+}
+
 interface UseVoiceModeOptions {
   onTranscriptCommit: (text: string) => void;
   enabled: boolean;
@@ -32,6 +50,9 @@ export function useVoiceMode({ onTranscriptCommit, enabled }: UseVoiceModeOption
 
   const startListening = useCallback(async () => {
     try {
+      // Unlock audio playback while we're still in user gesture context
+      unlockAudio();
+
       // Request mic permission
       await navigator.mediaDevices.getUserMedia({ audio: true });
 
