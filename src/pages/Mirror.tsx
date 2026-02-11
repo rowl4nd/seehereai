@@ -43,6 +43,8 @@ const Mirror = () => {
   const messagesRef = useRef<Message[]>([]);
   const [voiceModeEnabled, setVoiceModeEnabled] = useState(false);
   const pendingVoiceResponseRef = useRef(false);
+  const playTTSRef = useRef<((text: string) => Promise<void>) | null>(null);
+  const voiceModeEnabledRef = useRef(false);
 
   // Build personalised greeting based on profile state
   const getGreeting = () => {
@@ -504,9 +506,11 @@ const Mirror = () => {
       setMessages(updatedWithAssistant);
       saveMessagesToDb(updatedWithAssistant);
 
-      // Play TTS for the response
-      if (voiceModeEnabled) {
-        voiceMode.playTTS(assistantText);
+      // Play TTS for the response via ref (avoids stale closure)
+      console.log("[Voice] voiceModeEnabledRef:", voiceModeEnabledRef.current, "playTTSRef:", !!playTTSRef.current);
+      if (voiceModeEnabledRef.current && playTTSRef.current) {
+        console.log("[Voice] Calling playTTS for assistant response");
+        playTTSRef.current(assistantText);
       }
 
       if (response.data?.endSession && currentSession) {
@@ -526,16 +530,17 @@ const Mirror = () => {
     } finally {
       setIsLoading(false);
       pendingVoiceResponseRef.current = false;
-      if (voiceModeEnabled) {
-        voiceMode.setVoiceState("listening");
-      }
     }
-  }, [isLoading, sessionEnded, showEndWarning, pastConversations, profile, currentSession, voiceModeEnabled]);
+  }, [isLoading, sessionEnded, showEndWarning, pastConversations, profile, currentSession]);
 
   const voiceMode = useVoiceMode({
     onTranscriptCommit: sendMessageFromVoice,
     enabled: voiceModeEnabled,
   });
+
+  // Keep refs in sync so sendMessageFromVoice (defined before voiceMode) always sees current values
+  playTTSRef.current = voiceMode.playTTS;
+  voiceModeEnabledRef.current = voiceModeEnabled;
 
   const handleVoiceToggle = async () => {
     if (sessionEnded) return;
