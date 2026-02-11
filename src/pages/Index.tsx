@@ -210,6 +210,19 @@ const Index = () => {
               </ScrollSection>
             ))}
           </div>
+
+          <ScrollSection>
+            <div className="mt-12 text-center">
+              <Link to="/auth">
+                <Button
+                  size="lg"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                >
+                  When you're ready, let's talk
+                </Button>
+              </Link>
+            </div>
+          </ScrollSection>
         </div>
       </section>
 
@@ -239,29 +252,8 @@ const Index = () => {
         </ScrollSection>
       </section>
 
-      <WaveDivider variant={1} fillColor="hsl(var(--background))" flip />
 
-      {/* ── Final CTA ── */}
-      <section className="relative py-28 px-6 md:px-10 overflow-hidden">
-        {/* Warm gradient that draws the eye */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-[#ffedd5]" />
 
-        {/* Gentle glow behind button */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[300px] h-[200px] rounded-full bg-primary/10 blur-[60px] pointer-events-none" />
-
-        <ScrollSection>
-          <div className="relative z-10 max-w-md mx-auto text-center space-y-6">
-            <Link to="/auth">
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-              >
-                When you're ready, let's talk
-              </Button>
-            </Link>
-          </div>
-        </ScrollSection>
-      </section>
 
       {/* ── FAQ ── */}
       <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.25)" />
