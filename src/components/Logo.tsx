@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/see-here-header-logo.png";
+import logo from "@/assets/see-here-header-logo-new.png";
 
 interface LogoProps {
   to?: string;
