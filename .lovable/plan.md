@@ -1,53 +1,83 @@
 
 
-## Add Flowing Background Shapes
+## Full Voice Conversation Mode for Mirror Sessions
 
-### What we'll do
-Add soft, organic SVG shapes that float behind the content throughout the page. These will use the three specified colours (#cbb7ef lavender, #b1cfac sage green, #fae5da warm peach) as large, blurred, semi-transparent blobs positioned at different points down the page. They'll feel like gentle watercolour washes drifting behind the text.
+### Overview
+Add a voice conversation mode to the Mirror page where users can speak naturally and hear the AI respond with a warm, natural voice. This layers speech-to-text and text-to-speech on top of the existing chat infrastructure, preserving all current logic (crisis detection, session management, name detection, encrypted message storage).
 
-### Approach
-Create a dedicated background layer (a single absolute-positioned div spanning the full page height) containing 5-7 organic SVG blob shapes. Each blob will:
-- Use one of the three colours at low opacity (10-20%)
-- Have a large blur filter applied (80-120px)
-- Be positioned at staggered vertical and horizontal positions so they create gentle colour shifts as you scroll
-- Use soft, irregular border-radius values to look organic rather than circular
-- A couple will have a very slow, subtle CSS animation (gentle floating/drifting) to add life without distraction
+### How it works
 
-### Technical detail
+1. User taps a microphone button to start speaking
+2. Their speech is transcribed to text (ElevenLabs Realtime STT)
+3. The transcribed text is sent through the existing `chat` edge function (preserving all system prompt logic)
+4. The AI's text response is converted to speech (ElevenLabs TTS) and played back
+5. Both sides of the conversation still appear as text bubbles in the chat, so there's a visual record and messages are saved/encrypted as before
 
-**File: `src/pages/Index.tsx`**
+The user can toggle between voice mode and text mode at any time during the session.
 
-Add a background shapes container immediately inside the root div, before the header:
+### Architecture
 
-```tsx
-{/* Flowing background shapes */}
-<div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-  <div className="absolute -top-20 -left-32 w-[500px] h-[400px] rounded-[60%_40%_30%_70%/60%_30%_70%_40%] bg-[#cbb7ef]/15 blur-[100px]" />
-  <div className="absolute top-[20%] -right-20 w-[450px] h-[350px] rounded-[40%_60%_70%_30%/40%_70%_30%_60%] bg-[#b1cfac]/15 blur-[90px]" />
-  <div className="absolute top-[40%] left-[10%] w-[400px] h-[400px] rounded-[50%_50%_40%_60%/60%_40%_50%_50%] bg-[#fae5da]/20 blur-[100px]" />
-  <div className="absolute top-[55%] right-[15%] w-[350px] h-[300px] rounded-[60%_40%_50%_50%/50%_60%_40%_50%] bg-[#cbb7ef]/12 blur-[110px]" />
-  <div className="absolute top-[75%] -left-10 w-[500px] h-[350px] rounded-[40%_60%_60%_40%/50%_40%_60%_50%] bg-[#b1cfac]/12 blur-[100px]" />
-  <div className="absolute top-[90%] right-[5%] w-[400px] h-[400px] rounded-[50%_40%_60%_50%/40%_60%_50%_40%] bg-[#fae5da]/18 blur-[90px]" />
-</div>
+```text
+User speaks
+   |
+   v
+ElevenLabs Realtime STT (via useScribe hook)
+   |
+   v
+Transcribed text --> existing chat edge function --> AI text response
+   |                                                       |
+   v                                                       v
+Displayed as user                              ElevenLabs TTS edge function
+message bubble                                         |
+                                                       v
+                                              Audio played + displayed
+                                              as assistant message bubble
 ```
 
-- All existing content elements get `relative z-10` (most already have this) so they sit above the shapes.
-- Remove or reduce the existing decorative orbs inside individual sections since these new page-level shapes replace them, keeping the design clean rather than doubling up on background effects.
-- The `fixed inset-0` positioning means the shapes stay in place as you scroll, creating a parallax-like depth effect where content glides over the soft colour washes.
+### What gets built
 
-**File: `src/index.css`**
+**1. New edge function: `elevenlabs-scribe-token`**
+- Generates a single-use token for realtime speech-to-text
+- Calls `https://api.elevenlabs.io/v1/single-use-token/realtime_scribe`
+- Uses the `ELEVENLABS_API_KEY` secret (already configured)
 
-Add a gentle floating animation for optional use on 1-2 of the blobs:
+**2. New edge function: `elevenlabs-tts`**
+- Converts AI response text to speech audio
+- Calls `https://api.elevenlabs.io/v1/text-to-speech/{voiceId}`
+- Uses a warm, calm voice (e.g. "Laura" or "Lily" -- both have gentle, warm qualities that suit a listening companion)
+- Returns audio as binary MP3
 
-```css
-@keyframes gentleFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(15px, -20px) scale(1.03); }
-}
-```
+**3. Updated Mirror page (`src/pages/Mirror.tsx`)**
+- Install `@elevenlabs/react` for the `useScribe` hook
+- Add a microphone toggle button next to the Send button
+- When voice mode is active:
+  - The text input area shows a visual indicator (pulsing mic icon, live transcript preview)
+  - When the user pauses speaking (VAD commit), the transcript is automatically sent as a message
+  - After the AI responds, the response is played as audio via the TTS edge function
+  - Messages still appear as text bubbles and are saved to the database as normal
+- When voice mode is off: everything works exactly as it does today
 
-Two of the blobs will use `animate-[gentleFloat_20s_ease-in-out_infinite]` to add very slow, barely perceptible movement.
+**4. Voice indicator UI**
+- Mic button with three states: off (default), listening (pulsing animation), processing (loading)
+- Optional: small waveform or pulsing ring around the mic when actively listening
+- The Send button is hidden when voice mode is active (messages send automatically on pause)
 
-### Result
-The page will have a watercolour-like quality with soft lavender, sage, and peach washes floating behind the content. The shapes are large enough to feel atmospheric but transparent and blurred enough to stay well in the background. The overall effect is gentle, organic, and calming -- adding visual richness without competing with the content.
+### Voice selection
+Use "Lily" voice (`pFZP5JQG7iQjIQuC4Bku`) -- a gentle, warm female voice that suits the therapeutic companion tone. This can be changed later.
 
+### Technical considerations
+- Audio playback uses `fetch()` with `.blob()` for binary audio (not `supabase.functions.invoke` which corrupts binary data)
+- The `useScribe` hook with `commitStrategy: "vad"` automatically detects pauses in speech
+- Microphone permission is requested with a clear explanation before enabling voice mode
+- Voice mode state is not persisted -- defaults to text mode on page load
+- The existing message encryption, session timer, wrap-up logic, and crisis detection all continue to work unchanged since voice input is converted to text before hitting the chat function
+
+### User experience flow
+1. Session starts in text mode (as today)
+2. User taps the mic icon next to the input area
+3. Browser requests microphone permission (with explanation if first time)
+4. Input area transforms to show "Listening..." with a visual indicator
+5. User speaks naturally; live partial transcript appears
+6. When user pauses, transcript is sent automatically
+7. AI responds: text bubble appears AND audio plays simultaneously
+8. User can tap mic icon again to return to text mode at any time
