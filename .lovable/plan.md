@@ -1,44 +1,28 @@
 
-## Consolidate Middle Sections into One
 
-Currently the homepage has these separate sections between hero and FAQ:
-1. "SeeHere" cards section (lines 148-180)
-2. "What you will get" features section with CTA button (lines 182-227)
-3. WaveDivider (line 229)
-4. Reassurance/quote section (lines 231-253)
+## Fix: "End Session" Button Silently Failing
 
-### What changes
+### Root Cause
 
-**Merge everything into a single `<section>`** containing:
-- "SeeHere" heading + subtitle + 4 cards
-- "What you will get" heading + subtitle + 3 feature cards
-- "When you're ready" CTA button
-- Quote/blockquote with decorative lines
+The Mirror page creates new sessions using a direct database call (`supabase.rpc('start_paid_session')`), but the "End session" button relies on `activeSession` from the `useSessions` hook. Since `useSessions` only fetches session data once when the component mounts, `activeSession` remains `null` for newly created sessions. The button's handler silently returns at the guard check `if (!activeSession) return`.
 
-**Remove:**
-- The separate Features section element (lines 182-227)
-- The WaveDivider between features and quote (line 229)
-- The separate Reassurance section element (lines 231-253)
+This is why it works for **resumed** sessions (the session existed before the page loaded) but fails for **new** sessions.
 
-**Result:** Only one `<section>` wraps all this content, with a single background gradient and decorative orbs. The flow goes: SeeHere cards, then "What you will get" cards, then CTA button, then quote -- all inside one continuous section.
+### Fix
 
-The page structure becomes:
-- Header
-- Hero section
-- WaveDivider
-- **Combined middle section** (SeeHere cards + features + button + quote)
-- WaveDivider
-- FAQ section
-- WaveDivider
-- Footer
+**File: `src/pages/Mirror.tsx`**
 
-### Technical details
+1. Track the current session locally in Mirror using a `currentSessionRef` (or state variable) that gets set when a session is created via RPC or resumed from `activeSession`.
 
-**File:** `src/pages/Index.tsx`
+2. Update `handleEndSession` to use this local session reference instead of relying solely on `activeSession` from useSessions.
 
-- Remove the closing `</section>` at line 180 and the opening `<section>` at line 183, merging them into one block
-- Remove the WaveDivider at line 229
-- Remove the `<section>` wrapper around the Reassurance quote (lines 232-253), keeping only the inner quote content
-- Move the quote content (blockquote with decorative lines) inside the same `<div className="relative z-10 max-w-5xl mx-auto">` container, after the CTA button
-- Use a single background gradient that covers the full merged section
-- Keep decorative orbs but consolidate to avoid overlap
+3. Call `endSession()` from useSessions with the locally-tracked session ID, or fall back to a direct database update if `activeSession` is still null.
+
+### Technical Detail
+
+- Add a `useRef` or `useState` for `localSession` that stores `{ id, session_type, started_at }` when the session is created (line 169) or resumed (line 88-134).
+- Replace `activeSession` references in `handleEndSession` (lines 261-323) and in the timer effect (lines 196-249) with the local session reference.
+- This ensures the button always has a valid session ID regardless of whether `useSessions` has caught up.
+
+Additionally, increase the button's touch target size on mobile by changing from `size="sm"` and `text-xs` to provide at least 44px of tappable height, ensuring reliability on touch devices.
+
