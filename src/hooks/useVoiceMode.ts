@@ -79,18 +79,20 @@ export function useVoiceMode({ onTranscriptCommit, enabled }: UseVoiceModeOption
   }, [enabled, voiceState]);
 
   const playTTS = useCallback(async (text: string) => {
+    // Create Audio element IMMEDIATELY to preserve user gesture context
+    const audio = new Audio();
+    audio.preload = "auto";
+    audioRef.current = audio;
+
     try {
-      // Stop any currently playing audio
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
+      // Stop any previously playing audio URL
       if (audioUrlRef.current) {
         URL.revokeObjectURL(audioUrlRef.current);
         audioUrlRef.current = null;
       }
 
-      // Use fetch() for binary audio (not supabase.functions.invoke)
+      console.log("[TTS] Fetching audio for text:", text.substring(0, 60) + "...");
+
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
         {
@@ -104,6 +106,8 @@ export function useVoiceMode({ onTranscriptCommit, enabled }: UseVoiceModeOption
         }
       );
 
+      console.log("[TTS] Response status:", response.status);
+
       if (!response.ok) {
         throw new Error(`TTS request failed: ${response.status}`);
       }
@@ -112,9 +116,8 @@ export function useVoiceMode({ onTranscriptCommit, enabled }: UseVoiceModeOption
       const audioUrl = URL.createObjectURL(audioBlob);
       audioUrlRef.current = audioUrl;
 
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
+      // Set source on the pre-created element and play
+      audio.src = audioUrl;
       audio.onended = () => {
         URL.revokeObjectURL(audioUrl);
         audioRef.current = null;
@@ -124,7 +127,7 @@ export function useVoiceMode({ onTranscriptCommit, enabled }: UseVoiceModeOption
 
       await audio.play();
     } catch (err) {
-      console.error("TTS playback error:", err);
+      console.error("[TTS] Playback error:", err);
       onResponseComplete();
     }
   }, [onResponseComplete]);
