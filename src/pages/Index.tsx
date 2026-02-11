@@ -143,7 +143,7 @@ const Index = () => {
         </div>
       </section>
 
-      <WaveDivider variant={1} fillColor="hsl(var(--sage-soft) / 0.4)" />
+      <WaveDivider variant={1} fillColor="hsl(var(--sage-soft) / 0.4)" topColor="#ffedd5" />
 
       {/* ── How It Works ── */}
       <section className="relative pt-24 pb-12 px-6 md:px-10">
@@ -226,7 +226,7 @@ const Index = () => {
         </div>
       </section>
 
-      <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.3)" />
+      <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.3)" topColor="#ffedd5" />
 
       {/* ── Reassurance ── */}
       <section className="relative py-24 px-6 md:px-10 overflow-hidden">
@@ -256,7 +256,7 @@ const Index = () => {
 
 
       {/* ── FAQ ── */}
-      <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.25)" />
+      <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.25)" topColor="#ffedd5" />
 
       <section id="faq" className="relative py-24 px-6 md:px-10 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/25 via-accent/15 to-[#ffedd5]" />
@@ -322,7 +322,7 @@ const Index = () => {
       </section>
 
       {/* ── Footer ── */}
-      <WaveDivider variant={2} fillColor="hsl(var(--sage-soft) / 0.2)" />
+      <WaveDivider variant={2} fillColor="hsl(var(--sage-soft) / 0.2)" topColor="#ffedd5" />
 
       <footer className="relative py-8 px-6 text-center">
         <div className="absolute inset-0 bg-gradient-to-t from-sage-soft/20 to-transparent" />
