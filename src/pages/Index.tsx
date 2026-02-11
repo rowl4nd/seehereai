@@ -29,21 +29,26 @@ const ScrollSection = ({
     </div>
   );
 };
-const steps = [
+const cards = [
   {
     icon: MessageCircle,
-    title: "Share what's on your mind",
-    description: "A safe space with no judgment. Say as much or as little as you like.",
+    title: "To talk",
+    description: "A space to say what's on your mind — openly, freely, and without limits.",
   },
   {
     icon: Sparkles,
-    title: "Receive thoughtful reflections",
-    description: "Responses informed by psychology, designed to help you feel heard.",
+    title: "To be heard",
+    description: "Every word matters here. You'll be met with presence and genuine attention.",
   },
   {
     icon: Compass,
-    title: "Build self-awareness",
-    description: "Gently explore your emotions, patterns, and beliefs — at your own pace.",
+    title: "To be understood",
+    description: "Empathic reflections that help you make sense of what you're feeling.",
+  },
+  {
+    icon: Heart,
+    title: "Not to be judged",
+    description: "Complete acceptance. No criticism, no agenda — just warmth and safety.",
   },
 ];
 const features = [
@@ -141,7 +146,7 @@ const Index = () => {
       <WaveDivider variant={1} fillColor="hsl(var(--sage-soft) / 0.4)" />
 
       {/* ── How It Works ── */}
-      <section className="relative py-24 px-6 md:px-10">
+      <section className="relative pt-24 pb-12 px-6 md:px-10">
         {/* Warm gradient background */}
         <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/40 via-accent/15 to-[#ffedd5]" />
 
@@ -151,23 +156,22 @@ const Index = () => {
         <div className="relative z-10 max-w-5xl mx-auto">
           <ScrollSection>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">
-              How SeeHere works
+              SeeHere
             </h2>
             <p className="text-center text-muted-foreground mb-16 max-w-md mx-auto">
-              Three simple steps to a calmer mind
+              Is a private space...
             </p>
           </ScrollSection>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {steps.map((step, i) => (
-              <ScrollSection key={step.title} delay={i * 120}>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {cards.map((card, i) => (
+              <ScrollSection key={card.title} delay={i * 120}>
                 <div className="group flex flex-col items-center text-center p-8 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/20 shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-1 transition-all duration-300">
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-accent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <step.icon className="w-6 h-6 text-primary" />
+                    <card.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <span className="text-xs font-mono text-primary/60 mb-3 tracking-wider">0{i + 1}</span>
-                  <h3 className="text-lg font-serif font-medium text-foreground mb-3">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                  <h3 className="text-lg font-serif font-medium text-foreground mb-3">{card.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{card.description}</p>
                 </div>
               </ScrollSection>
             ))}
@@ -175,10 +179,8 @@ const Index = () => {
         </div>
       </section>
 
-      <WaveDivider variant={2} fillColor="hsl(var(--background))" flip />
-
       {/* ── Features ── */}
-      <section className="relative py-24 px-6 md:px-10 overflow-hidden">
+      <section className="relative pt-0 pb-24 px-6 md:px-10 overflow-hidden">
         {/* Warm ambient background */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-warm-cream/20 to-[#ffedd5]" />
 
@@ -188,7 +190,7 @@ const Index = () => {
         <div className="relative z-10 max-w-5xl mx-auto">
           <ScrollSection>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">
-              What this space offers
+              What you will get
             </h2>
             <p className="text-center text-muted-foreground mb-16 max-w-md mx-auto">
               Warmth, understanding, and room to breathe
