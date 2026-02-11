@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
+import { useVoiceMode } from "@/hooks/useVoiceMode";
+import { Mic, MicOff, Loader2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -39,6 +41,8 @@ const Mirror = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initRef = useRef(false);
   const messagesRef = useRef<Message[]>([]);
+  const [voiceModeEnabled, setVoiceModeEnabled] = useState(false);
+  const pendingVoiceResponseRef = useRef(false);
 
   // Build personalised greeting based on profile state
   const getGreeting = () => {
@@ -434,6 +438,117 @@ const Mirror = () => {
     }
   };
 
+  // Voice mode: send transcribed text as a message
+  const sendMessageFromVoice = useCallback(async (text: string) => {
+    if (!text.trim() || isLoading || sessionEnded) return;
+
+    pendingVoiceResponseRef.current = true;
+
+    const userMessage: Message = {
+      id: "user-" + Date.now(),
+      role: "user",
+      content: text.trim(),
+    };
+
+    const updatedWithUser = [...messagesRef.current, userMessage];
+    setMessages(updatedWithUser);
+    setIsLoading(true);
+    saveMessagesToDb(updatedWithUser);
+
+    try {
+      const messagesForAI = updatedWithUser.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
+      if (showEndWarning && messagesForAI.length > 0) {
+        const lastMsg = messagesForAI[messagesForAI.length - 1];
+        lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
+      }
+
+      const response = await supabase.functions.invoke("chat", {
+        body: {
+          messages: messagesForAI,
+          pastConversations: pastConversations,
+          userName: profile?.display_name || undefined,
+          nameDeclined: profile?.name_declined || false,
+        },
+      });
+
+      if (response.data?.detectedName && !profile?.display_name) {
+        updateProfile({ display_name: response.data.detectedName, name_declined: false });
+      }
+      if (response.data?.nameDeclined && !profile?.name_declined) {
+        updateProfile({ name_declined: true });
+      }
+
+      const assistantText = response.data?.message || "I hear you. Tell me more when you're ready.";
+      const assistantMessage: Message = {
+        id: "assistant-" + Date.now(),
+        role: "assistant",
+        content: assistantText,
+      };
+
+      const updatedWithAssistant = [...updatedWithUser, assistantMessage];
+      setMessages(updatedWithAssistant);
+      saveMessagesToDb(updatedWithAssistant);
+
+      // Play TTS for the response
+      if (voiceModeEnabled) {
+        voiceMode.playTTS(assistantText);
+      }
+
+      if (response.data?.endSession && currentSession) {
+        setSessionEnded(true);
+        await endSession(currentSession.id);
+      }
+    } catch (error) {
+      console.error("Chat error:", error);
+      const errorMessage: Message = {
+        id: "error-" + Date.now(),
+        role: "assistant",
+        content: "I'm having trouble connecting right now. Please try again in a moment.",
+      };
+      const updatedWithError = [...updatedWithUser, errorMessage];
+      setMessages(updatedWithError);
+      saveMessagesToDb(updatedWithError);
+    } finally {
+      setIsLoading(false);
+      pendingVoiceResponseRef.current = false;
+      if (voiceModeEnabled) {
+        voiceMode.setVoiceState("listening");
+      }
+    }
+  }, [isLoading, sessionEnded, showEndWarning, pastConversations, profile, currentSession, voiceModeEnabled]);
+
+  const voiceMode = useVoiceMode({
+    onTranscriptCommit: sendMessageFromVoice,
+    enabled: voiceModeEnabled,
+  });
+
+  const handleVoiceToggle = async () => {
+    if (sessionEnded) return;
+    try {
+      if (voiceModeEnabled) {
+        voiceMode.cleanup();
+        setVoiceModeEnabled(false);
+      } else {
+        setVoiceModeEnabled(true);
+        await voiceMode.toggleVoice();
+      }
+    } catch {
+      setVoiceModeEnabled(false);
+      toast.error("Could not access microphone. Please allow microphone access and try again.");
+    }
+  };
+
+  // Cleanup voice mode on unmount
+  useEffect(() => {
+    return () => {
+      voiceMode.cleanup();
+    };
+  }, []);
+
   // Format time remaining
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -528,24 +643,60 @@ const Mirror = () => {
         
         {/* Input area */}
         <div className="p-4 md:p-6">
-          <div className="max-w-2xl mx-auto flex gap-3">
-            <Textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Share what's on your mind..."
-              className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50"
-              disabled={isLoading || sessionEnded}
-              autoFocus
-            />
+          <div className="max-w-2xl mx-auto flex gap-3 items-end">
+            {voiceModeEnabled ? (
+              <div className="flex-1 min-h-[48px] flex items-center px-4 py-3 rounded-md bg-card border border-border/50">
+                {voiceMode.voiceState === "listening" && (
+                  <div className="flex items-center gap-2 text-primary">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {voiceMode.partialText || "Listening..."}
+                    </span>
+                  </div>
+                )}
+                {voiceMode.voiceState === "processing" && (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-sm">Processing...</span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Share what's on your mind..."
+                className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50"
+                disabled={isLoading || sessionEnded}
+                autoFocus
+              />
+            )}
+            {/* Mic toggle */}
             <Button
-              onClick={handleSend}
-              disabled={!input.trim() || isLoading || sessionEnded}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground self-end"
+              variant={voiceModeEnabled ? "default" : "outline"}
+              size="icon"
+              onClick={handleVoiceToggle}
+              disabled={sessionEnded}
+              className={`shrink-0 ${voiceModeEnabled ? "bg-primary text-primary-foreground" : ""}`}
+              title={voiceModeEnabled ? "Switch to text mode" : "Switch to voice mode"}
             >
-              Send
+              {voiceModeEnabled ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
             </Button>
+            {/* Send button - only in text mode */}
+            {!voiceModeEnabled && (
+              <Button
+                onClick={handleSend}
+                disabled={!input.trim() || isLoading || sessionEnded}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                Send
+              </Button>
+            )}
           </div>
         </div>
       </footer>
