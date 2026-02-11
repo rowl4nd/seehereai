@@ -336,6 +336,11 @@ const Mirror = () => {
       if (conversationId) {
         await saveMessagesToDb(finalMessages);
       }
+
+      // Play wrap-up through voice if voice mode is active
+      if (voiceModeEnabledRef.current && playTTSRef.current) {
+        playTTSRef.current(wrapUpMessage.content);
+      }
     } catch (error) {
       console.error("Wrap-up error:", error);
     } finally {
