@@ -1,48 +1,27 @@
 
-## Early "End Session" with Wrap-Up and Read-Only State
 
-### What will change
+## Update "How SeeHere Works" and "What This Space Offers" Sections
 
-When a user presses "End session" before the timer runs out, the app will behave differently depending on whether the 5-minute warning has already been shown:
+### Changes
 
-1. **Before the 5-minute warning**: The chatbot will send one final wrap-up message summarising the conversation, then the session ends. The user stays on the page in read-only mode with a "Return to Dashboard" button.
+**1. "How SeeHere Works" section becomes "SeeHere"**
+- Title changes from "How SeeHere works" to "SeeHere"
+- Subtitle changes from "Three simple steps to a calmer mind" to "Is a private space..."
+- Replace the 3 step cards with 4 new cards:
+  - **To talk** -- a relevant explanation about having a space to express yourself
+  - **To be heard** -- a relevant explanation about being listened to
+  - **To be understood** -- a relevant explanation about receiving empathic understanding
+  - **Not to be judged** -- a relevant explanation about freedom from judgement
+- Grid changes from `md:grid-cols-3` to `md:grid-cols-2 lg:grid-cols-4`
+- Remove the step numbering (the "01", "02", "03" indicators)
 
-2. **After the 5-minute warning** (or if the session just expires): The session ends immediately (the AI is already in wrap-up mode). The user stays on the page in read-only mode with a "Return to Dashboard" button.
+**2. "What this space offers" becomes "What you will get"**
+- Title text changes from "What this space offers" to "What you will get"
 
-In both cases the user can scroll back and read the full conversation before choosing to leave.
+**3. Remove gap between the two sections**
+- Remove the `WaveDivider` component that sits between these two sections
+- Remove bottom padding from the first section and top padding from the second section (or merge them visually) so they flow directly into each other with no visible gap
 
-### Technical Details
+### Files modified
+- `src/pages/Index.tsx` -- all changes are in this single file
 
-**File: `src/pages/Mirror.tsx`**
-
-Modify `handleEndSession`:
-
-- If `showEndWarning` is false (before the 5-minute mark):
-  1. Disable the input immediately (set `sessionEnded = true`).
-  2. Show a loading indicator while the AI generates its wrap-up.
-  3. Send a final request to the `chat` edge function with a `[EARLY_END]` prefix on a system-like message, prompting the AI to summarise the session.
-  4. Display the AI's wrap-up response as the final message.
-  5. Save all messages to the database.
-  6. Call `endSession()` to close the session server-side.
-  7. Button changes to "Return to Dashboard".
-
-- If `showEndWarning` is true (already past the 5-minute mark):
-  1. Set `sessionEnded = true`.
-  2. Save messages and call `endSession()`.
-  3. Button changes to "Return to Dashboard".
-  4. User stays on the page (no navigation).
-
-**File: `supabase/functions/chat/index.ts`**
-
-Add handling in the system prompt for `[EARLY_END]`:
-
-- Add a new section to the system prompt: when the AI receives a message starting with `[EARLY_END]`, it should provide a brief, warm wrap-up of the conversation themes discussed, similar to the 5-minute warning wrap-up mode but as a single closing message.
-
-### Summary of behaviour changes
-
-| Scenario | Current behaviour | New behaviour |
-|---|---|---|
-| User presses "End session" before 5-min warning | Navigates to cooldown immediately | AI sends wrap-up message, user stays on page in read-only mode |
-| User presses "End session" after 5-min warning | Navigates to cooldown immediately | Session ends, user stays on page in read-only mode |
-| Timer expires naturally | User stays on page (already implemented) | No change |
-| "Return to Dashboard" button | Shown when timer expires | Also shown after early end |
