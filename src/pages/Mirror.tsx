@@ -34,6 +34,7 @@ const Mirror = () => {
   const [sessionEnded, setSessionEnded] = useState(false);
   const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [localSession, setLocalSession] = useState<{ id: string; session_type: string; started_at: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initRef = useRef(false);
@@ -50,8 +51,11 @@ const Mirror = () => {
     return "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?";
   };
 
+  // Use localSession as the source of truth, falling back to activeSession from hook
+  const currentSession = localSession || activeSession;
+
   // Determine session duration (25 min free, 45 min paid)
-  const sessionDuration = activeSession?.session_type === "paid" ? 45 * 60 : 25 * 60;
+  const sessionDuration = currentSession?.session_type === "paid" ? 45 * 60 : 25 * 60;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -86,6 +90,7 @@ const Mirror = () => {
     const initOrResumeSession = async () => {
       // If there's already an active session, try to resume it
       if (activeSession) {
+        setLocalSession({ id: activeSession.id, session_type: activeSession.session_type, started_at: activeSession.started_at });
         const startTime = new Date(activeSession.started_at).getTime();
         const duration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
         const endTime = startTime + duration * 1000;
@@ -167,6 +172,7 @@ const Mirror = () => {
       }
 
       const session = { id: result.session_id, session_type: sessionType, started_at: new Date().toISOString(), is_active: true };
+      setLocalSession({ id: session.id, session_type: session.session_type, started_at: session.started_at });
 
       if (sessionType === "free" && profile) {
         await updateProfile({ free_sessions_used: (profile.free_sessions_used || 0) + 1 });
@@ -194,9 +200,9 @@ const Mirror = () => {
 
   // Timer countdown
   useEffect(() => {
-    if (!activeSession) return;
+    if (!currentSession) return;
 
-    const startTime = new Date(activeSession.started_at).getTime();
+    const startTime = new Date(currentSession.started_at).getTime();
     const endTime = startTime + sessionDuration * 1000;
 
     const updateTimer = () => {
@@ -229,7 +235,7 @@ const Mirror = () => {
       // End session when timer hits 0 — stay on page
       if (remaining <= 0 && !sessionEnded) {
         setSessionEnded(true);
-        if (activeSession) {
+        if (currentSession) {
           if (conversationId) {
             const conversationMessages = messages.map(m => ({
               role: m.role,
@@ -238,7 +244,7 @@ const Mirror = () => {
             }));
             saveMessages(conversationId, conversationMessages);
           }
-          endSession(activeSession.id);
+          endSession(currentSession.id);
         }
       }
     };
@@ -246,7 +252,7 @@ const Mirror = () => {
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
-  }, [activeSession, sessionDuration, showEndWarning]);
+  }, [currentSession, sessionDuration, showEndWarning]);
 
   // Keep messagesRef in sync with state
   useEffect(() => {
@@ -264,7 +270,7 @@ const Mirror = () => {
       return;
     }
 
-    if (!activeSession || !user) return;
+    if (!currentSession || !user) return;
 
     // If we're already past the 5-minute warning, just end immediately and stay on page
     if (showEndWarning) {
@@ -272,7 +278,7 @@ const Mirror = () => {
       if (conversationId) {
         await saveMessagesToDb(messagesRef.current);
       }
-      await endSession(activeSession.id);
+      await endSession(currentSession.id);
       return;
     }
 
@@ -319,7 +325,7 @@ const Mirror = () => {
       setIsLoading(false);
     }
 
-    await endSession(activeSession.id);
+    await endSession(currentSession.id);
   };
 
   // Helper to save messages to the database incrementally
@@ -394,7 +400,7 @@ const Mirror = () => {
       saveMessagesToDb(updatedWithAssistant);
 
       // Handle END_SESSION flag — end the session after displaying the message
-      if (response.data?.endSession && activeSession) {
+      if (response.data?.endSession && currentSession) {
         setSessionEnded(true);
         if (conversationId) {
           await saveMessages(conversationId, updatedWithAssistant.map(m => ({
@@ -403,7 +409,7 @@ const Mirror = () => {
             timestamp: m.id
           })));
         }
-        await endSession(activeSession.id);
+        await endSession(currentSession.id);
       }
     } catch (error) {
       console.error("Chat error:", error);
@@ -511,9 +517,8 @@ const Mirror = () => {
             <div className="flex justify-end">
               <Button
                 variant="ghost"
-                size="sm"
                 onClick={sessionEnded ? () => navigate("/cooldown") : handleEndSession}
-                className="text-xs text-muted-foreground"
+                className="text-sm text-muted-foreground min-h-[44px] px-4"
               >
                 {sessionEnded ? "Return to Dashboard" : "End session"}
               </Button>
