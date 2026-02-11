@@ -90,11 +90,31 @@ export function useSessions() {
     return { error: null, session: data };
   };
 
+  const addSessionToState = (session: Session) => {
+    setSessions((prev) => {
+      if (prev.some((s) => s.id === session.id)) return prev;
+      return [session, ...prev];
+    });
+  };
+
   const endSession = async (sessionId: string) => {
     if (!user) return { error: new Error("Not authenticated") };
 
-    const session = sessions.find((s) => s.id === sessionId);
-    if (!session) return { error: new Error("Session not found") };
+    let session = sessions.find((s) => s.id === sessionId);
+
+    // If not in local state (e.g. created via RPC), fetch from DB
+    if (!session) {
+      const { data, error: fetchErr } = await supabase
+        .from("sessions")
+        .select("*")
+        .eq("id", sessionId)
+        .single();
+      if (fetchErr || !data) {
+        console.error("Could not find session to end:", fetchErr);
+        return { error: fetchErr || new Error("Session not found") };
+      }
+      session = data;
+    }
 
     const startedAt = new Date(session.started_at);
     const endedAt = new Date();
@@ -136,5 +156,6 @@ export function useSessions() {
     loading,
     startSession,
     endSession,
+    addSessionToState,
   };
 }

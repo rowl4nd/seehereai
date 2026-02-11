@@ -23,7 +23,7 @@ const Mirror = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, updateProfile } = useProfile();
   const { credits } = useCredits();
-  const { activeSession, startSession, endSession, canStartSession, loading: sessionsLoading } = useSessions();
+  const { activeSession, startSession, endSession, canStartSession, loading: sessionsLoading, addSessionToState } = useSessions();
   const { createConversation: createEncryptedConversation, saveMessages, loadSessionMessages, loadHistory } = useEncryptedMessages();
   const navigate = useNavigate();
 
@@ -175,8 +175,19 @@ const Mirror = () => {
         return;
       }
 
-      const session = { id: result.session_id, session_type: sessionType, started_at: new Date().toISOString(), is_active: true };
+      const session = { id: result.session_id, session_type: sessionType, started_at: new Date().toISOString(), is_active: true } as any;
       setLocalSession({ id: session.id, session_type: session.session_type, started_at: session.started_at });
+      // Add to sessions array so endSession can find it
+      addSessionToState({
+        id: session.id,
+        user_id: user.id,
+        session_type: session.session_type,
+        started_at: session.started_at,
+        ended_at: null,
+        duration_minutes: null,
+        is_active: true,
+        created_at: session.started_at,
+      });
 
       if (sessionType === "free" && profile) {
         await updateProfile({ free_sessions_used: (profile.free_sessions_used || 0) + 1 });
