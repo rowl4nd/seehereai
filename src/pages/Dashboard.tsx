@@ -166,7 +166,7 @@ const Dashboard = () => {
 
           {/* Purchase credits button */}
           <Link to="/credits" className="block">
-            <Button variant="outline" className="w-full border-2 border-border hover:bg-accent/50">
+            <Button className="w-full text-background" style={{ backgroundColor: '#af9cd3' }}>
               Purchase sessions
             </Button>
           </Link>
