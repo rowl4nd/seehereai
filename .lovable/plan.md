@@ -1,60 +1,53 @@
 
 
-## Seamless Flowing Homepage
+## Add Flowing Background Shapes
 
-### The Problem
-There are multiple colour clashes creating hard edges between sections:
-- The header uses `bg-background` (HSL 20 55% 96.5% -- a pinkish cream)
-- The hero gradient ends at the hard-coded `#ffedd5` (a distinctly different warm peach)
-- Wave dividers try to bridge these mismatched tones but add their own contrast
-- Each section starts its own gradient from scratch, creating visible "bands"
+### What we'll do
+Add soft, organic SVG shapes that float behind the content throughout the page. These will use the three specified colours (#cbb7ef lavender, #b1cfac sage green, #fae5da warm peach) as large, blurred, semi-transparent blobs positioned at different points down the page. They'll feel like gentle watercolour washes drifting behind the text.
 
-### The Solution
-Remove the wave dividers entirely and replace them with a single, continuous full-page gradient that flows naturally from top to bottom. The sections themselves become transparent layers sitting on top of this unified background. Subtle decorative orbs provide gentle variation without hard edges.
-
-### What changes
-
-**1. Single full-page gradient background**
-- Apply one continuous `bg-gradient-to-b` on the outermost wrapper div, flowing from the background colour through soft sage and accent tones to a warm finish at the footer.
-- Remove all per-section background gradient divs (the `absolute inset-0 bg-gradient-to-b` elements inside each section).
-
-**2. Remove all WaveDivider components**
-- Delete the three WaveDivider instances between hero/middle, middle/FAQ, and FAQ/footer.
-- These are the primary source of visual "jumps" between sections.
-
-**3. Transparent sections with spacing**
-- Each section becomes `bg-transparent` (or simply has no background), letting the page-level gradient show through.
-- Keep the decorative blur orbs inside sections for subtle depth, but reduce their opacity slightly so they blend rather than contrast.
-
-**4. Header blends with the page gradient**
-- Change the header from `bg-background/80` to a more transparent treatment that picks up the gradient beneath it, e.g. `bg-background/60` with the existing backdrop blur. This prevents the header from looking like a separate "bar" floating over a different colour.
-
-**5. Remove the hard-coded #ffedd5**
-- Every instance of `#ffedd5` gets replaced with CSS variable references (e.g. `hsl(var(--peach-soft))` or similar) so the palette stays unified and maintainable.
+### Approach
+Create a dedicated background layer (a single absolute-positioned div spanning the full page height) containing 5-7 organic SVG blob shapes. Each blob will:
+- Use one of the three colours at low opacity (10-20%)
+- Have a large blur filter applied (80-120px)
+- Be positioned at staggered vertical and horizontal positions so they create gentle colour shifts as you scroll
+- Use soft, irregular border-radius values to look organic rather than circular
+- A couple will have a very slow, subtle CSS animation (gentle floating/drifting) to add life without distraction
 
 ### Technical detail
 
 **File: `src/pages/Index.tsx`**
 
-- Line 76: Change outermost div to carry the full-page gradient:
-  `className="min-h-screen flex flex-col bg-gradient-to-b from-background via-[hsl(var(--sage-soft)/0.15)] via-60% to-[hsl(var(--peach-soft))] overflow-x-hidden"`
+Add a background shapes container immediately inside the root div, before the header:
 
-- Line 78: Soften header opacity: `bg-background/60 backdrop-blur-md`
+```tsx
+{/* Flowing background shapes */}
+<div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+  <div className="absolute -top-20 -left-32 w-[500px] h-[400px] rounded-[60%_40%_30%_70%/60%_30%_70%_40%] bg-[#cbb7ef]/15 blur-[100px]" />
+  <div className="absolute top-[20%] -right-20 w-[450px] h-[350px] rounded-[40%_60%_70%_30%/40%_70%_30%_60%] bg-[#b1cfac]/15 blur-[90px]" />
+  <div className="absolute top-[40%] left-[10%] w-[400px] h-[400px] rounded-[50%_50%_40%_60%/60%_40%_50%_50%] bg-[#fae5da]/20 blur-[100px]" />
+  <div className="absolute top-[55%] right-[15%] w-[350px] h-[300px] rounded-[60%_40%_50%_50%/50%_60%_40%_50%] bg-[#cbb7ef]/12 blur-[110px]" />
+  <div className="absolute top-[75%] -left-10 w-[500px] h-[350px] rounded-[40%_60%_60%_40%/50%_40%_60%_50%] bg-[#b1cfac]/12 blur-[100px]" />
+  <div className="absolute top-[90%] right-[5%] w-[400px] h-[400px] rounded-[50%_40%_60%_50%/40%_60%_50%_40%] bg-[#fae5da]/18 blur-[90px]" />
+</div>
+```
 
-- Line 104: Remove the hero's absolute gradient div entirely (the `bg-gradient-to-b from-accent/20 via-background to-[#ffedd5]` layer). Keep the orbs for atmosphere.
+- All existing content elements get `relative z-10` (most already have this) so they sit above the shapes.
+- Remove or reduce the existing decorative orbs inside individual sections since these new page-level shapes replace them, keeping the design clean rather than doubling up on background effects.
+- The `fixed inset-0` positioning means the shapes stay in place as you scroll, creating a parallax-like depth effect where content glides over the soft colour washes.
 
-- Lines 146, 241, 307: Remove all three `<WaveDivider ... />` lines.
+**File: `src/index.css`**
 
-- Line 151: Remove the middle section's absolute gradient div.
+Add a gentle floating animation for optional use on 1-2 of the blobs:
 
-- Line 244: Remove the FAQ section's absolute gradient div.
+```css
+@keyframes gentleFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(15px, -20px) scale(1.03); }
+}
+```
 
-- Line 310: Remove the footer's absolute gradient div.
-
-- All remaining orb elements: reduce opacity slightly (e.g. `bg-sage-soft/30` becomes `bg-sage-soft/20`) so they add gentle texture without creating contrast bands.
-
-**File: `src/components/WaveDivider.tsx`**
-- No changes needed (component stays for potential future use), but its import in Index.tsx is removed.
+Two of the blobs will use `animate-[gentleFloat_20s_ease-in-out_infinite]` to add very slow, barely perceptible movement.
 
 ### Result
-The page will feel like one continuous, gently shifting canvas. Scrolling down reveals content floating on a unified warm gradient that shifts very subtly from cream at the top through a whisper of sage in the middle to soft peach at the bottom -- no hard lines, no contrasting bands, just a smooth flow.
+The page will have a watercolour-like quality with soft lavender, sage, and peach washes floating behind the content. The shapes are large enough to feel atmospheric but transparent and blurred enough to stay well in the background. The overall effect is gentle, organic, and calming -- adding visual richness without competing with the content.
+
