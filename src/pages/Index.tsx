@@ -5,7 +5,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
-import WaveDivider from "@/components/WaveDivider";
+
 import heroLogo from "@/assets/see-here-logo.png";
 const ScrollSection = ({
   children,
@@ -73,9 +73,9 @@ const features = [
 const Index = () => {
   const { user, loading } = useAuth();
   return (
-    <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background via-[hsl(var(--sage-soft)/0.15)] via-60% to-[hsl(var(--peach-soft))] overflow-x-hidden">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-20 flex justify-between items-center px-6 py-5 md:px-10 bg-background/60 backdrop-blur-md">
         <Logo />
         <div className="flex items-center gap-2">
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 px-3 py-2">
@@ -100,15 +100,13 @@ const Index = () => {
 
       {/* ── Hero ── */}
       <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden pb-16">
-        {/* Layered gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-accent/20 via-background to-[#ffedd5]" />
 
         {/* Large warm orb - top right */}
-        <div className="absolute -top-20 -right-32 w-[500px] h-[500px] md:w-[600px] md:h-[600px] rounded-full bg-sage-soft/50 blur-[120px] animate-pulse pointer-events-none" />
+        <div className="absolute -top-20 -right-32 w-[500px] h-[500px] md:w-[600px] md:h-[600px] rounded-full bg-sage-soft/30 blur-[120px] animate-pulse pointer-events-none" />
 
         {/* Secondary orb - bottom left */}
         <div
-          className="absolute -bottom-32 -left-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] rounded-full bg-accent/30 blur-[100px] pointer-events-none"
+          className="absolute -bottom-32 -left-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] rounded-full bg-accent/20 blur-[100px] pointer-events-none"
           style={{
             animationDuration: "4s",
             animationName: "pulse",
@@ -116,7 +114,7 @@ const Index = () => {
         />
 
         {/* Subtle warm orb - centre */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-warm-cream/40 blur-[80px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-warm-cream/25 blur-[80px] pointer-events-none" />
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in flex flex-col items-center">
           <img src={heroLogo} alt="see here" className="h-32 md:h-40 w-auto mb-2" />
@@ -143,16 +141,13 @@ const Index = () => {
         </div>
       </section>
 
-      <WaveDivider variant={1} fillColor="hsl(var(--sage-soft) / 0.4)" topColor="#ffedd5" />
+      
 
       {/* ── Combined Middle Section ── */}
       <section className="relative py-24 px-6 md:px-10 overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/40 via-accent/15 to-[#ffedd5]" />
-
         {/* Decorative orbs */}
         <div className="absolute top-10 right-10 w-[200px] h-[200px] rounded-full bg-primary/5 blur-[60px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] rounded-full bg-sage-soft/30 blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] rounded-full bg-sage-soft/20 blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 max-w-5xl mx-auto">
           {/* SeeHere cards */}
@@ -238,11 +233,11 @@ const Index = () => {
 
 
       {/* ── FAQ ── */}
-      <WaveDivider variant={3} fillColor="hsl(var(--sage-soft) / 0.25)" topColor="#ffedd5" />
+      
 
       <section id="faq" className="relative py-24 px-6 md:px-10 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-sage-soft/25 via-accent/15 to-[#ffedd5]" />
-        <div className="absolute top-1/3 right-1/4 w-[250px] h-[250px] rounded-full bg-primary/5 blur-[80px] pointer-events-none" />
+        
+        <div className="absolute top-1/3 right-1/4 w-[250px] h-[250px] rounded-full bg-primary/3 blur-[80px] pointer-events-none" />
 
         <ScrollSection>
           <div className="relative z-10 max-w-2xl mx-auto">
@@ -304,10 +299,10 @@ const Index = () => {
       </section>
 
       {/* ── Footer ── */}
-      <WaveDivider variant={2} fillColor="hsl(var(--sage-soft) / 0.2)" topColor="#ffedd5" />
+      
 
       <footer className="relative py-8 px-6 text-center">
-        <div className="absolute inset-0 bg-gradient-to-t from-sage-soft/20 to-transparent" />
+        
         <div className="relative z-10 space-y-2">
           <p className="text-xs text-muted-foreground">A space for reflection</p>
           <div className="flex justify-center gap-4">
