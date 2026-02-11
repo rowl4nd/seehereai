@@ -9,6 +9,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Crimson+Pro&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Inconsolata&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Caslon+Text&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -82,7 +83,7 @@
     --chart-5: 0 0% 45%;
     --sidebar: 0 0% 98%;
     --font-sans: Montserrat, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-    --font-serif: "Crimson Pro", ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
+    --font-serif: "Libre Caslon Text", ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
     --font-mono: 'Inconsolata', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
     --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
@@ -156,7 +157,7 @@
     --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
     --radius: 1.5rem;
-    --font-serif: "Crimson Pro", ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
+    --font-serif: "Libre Caslon Text", ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
     --font-sans: Montserrat, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   }
 }
