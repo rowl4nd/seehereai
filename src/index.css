@@ -200,6 +200,11 @@
     }
   }
 
+  @keyframes gentleFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(15px, -20px) scale(1.03); }
+  }
+
   @keyframes fadeInUp {
     from {
       opacity: 0;
