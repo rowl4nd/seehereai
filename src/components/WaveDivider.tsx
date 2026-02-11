@@ -1,5 +1,6 @@
 interface WaveDividerProps {
   fillColor?: string;
+  topColor?: string;
   variant?: 1 | 2 | 3;
   flip?: boolean;
   className?: string;
@@ -13,13 +14,18 @@ const paths: Record<number, string> = {
 
 const WaveDivider = ({
   fillColor = "hsl(var(--background))",
+  topColor,
   variant = 1,
   flip = false,
   className = "",
 }: WaveDividerProps) => (
   <div
     className={`w-full leading-[0] overflow-hidden ${className}`}
-    style={{ marginTop: "-1px", marginBottom: "-1px" }}
+    style={{
+      marginTop: "-1px",
+      marginBottom: "-1px",
+      backgroundColor: topColor,
+    }}
   >
     <svg
       viewBox="0 0 1200 120"
