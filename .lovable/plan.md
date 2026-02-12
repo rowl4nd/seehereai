@@ -1,47 +1,40 @@
 
+## Speed Up Mobile Load Time
 
-## Auth Page Tabs with Branded Copy
+### Problem
+The app loads **12 separate Google Fonts via CSS `@import`** -- each is a render-blocking network request. Only 3 of these fonts are actually used. On mobile, this can add 3-5 seconds of unnecessary load time.
 
-### What Changes
+### Changes
 
-Replace the subtle toggle link on the auth page with two clear tabs using the branded copy:
+**1. Remove 9 unused font imports from `src/index.css`**
 
-- **Tab 1 (Login):** "Nice to **See** you again" -- where "See" is bold and colored `#709474` (sage green)
-- **Tab 2 (Signup):** "First time **Here**?" -- where "Here" is bold and colored `#8775aa` (lavender purple)
+Remove these unused imports:
+- Inter
+- Lora
+- Space Mono (imported twice)
+- Space Grotesk
+- Work Sans
+- Inconsolata (imported twice)
+- Montserrat
+- Libre Caslon Text
 
-### How It Will Look
+Keep only:
+- Cormorant Garamond (headings)
+- Nunito (body text)
+- Crimson Pro (serif variable)
 
-```text
-+---------------------------------------------+
-|                                              |
-|  [Nice to See you again] [First time Here?]  |
-|                                              |
-|  Email: ___________________________          |
-|  Password: ________________________          |
-|                                              |
-|  [          Sign In / Create       ]         |
-|                                              |
-|  Forgot your password?                       |
-+---------------------------------------------+
-```
+**2. Switch remaining fonts from `@import` to `<link>` tags in `index.html`**
 
-- Active tab is visually highlighted
-- "See" and "Here" keep their brand colors in both active and inactive states
-- Switching tabs clears the password field
-- "Forgot your password?" only shows on the login tab
-- The old bottom toggle link is removed
+Move the 3 remaining font imports into `index.html` as `<link rel="preconnect">` and `<link>` tags. This allows the browser to start downloading fonts earlier and in parallel, rather than waiting for CSS to parse.
+
+**3. Update CSS variable font stacks**
+
+Clean up the `--font-sans` and `--font-mono` variables that reference removed fonts (Montserrat, Inconsolata) to use the actual fonts in use (Nunito, system monospace).
 
 ### Technical Details
 
-**File changed:** `src/pages/Auth.tsx`
+**Files changed:**
+- `src/index.css` -- remove 9 `@import` lines, convert remaining 3 to link tags in HTML
+- `index.html` -- add preconnect and font link tags
 
-- Import `Tabs`, `TabsList`, `TabsTrigger` from `@/components/ui/tabs`
-- Wrap the form in a `Tabs` component with values `"login"` and `"signup"`
-- Each `TabsTrigger` renders inline JSX with `<span>` elements for the colored/bold words:
-  - `<span style={{ color: '#709474', fontWeight: 700 }}>See</span>`
-  - `<span style={{ color: '#8775aa', fontWeight: 700 }}>Here</span>`
-- The `mode` state updates via `onValueChange` on the `Tabs` component
-- Keep the `"forgot"` sub-mode accessible from the login tab
-- Remove the old bottom toggle button
-- No backend or database changes
-
+**Expected impact:** Removing 9 render-blocking requests should noticeably improve first paint time, especially on mobile connections.
