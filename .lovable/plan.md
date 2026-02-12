@@ -1,57 +1,47 @@
 
 
-## Fix: Chat Messages Lost When Navigating Away and Returning
+## Auth Page Tabs with Branded Copy
 
-### Root Cause Analysis
+### What Changes
 
-There are **three bugs** working together to cause message loss:
+Replace the subtle toggle link on the auth page with two clear tabs using the branded copy:
 
-**Bug 1 -- Silent failure when `conversationId` is null (MAIN ISSUE)**
+- **Tab 1 (Login):** "Nice to **See** you again" -- where "See" is bold and colored `#709474` (sage green)
+- **Tab 2 (Signup):** "First time **Here**?" -- where "Here" is bold and colored `#8775aa` (lavender purple)
 
-The `saveMessagesToDb` helper (line 354-362) silently returns if `conversationId` is null:
+### How It Will Look
+
 ```text
-const saveMessagesToDb = async (updatedMessages: Message[]) => {
-    if (!conversationId) return;  // <-- silently drops all saves
-    ...
-};
++---------------------------------------------+
+|                                              |
+|  [Nice to See you again] [First time Here?]  |
+|                                              |
+|  Email: ___________________________          |
+|  Password: ________________________          |
+|                                              |
+|  [          Sign In / Create       ]         |
+|                                              |
+|  Forgot your password?                       |
++---------------------------------------------+
 ```
 
-`conversationId` is set asynchronously after `createEncryptedConversation` completes. If a user sends their first message before the conversation record finishes being created, `conversationId` is still null, and **every subsequent save silently fails**. All messages are lost.
+- Active tab is visually highlighted
+- "See" and "Here" keep their brand colors in both active and inactive states
+- Switching tabs clears the password field
+- "Forgot your password?" only shows on the login tab
+- The old bottom toggle link is removed
 
-Additionally, `saveMessagesToDb` captures `conversationId` from a closure. Since `conversationId` is React state, the function always sees the value from the render when it was last defined. If the conversation ID was set *after* the function was created in a given render cycle, it won't see it.
+### Technical Details
 
-**Bug 2 -- Timer-end save uses stale `messages` state**
+**File changed:** `src/pages/Auth.tsx`
 
-When the timer hits zero (line 253-265), it saves using `messages` (state variable) instead of `messagesRef.current`. The timer runs inside a `setInterval` closure, so `messages` is stale and may only contain the greeting or an earlier snapshot.
-
-**Bug 3 -- No retry or queue for failed saves**
-
-If a save fails (network hiccup, edge function cold start), there is no retry. The messages are gone.
-
-### Fix Details
-
-**1. Use a ref for conversationId (fixes Bug 1)**
-
-Store `conversationId` in a ref (`conversationIdRef`) alongside the state, similar to how `messagesRef` works. Update `saveMessagesToDb` to read from the ref instead of the closure-captured state value.
-
-**2. Fix timer-end save to use `messagesRef.current` (fixes Bug 2)**
-
-Change line 257 from `messages.map(...)` to `messagesRef.current.map(...)` so the timer always saves the latest messages.
-
-**3. Add logging when conversationId is missing**
-
-Add a `console.warn` in `saveMessagesToDb` when `conversationId` is null so this failure is no longer silent and can be debugged.
-
-**4. Queue early messages until conversationId is ready**
-
-If a message is sent before `conversationId` is available, queue it and flush once the ID is set. This prevents the window where messages can be lost.
-
-### Files Changed
-
-1. `src/pages/Mirror.tsx`
-   - Add `conversationIdRef` ref, kept in sync with `conversationId` state
-   - Update `saveMessagesToDb` to read from `conversationIdRef.current`
-   - Fix timer-end save to use `messagesRef.current`
-   - Add pending-save queue that flushes when `conversationId` becomes available
-   - Add warning logs for missing conversationId
+- Import `Tabs`, `TabsList`, `TabsTrigger` from `@/components/ui/tabs`
+- Wrap the form in a `Tabs` component with values `"login"` and `"signup"`
+- Each `TabsTrigger` renders inline JSX with `<span>` elements for the colored/bold words:
+  - `<span style={{ color: '#709474', fontWeight: 700 }}>See</span>`
+  - `<span style={{ color: '#8775aa', fontWeight: 700 }}>Here</span>`
+- The `mode` state updates via `onValueChange` on the `Tabs` component
+- Keep the `"forgot"` sub-mode accessible from the login tab
+- Remove the old bottom toggle button
+- No backend or database changes
 
