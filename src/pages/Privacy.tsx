@@ -12,7 +12,7 @@ const Privacy = () => {
       <header className="relative z-10 p-6 md:p-8 flex items-center justify-between">
         <Logo />
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => window.close()}
           className="text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Go back"
         >
