@@ -34,6 +34,9 @@ export function useSessions() {
     const fetchSessions = async () => {
       setLoading(true);
 
+      // Auto-end any expired sessions server-side before fetching
+      await supabase.rpc("auto_end_expired_sessions");
+
       // Fetch sessions
       const { data: sessionsData, error: sessionsError } = await supabase
         .from("sessions")

@@ -193,6 +193,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      auto_end_expired_sessions: { Args: never; Returns: undefined }
       get_next_session_time: { Args: { _user_id: string }; Returns: string }
       has_cooldown_passed: { Args: { _user_id: string }; Returns: boolean }
       is_email_allowed: { Args: { _email: string }; Returns: boolean }
