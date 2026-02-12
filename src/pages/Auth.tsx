@@ -65,25 +65,25 @@ const Auth = () => {
     }
   };
 
-  const title = mode === "forgot"
-    ? "Reset your password"
-    : mode === "login"
-    ? "Welcome back"
-    : "Begin your journey";
+  const title = mode === "forgot" ?
+  "Reset your password" :
+  mode === "login" ?
+  "Welcome back" :
+  "Begin your journey";
 
-  const subtitle = mode === "forgot"
-    ? "We'll send you a link to reset it"
-    : mode === "login"
-    ? "Take your time"
-    : "Create a space for yourself";
+  const subtitle = mode === "forgot" ?
+  "We'll send you a link to reset it" :
+  mode === "login" ?
+  "Take your time" :
+  "Create a space for yourself";
 
-  const buttonLabel = isSubmitting
-    ? "Please wait..."
-    : mode === "forgot"
-    ? "Send reset link"
-    : mode === "login"
-    ? "Sign in"
-    : "Create account";
+  const buttonLabel = isSubmitting ?
+  "Please wait..." :
+  mode === "forgot" ?
+  "Send reset link" :
+  mode === "login" ?
+  "Sign in" :
+  "Create account";
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -97,26 +97,26 @@ const Auth = () => {
       <main className="relative z-10 flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-sm space-y-8 animate-fade-in">
           {/* Tabs */}
-          {mode !== "forgot" ? (
-            <Tabs
-              value={tabValue}
-              onValueChange={(val) => {
-                setMode(val as "login" | "signup");
-                setPassword("");
-              }}
-              className="w-full"
-            >
+          {mode !== "forgot" ?
+          <Tabs
+            value={tabValue}
+            onValueChange={(val) => {
+              setMode(val as "login" | "signup");
+              setPassword("");
+            }}
+            className="w-full">
+
               <TabsList className="w-full">
                 <TabsTrigger value="login" className="flex-1 text-sm">
-                  Nice to <span style={{ color: '#709474', fontWeight: 700 }} className="mx-1">See</span> you again
+                  Nice to <span style={{ color: '#709474', fontWeight: 700 }} className="mx-1 font-normal font-serif text-2xl">See</span> you again
                 </TabsTrigger>
                 <TabsTrigger value="signup" className="flex-1 text-sm">
                   First time <span style={{ color: '#8775aa', fontWeight: 700 }} className="mx-1">Here</span>?
                 </TabsTrigger>
               </TabsList>
-            </Tabs>
-          ) : (
-            <div className="text-center space-y-2">
+            </Tabs> :
+
+          <div className="text-center space-y-2">
               <h1 className="text-3xl font-serif font-light text-foreground">
                 Reset your password
               </h1>
@@ -124,7 +124,7 @@ const Auth = () => {
                 We'll send you a link to reset it
               </p>
             </div>
-          )}
+          }
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -140,66 +140,66 @@ const Auth = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="bg-card border-border/50 focus:border-primary/50"
-                  placeholder="you@example.com"
-                />
+                  placeholder="you@example.com" />
+
               </div>
 
-              {mode !== "forgot" && (
-                <div className="space-y-2">
+              {mode !== "forgot" &&
+              <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-normal text-muted-foreground">
                     Password
                   </Label>
                   <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    className="bg-card border-border/50 focus:border-primary/50"
-                    placeholder="••••••••"
-                  />
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="bg-card border-border/50 focus:border-primary/50"
+                  placeholder="••••••••" />
+
                 </div>
-              )}
+              }
             </div>
 
-            {mode === "login" && (
-              <div className="text-right -mt-2">
+            {mode === "login" &&
+            <div className="text-right -mt-2">
                 <button
-                  type="button"
-                  onClick={() => setMode("forgot")}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                type="button"
+                onClick={() => setMode("forgot")}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+
                   Forgot your password?
                 </button>
               </div>
-            )}
+            }
 
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+
               {buttonLabel}
             </Button>
           </form>
 
           {/* Back link for forgot mode */}
-          {mode === "forgot" && (
-            <div className="text-center">
+          {mode === "forgot" &&
+          <div className="text-center">
               <button
-                type="button"
-                onClick={() => setMode("login")}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              type="button"
+              onClick={() => setMode("login")}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+
                 Back to sign in
               </button>
             </div>
-          )}
+          }
         </div>
       </main>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Auth;
