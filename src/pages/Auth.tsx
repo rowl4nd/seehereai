@@ -97,10 +97,15 @@ const Auth = () => {
       <main className="relative z-10 flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-sm space-y-8 animate-fade-in">
           {/* Title */}
-          <div className="text-center -mt-4">
+          <div className="text-center -mt-4 space-y-3">
             <h1 className="text-6xl font-serif font-light text-foreground">
               {mode === "forgot" ? "Reset your password" : "Welcome"}
             </h1>
+            {mode !== "forgot" && (
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                In order to make your experience private but also personal, we require you to have an account with us.
+              </p>
+            )}
           </div>
 
           {/* Tabs */}
