@@ -119,11 +119,13 @@ const Auth = () => {
               className="w-full"
             >
               <TabsList className="w-full">
-                <TabsTrigger value="login" className="flex-1 text-sm">
-                  Nice to <span style={{ color: '#709474', fontWeight: 700 }} className="mx-1">See</span> you again
+                <TabsTrigger value="login" className="flex-1 text-sm flex flex-col items-center py-2">
+                  <span>Nice to <span style={{ color: '#709474', fontWeight: 700 }}>See</span> you again</span>
+                  <span className="text-xs text-muted-foreground">Sign in</span>
                 </TabsTrigger>
-                <TabsTrigger value="signup" className="flex-1 text-sm">
-                  First time <span style={{ color: '#8775aa', fontWeight: 700 }} className="mx-1">Here</span>?
+                <TabsTrigger value="signup" className="flex-1 text-sm flex flex-col items-center py-2">
+                  <span>First time <span style={{ color: '#8775aa', fontWeight: 700 }}>Here</span>?</span>
+                  <span className="text-xs text-muted-foreground">Create account</span>
                 </TabsTrigger>
               </TabsList>
             </Tabs>
