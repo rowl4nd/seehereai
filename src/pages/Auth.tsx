@@ -5,11 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 
 const Auth = () => {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
+  const tabValue = mode === "forgot" ? "login" : mode;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -94,15 +96,35 @@ const Auth = () => {
       {/* Main content */}
       <main className="relative z-10 flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-sm space-y-8 animate-fade-in">
-          {/* Title */}
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-serif font-light text-foreground">
-              {title}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {subtitle}
-            </p>
-          </div>
+          {/* Tabs */}
+          {mode !== "forgot" ? (
+            <Tabs
+              value={tabValue}
+              onValueChange={(val) => {
+                setMode(val as "login" | "signup");
+                setPassword("");
+              }}
+              className="w-full"
+            >
+              <TabsList className="w-full">
+                <TabsTrigger value="login" className="flex-1 text-sm">
+                  Nice to <span style={{ color: '#709474', fontWeight: 700 }} className="mx-1">See</span> you again
+                </TabsTrigger>
+                <TabsTrigger value="signup" className="flex-1 text-sm">
+                  First time <span style={{ color: '#8775aa', fontWeight: 700 }} className="mx-1">Here</span>?
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          ) : (
+            <div className="text-center space-y-2">
+              <h1 className="text-3xl font-serif font-light text-foreground">
+                Reset your password
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                We'll send you a link to reset it
+              </p>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -162,9 +184,9 @@ const Auth = () => {
             </Button>
           </form>
 
-          {/* Toggle */}
-          <div className="text-center">
-            {mode === "forgot" ? (
+          {/* Back link for forgot mode */}
+          {mode === "forgot" && (
+            <div className="text-center">
               <button
                 type="button"
                 onClick={() => setMode("login")}
@@ -172,18 +194,8 @@ const Auth = () => {
               >
                 Back to sign in
               </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setMode(mode === "login" ? "signup" : "login")}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {mode === "login"
-                  ? "New here? Create an account"
-                  : "Already have an account? Sign in"}
-              </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
