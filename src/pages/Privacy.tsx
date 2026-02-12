@@ -1,12 +1,23 @@
+import { useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
 import Logo from "@/components/Logo";
 
 const Privacy = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
 
       {/* Header */}
-      <header className="relative z-10 p-6 md:p-8">
+      <header className="relative z-10 p-6 md:p-8 flex items-center justify-between">
         <Logo />
+        <button
+          onClick={() => navigate(-1)}
+          className="text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="Go back"
+        >
+          <X className="h-6 w-6" />
+        </button>
       </header>
 
       {/* Main content */}
