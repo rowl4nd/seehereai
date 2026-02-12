@@ -96,6 +96,13 @@ const Auth = () => {
       {/* Main content */}
       <main className="relative z-10 flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-sm space-y-8 animate-fade-in">
+          {/* Title */}
+          <div className="text-center">
+            <h1 className="text-3xl font-serif font-light text-foreground">
+              {mode === "forgot" ? "Reset your password" : "Welcome"}
+            </h1>
+          </div>
+
           {/* Tabs */}
           {mode !== "forgot" ? (
             <Tabs
@@ -116,10 +123,7 @@ const Auth = () => {
               </TabsList>
             </Tabs>
           ) : (
-            <div className="text-center space-y-2">
-              <h1 className="text-3xl font-serif font-light text-foreground">
-                Reset your password
-              </h1>
+            <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 We'll send you a link to reset it
               </p>
