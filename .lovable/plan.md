@@ -1,21 +1,33 @@
 
 
-## Update Confirmation Email Branding to "SeeHere"
+## Make Auth Tab Buttons Double-Line
 
-### What's happening
-The confirmation emails sent to users (for signup verification, password reset, etc.) currently show "kindred-connect" as the sender/project name. This is confusing for users who signed up for "SeeHere".
-
-### How to fix it
-The email templates and sender name are configured in the backend's authentication settings. I'll use the auth configuration tool to update:
-
-1. **Site name** -- Change from "kindred-connect" to "SeeHere" so emails display the correct app name
-2. **Email subject lines** -- Update confirmation, password reset, and other email subjects to reference "SeeHere"
+### What changes
+Update the two tab triggers on the Auth page so each displays two lines of text:
+- **Left tab**: "Nice to See you again" on line 1, "Sign in" on line 2
+- **Right tab**: "First time Here?" on line 1, "Create account" on line 2
 
 ### Technical Details
 
-**Tool used:** `configure-auth` to update the mailer settings including:
-- `MAILER_SITE_URL` or site name to "SeeHere"  
-- Email template subjects (e.g., "Confirm your SeeHere account", "Reset your SeeHere password")
+**File: `src/pages/Auth.tsx`**
 
-No code file changes are needed -- this is purely a backend configuration update.
+Replace the two `TabsTrigger` elements so each contains a flex-column layout with two lines:
+
+```tsx
+<TabsTrigger value="login" className="flex-1 text-sm flex flex-col items-center py-2">
+  <span>Nice to <span style={{ color: '#709474', fontWeight: 700 }}>See</span> you again</span>
+  <span className="text-xs text-muted-foreground">Sign in</span>
+</TabsTrigger>
+
+<TabsTrigger value="signup" className="flex-1 text-sm flex flex-col items-center py-2">
+  <span>First time <span style={{ color: '#8775aa', fontWeight: 700 }}>Here</span>?</span>
+  <span className="text-xs text-muted-foreground">Create account</span>
+</TabsTrigger>
+```
+
+**File: `src/components/ui/tabs.tsx`**
+
+Update the `TabsList` height from `h-10` to `h-auto` (or `h-14`) so it accommodates the taller two-line buttons without clipping.
+
+No other files are affected.
 
