@@ -1,33 +1,36 @@
 
 
-## Make Auth Tab Buttons Double-Line
+# Implement Resend Email Integration
 
-### What changes
-Update the two tab triggers on the Auth page so each displays two lines of text:
-- **Left tab**: "Nice to See you again" on line 1, "Sign in" on line 2
-- **Right tab**: "First time Here?" on line 1, "Create account" on line 2
+## Step 1: Store the Resend API Key
+- Securely store `RESEND_API_KEY` as a backend secret
 
-### Technical Details
+## Step 2: Create the Send Email Edge Function
+- Create `supabase/functions/send-email/index.ts`
+- Handles two email types: **confirmation** and **password reset**
+- Sends branded HTML emails from **hello@seehere.ai** via the Resend API
+- Clean, minimal templates matching SeeHere's calm, serif-font aesthetic
 
-**File: `src/pages/Auth.tsx`**
+## Step 3: Configure Authentication to Use Custom Email Hook
+- Update `supabase/config.toml` to register the `send-email` function as an auth email hook
+- Set `verify_jwt = false` for the function since auth hooks call it directly
 
-Replace the two `TabsTrigger` elements so each contains a flex-column layout with two lines:
+## Step 4: Email Templates
 
-```tsx
-<TabsTrigger value="login" className="flex-1 text-sm flex flex-col items-center py-2">
-  <span>Nice to <span style={{ color: '#709474', fontWeight: 700 }}>See</span> you again</span>
-  <span className="text-xs text-muted-foreground">Sign in</span>
-</TabsTrigger>
+- **Confirmation email**
+  - From: `hello@seehere.ai`
+  - Subject: "Welcome to SeeHere -- please verify your email"
+  - Contains a verification link
+  - Warm, welcoming tone
 
-<TabsTrigger value="signup" className="flex-1 text-sm flex flex-col items-center py-2">
-  <span>First time <span style={{ color: '#8775aa', fontWeight: 700 }}>Here</span>?</span>
-  <span className="text-xs text-muted-foreground">Create account</span>
-</TabsTrigger>
-```
+- **Password reset email**
+  - From: `hello@seehere.ai`
+  - Subject: "Reset your SeeHere password"
+  - Contains a reset link
+  - Clear, reassuring tone
 
-**File: `src/components/ui/tabs.tsx`**
-
-Update the `TabsList` height from `h-10` to `h-auto` (or `h-14`) so it accommodates the taller two-line buttons without clipping.
-
-No other files are affected.
+## What This Fixes
+- Emails sent from your verified `hello@seehere.ai` address instead of shared infrastructure
+- Much better inbox placement with Hotmail, Outlook, Gmail, etc.
+- No changes to the existing login/signup UI -- purely a backend improvement
 
