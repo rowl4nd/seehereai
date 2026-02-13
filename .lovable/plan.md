@@ -1,21 +1,31 @@
 
 
-# Update Contact Email to hello@seehere.ai
+# Send Welcome Email via Resend on Signup
 
 ## Summary
-Replace all instances of `cecilia@seehere.ai` with `hello@seehere.ai` across the website's public-facing pages.
+Create a backend function that sends a branded welcome email from `hello@seehere.ai` when a new user signs up, using the user's provided email copy.
 
 ## Changes
 
-### 1. `src/pages/Terms.tsx`
-- Update the contact email in Section 9 (1 occurrence)
+### 1. Create `supabase/functions/send-welcome-email/index.ts`
+- Accepts `{ email }` in the request body
+- Uses `RESEND_API_KEY` to call the Resend API
+- Sends from `hello@seehere.ai` with subject "Welcome to See Here"
+- Clean, minimal HTML email using the exact copy provided:
+  - Thank you for first session
+  - Reflection prompts (what stayed, what felt clearer, what felt unfinished)
+  - 6-8 sessions recommendation
+  - "Your space is here" sign-off
+- CORS headers included
+- Fire-and-forget (failure won't block signup)
 
-### 2. `src/pages/Privacy.tsx`
-- Update the contact email in Section 1 "Who We Are" (1 occurrence)
-- Update the contact email in Section 8 "How to Exercise Your Rights" (1 occurrence)
-- Update the contact email in Section 13 "Contact" (1 occurrence)
+### 2. Update `supabase/config.toml`
+- Add `[functions.send-welcome-email]` with `verify_jwt = false`
 
-### Not Changed
-- Migration files in `supabase/migrations/` reference `cecilia@seehere.ai` as an **allowed tester email / admin account** -- these are user account references, not contact info, so they stay as-is.
+### 3. Update `src/pages/Auth.tsx`
+- After successful signup, call the welcome email function (non-blocking)
+- Change success toast from "Check your email to confirm your account" to "Welcome to See Here"
 
-**Total: 4 email replacements across 2 files.**
+## Prerequisite
+- The `seehere.ai` domain must be verified in Resend for sending from `hello@seehere.ai`
+
