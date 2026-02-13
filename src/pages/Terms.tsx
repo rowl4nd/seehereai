@@ -97,10 +97,10 @@ const Terms = () => {
               <p>
                 If you have questions about these terms, please contact us at{" "}
                 <a
-                  href="mailto:cecilia@seehere.ai"
+                  href="mailto:hello@seehere.ai"
                   className="text-primary underline hover:text-primary/80 transition-colors"
                 >
-                  cecilia@seehere.ai
+                  hello@seehere.ai
                 </a>.
               </p>
             </section>

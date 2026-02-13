@@ -33,10 +33,10 @@ const Privacy = () => {
               <p>
                 See Here is an AI-powered listening companion operated by See Here Ltd ("we", "us", "our"). We act as the data controller for your personal information. If you have any questions about how we handle your data, please contact us at{" "}
                 <a
-                  href="mailto:cecilia@seehere.ai"
+                  href="mailto:hello@seehere.ai"
                   className="text-primary underline hover:text-primary/80 transition-colors"
                 >
-                  cecilia@seehere.ai
+                  hello@seehere.ai
                 </a>.
               </p>
             </section>
@@ -104,10 +104,10 @@ const Privacy = () => {
               <p>
                 To exercise any of your rights, please contact us at{" "}
                 <a
-                  href="mailto:cecilia@seehere.ai"
+                 href="mailto:hello@seehere.ai"
                   className="text-primary underline hover:text-primary/80 transition-colors"
                 >
-                  cecilia@seehere.ai
+                  hello@seehere.ai
                 </a>. We will respond to your request within one calendar month. If your request is complex, we may extend this by a further two months, and we will inform you of any such extension. You also have the right to lodge a complaint with the Information Commissioner's Office (ICO) at{" "}
                 <a
                   href="https://ico.org.uk"
@@ -164,10 +164,10 @@ const Privacy = () => {
               <p>
                 If you have questions about this privacy policy or wish to exercise your data rights, please contact us at{" "}
                 <a
-                  href="mailto:cecilia@seehere.ai"
+                  href="mailto:hello@seehere.ai"
                   className="text-primary underline hover:text-primary/80 transition-colors"
                 >
-                  cecilia@seehere.ai
+                  hello@seehere.ai
                 </a>.
               </p>
             </section>
