@@ -57,7 +57,11 @@ const Auth = () => {
         if (error) {
           toast.error(error.message);
         } else {
-          toast.success("Check your email to confirm your account");
+          toast.success("Welcome to See Here");
+          // Fire-and-forget welcome email
+          supabase.functions.invoke('send-welcome-email', {
+            body: { email },
+          }).catch(() => {});
         }
       }
     } finally {
