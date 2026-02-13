@@ -1,12 +1,21 @@
 
 
-# Email Delivery Status
+# Update Contact Email to hello@seehere.ai
 
-## Current State
-- **Email confirmation is DISABLED** — users can sign up and log in immediately without verifying their email.
-- SMTP via Resend is **not configured** because it requires migrating to external Supabase, which we don't want to do at this stage.
-- The `RESEND_API_KEY` secret is still stored and can be used later if we migrate.
-- The `send-email` Edge Function has been deleted (no longer needed).
+## Summary
+Replace all instances of `cecilia@seehere.ai` with `hello@seehere.ai` across the website's public-facing pages.
 
-## Future
-- If/when we migrate to external Supabase, we can configure Resend SMTP and re-enable email confirmation.
+## Changes
+
+### 1. `src/pages/Terms.tsx`
+- Update the contact email in Section 9 (1 occurrence)
+
+### 2. `src/pages/Privacy.tsx`
+- Update the contact email in Section 1 "Who We Are" (1 occurrence)
+- Update the contact email in Section 8 "How to Exercise Your Rights" (1 occurrence)
+- Update the contact email in Section 13 "Contact" (1 occurrence)
+
+### Not Changed
+- Migration files in `supabase/migrations/` reference `cecilia@seehere.ai` as an **allowed tester email / admin account** -- these are user account references, not contact info, so they stay as-is.
+
+**Total: 4 email replacements across 2 files.**
