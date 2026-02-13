@@ -1,36 +1,31 @@
 
 
-# Implement Resend Email Integration
+# Configure SMTP to Route Auth Emails Through Resend
 
-## Step 1: Store the Resend API Key
-- Securely store `RESEND_API_KEY` as a backend secret
+## What This Does
+All authentication emails (confirmation, password reset, magic link) will be sent from `hello@seehere.ai` via Resend's SMTP servers instead of the default shared infrastructure. This improves deliverability to Hotmail, Outlook, Gmail, etc.
 
-## Step 2: Create the Send Email Edge Function
-- Create `supabase/functions/send-email/index.ts`
-- Handles two email types: **confirmation** and **password reset**
-- Sends branded HTML emails from **hello@seehere.ai** via the Resend API
-- Clean, minimal templates matching SeeHere's calm, serif-font aesthetic
+## What Changes
 
-## Step 3: Configure Authentication to Use Custom Email Hook
-- Update `supabase/config.toml` to register the `send-email` function as an auth email hook
-- Set `verify_jwt = false` for the function since auth hooks call it directly
+### Backend Configuration (programmatic)
+- Use the `configure-auth` tool to set SMTP settings:
+  - **Host**: `smtp.resend.com`
+  - **Port**: `465`
+  - **Username**: `resend`
+  - **Password**: Your existing Resend API key
+  - **Sender email**: `hello@seehere.ai`
+  - **Sender name**: `SeeHere`
 
-## Step 4: Email Templates
+### Cleanup
+- The `send-email` Edge Function created earlier is no longer needed (SMTP handles everything). It will be removed along with its config entry in `supabase/config.toml`.
 
-- **Confirmation email**
-  - From: `hello@seehere.ai`
-  - Subject: "Welcome to SeeHere -- please verify your email"
-  - Contains a verification link
-  - Warm, welcoming tone
+## What Stays the Same
+- No changes to the login/signup UI
+- No changes to `useAuth.tsx` or `Auth.tsx`
+- Email verification still required before sign-in
+- Password reset flow unchanged
 
-- **Password reset email**
-  - From: `hello@seehere.ai`
-  - Subject: "Reset your SeeHere password"
-  - Contains a reset link
-  - Clear, reassuring tone
-
-## What This Fixes
-- Emails sent from your verified `hello@seehere.ai` address instead of shared infrastructure
-- Much better inbox placement with Hotmail, Outlook, Gmail, etc.
-- No changes to the existing login/signup UI -- purely a backend improvement
+## Files Changed
+- `supabase/config.toml` -- remove the `send-email` function entry
+- `supabase/functions/send-email/index.ts` -- deleted (no longer needed)
 
