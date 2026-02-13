@@ -1,31 +1,12 @@
 
 
-# Configure SMTP to Route Auth Emails Through Resend
+# Email Delivery Status
 
-## What This Does
-All authentication emails (confirmation, password reset, magic link) will be sent from `hello@seehere.ai` via Resend's SMTP servers instead of the default shared infrastructure. This improves deliverability to Hotmail, Outlook, Gmail, etc.
+## Current State
+- **Email confirmation is DISABLED** — users can sign up and log in immediately without verifying their email.
+- SMTP via Resend is **not configured** because it requires migrating to external Supabase, which we don't want to do at this stage.
+- The `RESEND_API_KEY` secret is still stored and can be used later if we migrate.
+- The `send-email` Edge Function has been deleted (no longer needed).
 
-## What Changes
-
-### Backend Configuration (programmatic)
-- Use the `configure-auth` tool to set SMTP settings:
-  - **Host**: `smtp.resend.com`
-  - **Port**: `465`
-  - **Username**: `resend`
-  - **Password**: Your existing Resend API key
-  - **Sender email**: `hello@seehere.ai`
-  - **Sender name**: `SeeHere`
-
-### Cleanup
-- The `send-email` Edge Function created earlier is no longer needed (SMTP handles everything). It will be removed along with its config entry in `supabase/config.toml`.
-
-## What Stays the Same
-- No changes to the login/signup UI
-- No changes to `useAuth.tsx` or `Auth.tsx`
-- Email verification still required before sign-in
-- Password reset flow unchanged
-
-## Files Changed
-- `supabase/config.toml` -- remove the `send-email` function entry
-- `supabase/functions/send-email/index.ts` -- deleted (no longer needed)
-
+## Future
+- If/when we migrate to external Supabase, we can configure Resend SMTP and re-enable email confirmation.
