@@ -1,24 +1,22 @@
 
 
-## Replace Homepage Code
+## Replace Homepage with Updated Version
 
-Replace the entire `src/pages/Index.tsx` with your updated version, which includes the following changes compared to the current file:
+Replace `src/pages/Index.tsx` with your updated code. Since the JSX tags were stripped during paste, I'll reconstruct them using the existing file as a base and apply the specific differences from your version:
 
-### New Additions
-- **Safety notice banner** below the header with crisis contact information (Samaritans 116 123, SHOUT 85258)
-- **"How does it work?" FAQ item** added to the accordion
-- **Descriptive subtitles** added under section headings ("Whether you're processing a difficult conversation..." and "Warmth, understanding, and room to breathe")
-- **"Who this is for" section** with a bulleted list of use cases (processing decisions, managing stress, life transitions, understanding emotions)
+### Changes to apply
 
-### Content Updates
-- Hero CTA button text changed from "Try for free..." to "Start your first session (free)"
-- Second CTA button text changed from "When you're ready, let's talk" to "Begin a free conversation"
-- Section heading changed from "SeeHere is a private space..." to "A space designed for you"
-- Updated quote text to a more descriptive version
-- Added a tagline under the hero heading about text-based conversations
+1. **Background shapes comment** -- "Flowing background shapes" becomes "Flowing background shapes - more subtle"
+2. **Safety notice** -- Reworded from "If you're in crisis, please contact the Samaritans on 116 123 or text SHOUT to 85258" to the shorter "In crisis? Contact Samaritans: 116 123 or text SHOUT to 85258"
+3. **Step cards comment** -- "Step cards" becomes "Step cards - modernized"
+4. **Scroll hint text** -- "scroll" capitalized to "Scroll"
+5. **"Who this is for" list** -- Refactored from four individual `<li>` elements to a `.map()` over an array of strings
+6. **Footer link opacity** -- `text-muted-foreground/70` changed to `text-muted-foreground/60` on both Terms and Privacy links
 
-### Technical Details
-- The file will be fully rewritten with the same imports, components, and styling patterns
-- All class names reference existing Tailwind/theme variables -- no new dependencies needed
-- The stripped JSX in the user's paste will be reconstructed with proper attributes matching the project's visual identity (sage green buttons, lavender cards, organic background shapes)
+### Technical details
+
+- File: `src/pages/Index.tsx`
+- All imports, data arrays, component structure, and styling remain identical
+- No new dependencies needed
+- Changes are minor refinements to copy, comments, code style, and opacity values
 
