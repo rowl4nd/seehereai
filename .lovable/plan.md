@@ -1,31 +1,17 @@
 
-
-# Send Welcome Email via Resend on Signup
+# Disable Voice Mode (Keep Code, Hide UI)
 
 ## Summary
-Create a backend function that sends a branded welcome email from `hello@seehere.ai` when a new user signs up, using the user's provided email copy.
+Hide the voice mode microphone button from the Mirror session UI so users cannot activate it. All voice-related code stays in place for future re-enabling.
 
-## Changes
+## Change
 
-### 1. Create `supabase/functions/send-welcome-email/index.ts`
-- Accepts `{ email }` in the request body
-- Uses `RESEND_API_KEY` to call the Resend API
-- Sends from `hello@seehere.ai` with subject "Welcome to See Here"
-- Clean, minimal HTML email using the exact copy provided:
-  - Thank you for first session
-  - Reflection prompts (what stayed, what felt clearer, what felt unfinished)
-  - 6-8 sessions recommendation
-  - "Your space is here" sign-off
-- CORS headers included
-- Fire-and-forget (failure won't block signup)
+### `src/pages/Mirror.tsx`
+1. **Hide the mic toggle button** -- Wrap the mic `<Button>` (around lines 721-730) in a condition that prevents rendering. The simplest approach: wrap with `{false && (...)}` or add a `VOICE_ENABLED` flag set to `false`.
+2. **Hide the voice-mode listening UI** -- The block at lines 688-718 that renders the listening/processing state when `voiceModeEnabled` is true will never activate since the button is hidden, but for safety we can guard it the same way.
 
-### 2. Update `supabase/config.toml`
-- Add `[functions.send-welcome-email]` with `verify_jwt = false`
+No other files need changes. The hooks, edge functions, and all voice infrastructure remain untouched and ready to re-enable by flipping the flag to `true`.
 
-### 3. Update `src/pages/Auth.tsx`
-- After successful signup, call the welcome email function (non-blocking)
-- Change success toast from "Check your email to confirm your account" to "Welcome to See Here"
+## Technical Details
 
-## Prerequisite
-- The `seehere.ai` domain must be verified in Resend for sending from `hello@seehere.ai`
-
+A `const VOICE_FEATURE_ENABLED = false;` constant will be added near the top of the component. The mic button and voice-mode input area will be conditionally rendered only when this flag is `true`. To re-enable later, simply change it to `true`.
