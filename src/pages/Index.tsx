@@ -11,68 +11,68 @@ import heroLogo from "@/assets/see-here-logo.png";
 const ScrollSection = ({
   children,
   className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) => {
+  delay = 0
+
+
+
+
+}: {children: React.ReactNode;className?: string;delay?: number;}) => {
   const { ref, isVisible } = useScrollAnimation();
   return (
     <div
       ref={ref}
       className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
       style={{
-        transitionDelay: `${delay}ms`,
-      }}
-    >
+        transitionDelay: `${delay}ms`
+      }}>
+
       {children}
-    </div>
-  );
+    </div>);
+
 };
 
 const cards = [
-  {
-    icon: MessageCircle,
-    title: "To talk",
-    description: "A space to say what's on your mind — openly, freely, and without limits.",
-  },
-  {
-    icon: Sparkles,
-    title: "To be heard",
-    description: "Every word matters here. You'll be met with presence and genuine attention.",
-  },
-  {
-    icon: Compass,
-    title: "To be understood",
-    description: "Empathic reflections that help you make sense of what you're feeling.",
-  },
-  {
-    icon: Heart,
-    title: "Not to be judged",
-    description: "Complete acceptance. No criticism, no agenda — just warmth and safety.",
-  },
-];
+{
+  icon: MessageCircle,
+  title: "To talk",
+  description: "A space to say what's on your mind — openly, freely, and without limits."
+},
+{
+  icon: Sparkles,
+  title: "To be heard",
+  description: "Every word matters here. You'll be met with presence and genuine attention."
+},
+{
+  icon: Compass,
+  title: "To be understood",
+  description: "Empathic reflections that help you make sense of what you're feeling."
+},
+{
+  icon: Heart,
+  title: "Not to be judged",
+  description: "Complete acceptance. No criticism, no agenda — just warmth and safety."
+}];
+
 
 const features = [
-  {
-    icon: Heart,
-    title: "Person-centred listening",
-    description:
-      "Grounded in unconditional positive regard and empathic understanding. You are accepted fully, without judgment.",
-  },
-  {
-    icon: Shield,
-    title: "Gentle, practical support",
-    description:
-      "Psychologically informed techniques offered as invitations, never prescriptions. Take what resonates, leave what doesn't.",
-  },
-  {
-    icon: Clock,
-    title: "Your pace, your space",
-    description: "Sessions that respect your time. No pressure, no rush. You decide when and how to engage.",
-  },
-];
+{
+  icon: Heart,
+  title: "Person-centred listening",
+  description:
+  "Grounded in unconditional positive regard and empathic understanding. You are accepted fully, without judgment."
+},
+{
+  icon: Shield,
+  title: "Gentle, practical support",
+  description:
+  "Psychologically informed techniques offered as invitations, never prescriptions. Take what resonates, leave what doesn't."
+},
+{
+  icon: Clock,
+  title: "Your pace, your space",
+  description: "Sessions that respect your time. No pressure, no rush. You decide when and how to engage."
+}];
+
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -95,20 +95,20 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 px-3 py-1.5">
             FAQs
           </a>
-          {!loading &&
-            (user ? (
-              <Link to="/dashboard">
+          {!loading && (
+          user ?
+          <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="text-sm hover:bg-accent/50">
                   Dashboard
                 </Button>
-              </Link>
-            ) : (
-              <Link to="/auth">
+              </Link> :
+
+          <Link to="/auth">
                 <Button variant="ghost" size="sm" className="text-sm hover:bg-accent/50">
                   Log in
                 </Button>
-              </Link>
-            ))}
+              </Link>)
+          }
         </div>
       </header>
 
@@ -133,30 +133,30 @@ const Index = () => {
           
           {/* Step cards - modernized */}
           <div className="flex flex-col md:flex-row items-center gap-3 w-full max-w-2xl pt-2">
-            {["Share what's on your mind", "Receive gentle reflection", "Gain clarity at your own pace"].map((text, i) => (
-              <div key={text} className="contents">
+            {["Share what's on your mind", "Receive gentle reflection", "Gain clarity at your own pace"].map((text, i) =>
+            <div key={text} className="contents">
                 <div className="w-40 h-24 flex items-center justify-center px-4 rounded-lg bg-gradient-to-br from-[#cbb7ef]/20 to-[#b9a3e0]/30 backdrop-blur-sm border border-[#b9a3e0]/30 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
                   <p className="text-sm font-medium text-foreground leading-snug">{text}</p>
                 </div>
-                {i < 2 && (
-                  <>
+                {i < 2 &&
+              <>
                     <span className="hidden md:block text-muted-foreground/30 text-base">→</span>
                     <span className="block md:hidden text-muted-foreground/30 text-base">↓</span>
                   </>
-                )}
+              }
               </div>
-            ))}
+            )}
           </div>
 
-          <p className="text-base md:text-lg text-muted-foreground/90 max-w-xl mx-auto leading-relaxed pt-1">
-            Text-based conversations available 24/7. Empathic reflections, privately and without judgement.
+          <p className="text-base md:text-lg text-muted-foreground/90 max-w-xl mx-auto leading-relaxed pt-1">Psychologically informed AI conversations available 24/7. Empathic reflections, privately and without judgement.
+
           </p>
 
           <Link to="/auth" className="pt-2">
             <Button
               size="lg"
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-10 py-6 text-base font-medium shadow-lg shadow-[#4a7a4f]/20 hover:shadow-xl hover:shadow-[#4a7a4f]/30 transition-all duration-300 hover:scale-[1.02] rounded-lg"
-            >
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-10 py-6 text-base font-medium shadow-lg shadow-[#4a7a4f]/20 hover:shadow-xl hover:shadow-[#4a7a4f]/30 transition-all duration-300 hover:scale-[1.02] rounded-lg">
+
               Start your first session (free)
             </Button>
           </Link>
@@ -183,8 +183,8 @@ const Index = () => {
           </ScrollSection>
 
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4 mb-24">
-            {cards.map((card, i) => (
-              <ScrollSection key={card.title} delay={i * 100}>
+            {cards.map((card, i) =>
+            <ScrollSection key={card.title} delay={i * 100}>
                 <div className="group flex flex-col items-start text-left p-7 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300">
                   <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
                     <card.icon className="w-5 h-5 text-primary" />
@@ -193,7 +193,7 @@ const Index = () => {
                   <p className="text-sm text-muted-foreground/80 leading-relaxed">{card.description}</p>
                 </div>
               </ScrollSection>
-            ))}
+            )}
           </div>
 
           {/* What you will get */}
@@ -207,8 +207,8 @@ const Index = () => {
           </ScrollSection>
 
           <div className="space-y-5 md:space-y-0 md:grid md:grid-cols-3 md:gap-6 mb-20">
-            {features.map((feature, i) => (
-              <ScrollSection key={feature.title} delay={i * 100}>
+            {features.map((feature, i) =>
+            <ScrollSection key={feature.title} delay={i * 100}>
                 <div className="group p-7 rounded-lg bg-card/40 backdrop-blur-md border border-border/25 hover:bg-card/60 hover:shadow-sm transition-all duration-300">
                   <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent/80 to-sage-soft/50 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300">
                     <feature.icon className="w-4.5 h-4.5 text-accent-foreground" />
@@ -217,7 +217,7 @@ const Index = () => {
                   <p className="text-sm text-muted-foreground/80 leading-relaxed">{feature.description}</p>
                 </div>
               </ScrollSection>
-            ))}
+            )}
           </div>
 
           {/* Who this is for */}
@@ -229,15 +229,15 @@ const Index = () => {
 
               <div className="grid gap-3.5 md:grid-cols-2">
                 {[
-                  "Need to process a difficult conversation or decision",
-                  "Feel overwhelmed by stress and want to untangle your thoughts",
-                  "Are navigating a life transition and need space to reflect",
-                  "Want to understand your emotions and reactions better"
-                ].map((text) => (
-                  <div key={text} className="p-5 rounded-lg bg-card/30 backdrop-blur-sm border border-border/20 hover:border-border/40 transition-all duration-300">
+                "Need to process a difficult conversation or decision",
+                "Feel overwhelmed by stress and want to untangle your thoughts",
+                "Are navigating a life transition and need space to reflect",
+                "Want to understand your emotions and reactions better"].
+                map((text) =>
+                <div key={text} className="p-5 rounded-lg bg-card/30 backdrop-blur-sm border border-border/20 hover:border-border/40 transition-all duration-300">
                     <p className="text-sm text-muted-foreground/90 leading-relaxed">{text}</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </ScrollSection>
@@ -248,8 +248,8 @@ const Index = () => {
               <Link to="/auth">
                 <Button
                   size="lg"
-                  className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-10 py-6 text-base font-medium shadow-lg shadow-[#4a7a4f]/20 hover:shadow-xl hover:shadow-[#4a7a4f]/30 transition-all duration-300 hover:scale-[1.02] rounded-lg"
-                >
+                  className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-10 py-6 text-base font-medium shadow-lg shadow-[#4a7a4f]/20 hover:shadow-xl hover:shadow-[#4a7a4f]/30 transition-all duration-300 hover:scale-[1.02] rounded-lg">
+
                   Begin a free conversation
                 </Button>
               </Link>
@@ -352,8 +352,8 @@ const Index = () => {
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Terms &amp; Conditions
             </a>
             <span className="text-xs text-muted-foreground/30">·</span>
@@ -361,15 +361,15 @@ const Index = () => {
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Privacy Policy
             </a>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
