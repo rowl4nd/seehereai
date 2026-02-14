@@ -19,6 +19,8 @@ interface Message {
   content: string;
 }
 
+const VOICE_FEATURE_ENABLED = false;
+
 const Mirror = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, updateProfile } = useProfile();
@@ -685,7 +687,7 @@ const Mirror = () => {
         {/* Input area */}
         <div className="p-4 md:p-6">
           <div className="max-w-2xl mx-auto flex gap-3 items-end">
-            {voiceModeEnabled ? (
+            {VOICE_FEATURE_ENABLED && voiceModeEnabled ? (
               <div className="flex-1 min-h-[48px] flex items-center px-4 py-3 rounded-md bg-card border border-border/50">
                 {voiceMode.voiceState === "listening" && (
                   <div className="flex items-center gap-2 text-primary">
@@ -717,19 +719,21 @@ const Mirror = () => {
                 autoFocus
               />
             )}
-            {/* Mic toggle */}
-            <Button
-              variant={voiceModeEnabled ? "default" : "outline"}
-              size="icon"
-              onClick={handleVoiceToggle}
-              disabled={sessionEnded}
-              className={`shrink-0 ${voiceModeEnabled ? "bg-primary text-primary-foreground" : ""}`}
-              title={voiceModeEnabled ? "Switch to text mode" : "Switch to voice mode"}
-            >
-              {voiceModeEnabled ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-            </Button>
+            {/* Mic toggle - hidden while voice feature is disabled */}
+            {VOICE_FEATURE_ENABLED && (
+              <Button
+                variant={voiceModeEnabled ? "default" : "outline"}
+                size="icon"
+                onClick={handleVoiceToggle}
+                disabled={sessionEnded}
+                className={`shrink-0 ${voiceModeEnabled ? "bg-primary text-primary-foreground" : ""}`}
+                title={voiceModeEnabled ? "Switch to text mode" : "Switch to voice mode"}
+              >
+                {voiceModeEnabled ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </Button>
+            )}
             {/* Send button - only in text mode */}
-            {!voiceModeEnabled && (
+            {(!VOICE_FEATURE_ENABLED || !voiceModeEnabled) && (
               <Button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading || sessionEnded}
