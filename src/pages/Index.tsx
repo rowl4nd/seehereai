@@ -38,7 +38,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-50 flex justify-between items-center px-6 py-4 md:px-12 bg-background/95 backdrop-blur-sm border-b border-border/40">
+      <header className="sticky top-0 z-50 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">
         <Logo />
         <div className="flex items-center gap-4">
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
