@@ -82,8 +82,8 @@ const Index = () => {
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
           <img src={heroLogo} alt="see here" className="h-24 md:h-32 w-auto mx-auto mb-4" />
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.05] text-foreground tracking-tight">
-            A quiet space<br />to talk
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-[1.05] text-foreground tracking-tight">
+            A quiet space to talk
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Psychologically informed AI conversations available 24/7. Gentle reflections, in private and without judgement.
