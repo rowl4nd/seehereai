@@ -98,7 +98,7 @@ const Guidance = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="relative z-10 p-6 md:p-8">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 p-6 md:p-8">
         <Logo />
       </header>
 

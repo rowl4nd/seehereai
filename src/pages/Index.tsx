@@ -36,7 +36,7 @@ const ScrollSection = ({
 const Index = () => {
   const { user, loading } = useAuth();
   return (
-    <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
       {/* ── Header ── */}
       <header className="sticky top-0 z-50 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">
         <Logo />
