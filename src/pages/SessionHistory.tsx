@@ -52,7 +52,7 @@ const SessionHistory = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="relative z-10 flex justify-between items-center p-6 md:p-8">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 flex justify-between items-center p-6 md:p-8">
         <Logo />
         <Button
           variant="ghost"
