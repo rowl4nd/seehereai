@@ -117,9 +117,23 @@ const Index = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-tight text-foreground">
             A quiet space to talk
           </h1>
-          <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-            The SeeHere mirror listens first, then offers gentle reflection — privately and without judgement.
-          </p>
+          {/* Step cards */}
+          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-2 w-full max-w-xl">
+            {[
+              "Share what's on your mind",
+              "Receive gentle reflection",
+              "Gain clarity at your own pace",
+            ].map((text, i) => (
+              <div key={text} className="flex items-center gap-2 md:gap-2 w-full md:w-auto">
+                <div className="flex-1 md:flex-none px-4 py-3 rounded-xl bg-card/70 backdrop-blur-sm border border-border/20 shadow-sm text-center">
+                  <p className="text-sm text-muted-foreground leading-snug">{text}</p>
+                </div>
+                {i < 2 && (
+                  <span className="hidden md:block text-muted-foreground/40 text-lg">→</span>
+                )}
+              </div>
+            ))}
+          </div>
           <Link to="/auth">
             <Button
               size="lg"
