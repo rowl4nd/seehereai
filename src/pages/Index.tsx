@@ -7,35 +7,30 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import Logo from "@/components/Logo";
 
 import heroLogo from "@/assets/see-here-logo.png";
-import heroAccent1 from "@/assets/hero-accent-1.jpg";
-import heroAccent2 from "@/assets/hero-accent-2.jpg";
-import heroAccent3 from "@/assets/hero-accent-3.jpg";
-import heroAccent4 from "@/assets/hero-accent-4.jpg";
-import heroAccent5 from "@/assets/hero-accent-5.jpg";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
 import splitSupport from "@/assets/split-support.jpg";
 
 const ScrollSection = ({
   children,
   className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) => {
+  delay = 0
+
+
+
+
+}: {children: React.ReactNode;className?: string;delay?: number;}) => {
   const { ref, isVisible } = useScrollAnimation();
   return (
     <div
       ref={ref}
       className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
       style={{
-        transitionDelay: `${delay}ms`,
-      }}
-    >
+        transitionDelay: `${delay}ms`
+      }}>
+
       {children}
-    </div>
-  );
+    </div>);
+
 };
 
 const Index = () => {
@@ -49,80 +44,48 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
-          {!loading &&
-            (user ? (
-              <Link to="/dashboard">
+          {!loading && (
+          user ?
+          <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="text-sm">
                   Dashboard
                 </Button>
-              </Link>
-            ) : (
-              <Link to="/auth">
+              </Link> :
+
+          <Link to="/auth">
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
-              </Link>
-            ))}
+              </Link>)
+          }
         </div>
       </header>
 
-      {/* ── Hero with floating images ── */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-[#f8f6f3] to-background py-20">
+
+      {/* ── Hero - Clean, minimal ── */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-[#f8f6f3] to-background">
         {/* Subtle background shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full bg-[#cbb7ef]/8 blur-[100px]" />
           <div className="absolute bottom-20 right-10 w-[350px] h-[350px] rounded-full bg-[#b1cfac]/8 blur-[100px]" />
         </div>
 
-        {/* Floating accent images - hidden on mobile, varied sizes */}
-        <div className="absolute inset-0 hidden lg:block pointer-events-none">
-          {/* Left side - 3 images */}
-          {/* Large tall portrait */}
-          <div className="absolute top-[12%] left-[6%] w-[220px] h-[280px] rounded-xl overflow-hidden opacity-0 animate-fade-in shadow-lg" style={{ animationDelay: '200ms' }}>
-            <img src={heroAccent1} alt="" className="w-full h-full object-cover" />
-          </div>
-          
-          {/* Small square */}
-          <div className="absolute top-[52%] left-[4%] w-[140px] h-[140px] rounded-lg overflow-hidden opacity-0 animate-fade-in shadow-md" style={{ animationDelay: '500ms' }}>
-            <img src={heroAccent2} alt="" className="w-full h-full object-cover" />
-          </div>
-          
-          {/* Medium landscape */}
-          <div className="absolute bottom-[8%] left-[8%] w-[200px] h-[130px] rounded-lg overflow-hidden opacity-0 animate-fade-in shadow-lg" style={{ animationDelay: '700ms' }}>
-            <img src={heroAccent3} alt="" className="w-full h-full object-cover" />
-          </div>
-
-          {/* Right side - 2 images */}
-          {/* Medium square */}
-          <div className="absolute top-[18%] right-[5%] w-[180px] h-[180px] rounded-xl overflow-hidden opacity-0 animate-fade-in shadow-lg" style={{ animationDelay: '300ms' }}>
-            <img src={heroAccent4} alt="" className="w-full h-full object-cover" />
-          </div>
-          
-          {/* Large landscape */}
-          <div className="absolute bottom-[15%] right-[7%] w-[240px] h-[160px] rounded-xl overflow-hidden opacity-0 animate-fade-in shadow-lg" style={{ animationDelay: '600ms' }}>
-            <img src={heroAccent5} alt="" className="w-full h-full object-cover" />
-          </div>
-        </div>
-
-        {/* Central content */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
-          <img src={heroLogo} alt="see here" className="h-36 md:h-48 w-auto mx-auto mb-4 opacity-0 animate-fade-in" />
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-[1.05] text-foreground tracking-tight opacity-0 animate-fade-in" style={{ animationDelay: '100ms' }}>
+          <img src={heroLogo} alt="see here" className="h-36 md:h-48 w-auto mx-auto mb-4" />
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-[1.05] text-foreground tracking-tight">
             A quiet space to talk
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed opacity-0 animate-fade-in" style={{ animationDelay: '200ms' }}>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Psychologically informed AI conversations available 24/7. Gentle reflections, in private and without judgement.
           </p>
-          <div className="opacity-0 animate-fade-in" style={{ animationDelay: '300ms' }}>
-            <Link to="/auth" className="inline-block pt-4">
-              <Button
-                size="lg"
-                className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                Start your first session (free)
-              </Button>
-            </Link>
-          </div>
+          <Link to="/auth" className="inline-block pt-4">
+            <Button
+              size="lg"
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+
+              Start your first session (free)
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -134,8 +97,8 @@ const Index = () => {
             <img
               src={splitSafeSpace}
               alt="Safe space for reflection"
-              className="w-full h-full object-cover"
-            />
+              className="w-full h-full object-cover" />
+
           </div>
 
           {/* Text side */}
@@ -275,8 +238,8 @@ const Index = () => {
                   <Link to="/auth">
                     <Button
                       size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
+                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+
                       Begin a free conversation
                     </Button>
                   </Link>
@@ -290,8 +253,8 @@ const Index = () => {
             <img
               src={splitSupport}
               alt="Calm and supportive environment"
-              className="w-full h-full object-cover"
-            />
+              className="w-full h-full object-cover" />
+
           </div>
         </div>
       </section>
@@ -393,27 +356,27 @@ const Index = () => {
         <div className="relative z-10 space-y-4">
           <p className="text-sm text-muted-foreground">A space for reflection</p>
           <div className="flex justify-center gap-8">
-            
+            <a
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Terms &amp; Conditions
             </a>
-            
+            <a
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Privacy Policy
             </a>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
