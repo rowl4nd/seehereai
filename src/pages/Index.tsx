@@ -61,16 +61,6 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Safety notice */}
-      <div className="relative z-10 bg-[#fae5da]/20 border-b border-border/30 py-2 px-6 text-center">
-        <p className="text-xs text-muted-foreground">
-          In crisis? Contact{" "}
-          <a href="tel:116123" className="underline underline-offset-2 hover:text-foreground transition-colors font-medium">
-            Samaritans: 116 123
-          </a>{" "}
-          or text SHOUT to 85258
-        </p>
-      </div>
 
       {/* ── Hero - Clean, minimal ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-[#f8f6f3] to-background">
@@ -349,6 +339,17 @@ const Index = () => {
           </div>
         </ScrollSection>
       </section>
+
+      {/* Safety notice */}
+      <div className="relative z-10 bg-[#fae5da]/20 border-t border-border/30 py-2 px-6 text-center">
+        <p className="text-xs text-muted-foreground">
+          In crisis? Contact{" "}
+          <a href="tel:116123" className="underline underline-offset-2 hover:text-foreground transition-colors font-medium">
+            Samaritans: 116 123
+          </a>{" "}
+          or text SHOUT to 85258
+        </p>
+      </div>
 
       {/* ── Footer ── */}
       <footer className="relative py-12 px-6 text-center border-t border-border/30 bg-[#f8f6f3]">
