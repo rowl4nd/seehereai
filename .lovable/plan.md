@@ -1,22 +1,41 @@
 
 
-## Replace Homepage with Updated Version
+## Sticky Headers on All Pages
 
-Replace `src/pages/Index.tsx` with your updated code. Since the JSX tags were stripped during paste, I'll reconstruct them using the existing file as a base and apply the specific differences from your version:
+### 1. Fix Index Page (1 change)
 
-### Changes to apply
+In `src/pages/Index.tsx`, change `overflow-x-hidden` to `overflow-x-clip` on the outer wrapper div. The header already has sticky classes but they're broken by the overflow property.
 
-1. **Background shapes comment** -- "Flowing background shapes" becomes "Flowing background shapes - more subtle"
-2. **Safety notice** -- Reworded from "If you're in crisis, please contact the Samaritans on 116 123 or text SHOUT to 85258" to the shorter "In crisis? Contact Samaritans: 116 123 or text SHOUT to 85258"
-3. **Step cards comment** -- "Step cards" becomes "Step cards - modernized"
-4. **Scroll hint text** -- "scroll" capitalized to "Scroll"
-5. **"Who this is for" list** -- Refactored from four individual `<li>` elements to a `.map()` over an array of strings
-6. **Footer link opacity** -- `text-muted-foreground/70` changed to `text-muted-foreground/60` on both Terms and Privacy links
+### 2. Add Sticky Headers to 12 Other Pages
 
-### Technical details
+For each page below, replace the `<header>` classes -- swapping `relative z-10` for `sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40`:
 
-- File: `src/pages/Index.tsx`
-- All imports, data arrays, component structure, and styling remain identical
-- No new dependencies needed
-- Changes are minor refinements to copy, comments, code style, and opacity values
+| Page | File |
+|------|------|
+| Dashboard | src/pages/Dashboard.tsx |
+| Mirror | src/pages/Mirror.tsx |
+| Auth | src/pages/Auth.tsx |
+| Credits | src/pages/Credits.tsx |
+| Cooldown | src/pages/Cooldown.tsx |
+| Guidance | src/pages/Guidance.tsx |
+| Session History | src/pages/SessionHistory.tsx |
+| Onboarding | src/pages/Onboarding.tsx |
+| Payment Success | src/pages/PaymentSuccess.tsx |
+| Reset Password | src/pages/ResetPassword.tsx |
+| Terms | src/pages/Terms.tsx |
+| Privacy | src/pages/Privacy.tsx |
+
+### What the sticky header looks like
+
+- Pinned to top on scroll
+- Semi-transparent background with blur effect
+- Subtle bottom border for separation from content
+
+### Technical Detail
+
+Each header gets these Tailwind classes:
+- `sticky top-0` -- pins to top
+- `z-50` -- stays above content
+- `bg-background/95 backdrop-blur-sm` -- blurred semi-transparent background
+- `border-b border-border/40` -- subtle divider
 
