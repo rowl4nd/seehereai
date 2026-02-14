@@ -1,41 +1,27 @@
 
+## Consistent Header Padding Across All Pages
 
-## Sticky Headers on All Pages
+The homepage header uses compact padding (`px-4 py-2 md:px-8`) while all 12 other pages use larger padding (`p-6 md:p-8`). This makes headers look different widths.
 
-### 1. Fix Index Page (1 change)
+### The Fix
 
-In `src/pages/Index.tsx`, change `overflow-x-hidden` to `overflow-x-clip` on the outer wrapper div. The header already has sticky classes but they're broken by the overflow property.
+Update all other pages to match the Index page's padding: `px-4 py-2 md:px-8`.
 
-### 2. Add Sticky Headers to 12 Other Pages
+### Pages to Update (12 files)
 
-For each page below, replace the `<header>` classes -- swapping `relative z-10` for `sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40`:
+| Page | Current Padding | New Padding |
+|------|----------------|-------------|
+| Dashboard.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| Mirror.tsx | `px-4 md:px-6 py-[10px]` | `px-4 py-2 md:px-8` |
+| Auth.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| Credits.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| Cooldown.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| Guidance.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| SessionHistory.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| Onboarding.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| PaymentSuccess.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| ResetPassword.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| Terms.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+| Privacy.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
 
-| Page | File |
-|------|------|
-| Dashboard | src/pages/Dashboard.tsx |
-| Mirror | src/pages/Mirror.tsx |
-| Auth | src/pages/Auth.tsx |
-| Credits | src/pages/Credits.tsx |
-| Cooldown | src/pages/Cooldown.tsx |
-| Guidance | src/pages/Guidance.tsx |
-| Session History | src/pages/SessionHistory.tsx |
-| Onboarding | src/pages/Onboarding.tsx |
-| Payment Success | src/pages/PaymentSuccess.tsx |
-| Reset Password | src/pages/ResetPassword.tsx |
-| Terms | src/pages/Terms.tsx |
-| Privacy | src/pages/Privacy.tsx |
-
-### What the sticky header looks like
-
-- Pinned to top on scroll
-- Semi-transparent background with blur effect
-- Subtle bottom border for separation from content
-
-### Technical Detail
-
-Each header gets these Tailwind classes:
-- `sticky top-0` -- pins to top
-- `z-50` -- stays above content
-- `bg-background/95 backdrop-blur-sm` -- blurred semi-transparent background
-- `border-b border-border/40` -- subtle divider
-
+This ensures every page header has the same compact look as the homepage.
