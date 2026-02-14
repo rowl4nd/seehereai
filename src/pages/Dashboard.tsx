@@ -97,7 +97,7 @@ const Dashboard = () => {
   return <div className="min-h-screen flex flex-col bg-background">
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 flex justify-between items-center p-6 md:p-8">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 flex justify-between items-center px-4 py-2 md:px-8">
         <Logo />
         <Button variant="ghost" onClick={handleSignOut} className="text-sm text-muted-foreground">
           Sign out

@@ -9,7 +9,7 @@ const Privacy = () => {
     <div className="min-h-screen flex flex-col bg-background">
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 p-6 md:p-8 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8 flex items-center justify-between">
         <Logo />
         <button
           onClick={() => window.close()}
