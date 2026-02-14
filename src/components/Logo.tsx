@@ -8,9 +8,9 @@ interface LogoProps {
 const Logo = ({ to = "/" }: LogoProps) => {
   return (
     <Link to={to} className="inline-block hover:opacity-80 transition-opacity">
-      <img src={logo} alt="see here" style={{ height: '48px' }} className="w-auto" />
-    </Link>
-  );
+      <img alt="see here" style={{ height: '48px' }} className="w-auto" src="/lovable-uploads/4d53de4d-7165-4e86-b3e1-27a9ccf7ff35.png" />
+    </Link>);
+
 };
 
 export default Logo;
