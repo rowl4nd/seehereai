@@ -76,7 +76,7 @@ const Index = () => {
   const { user, loading } = useAuth();
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background via-[hsl(var(--sage-soft)/0.15)] via-60% to-[hsl(var(--peach-soft))] overflow-x-hidden">
-      {/* Flowing background shapes */}
+      {/* Flowing background shapes - more subtle */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute -top-20 -left-32 w-[500px] h-[400px] rounded-[60%_40%_30%_70%/60%_30%_70%_40%] bg-[#cbb7ef]/15 blur-[100px] animate-[gentleFloat_20s_ease-in-out_infinite]" />
         <div className="absolute top-[20%] -right-20 w-[450px] h-[350px] rounded-[40%_60%_70%_30%/40%_70%_30%_60%] bg-[#b1cfac]/15 blur-[90px]" />
@@ -113,9 +113,9 @@ const Index = () => {
       {/* Safety notice */}
       <div className="relative z-10 bg-muted/50 border-b border-border/20">
         <p className="text-center text-xs text-muted-foreground py-2 px-4">
-          If you're in crisis, please contact the Samaritans on{" "}
+          In crisis? Contact{" "}
           <a href="tel:116123" className="underline font-medium">
-            116 123
+            Samaritans: 116 123
           </a>{" "}
           or text SHOUT to 85258
         </p>
@@ -129,7 +129,7 @@ const Index = () => {
             A quiet space to talk
           </h1>
 
-          {/* Step cards */}
+          {/* Step cards - modernized */}
           <div className="flex flex-col md:flex-row items-center gap-4 w-full max-w-xl">
             {["Share what's on your mind", "Receive gentle reflection", "Gain clarity at your own pace"].map((text, i) => (
               <div key={text} className="contents">
@@ -162,7 +162,7 @@ const Index = () => {
 
         {/* Scroll hint */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-xs text-muted-foreground tracking-widest uppercase">scroll</span>
+          <span className="text-xs text-muted-foreground tracking-widest uppercase">Scroll</span>
           <div className="w-px h-6 bg-muted-foreground/40" />
         </div>
       </section>
@@ -226,22 +226,17 @@ const Index = () => {
               </h3>
 
               <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                  <span className="text-muted-foreground">Need to process a difficult conversation or decision</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                  <span className="text-muted-foreground">Feel overwhelmed by stress and want to untangle your thoughts</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                  <span className="text-muted-foreground">Are navigating a life transition and need space to reflect</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                  <span className="text-muted-foreground">Want to understand your emotions and reactions better</span>
-                </li>
+                {[
+                  "Need to process a difficult conversation or decision",
+                  "Feel overwhelmed by stress and want to untangle your thoughts",
+                  "Are navigating a life transition and need space to reflect",
+                  "Want to understand your emotions and reactions better"
+                ].map((text) => (
+                  <li key={text} className="flex items-start gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                    <span className="text-muted-foreground">{text}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </ScrollSection>
@@ -356,7 +351,7 @@ const Index = () => {
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-200"
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
             >
               Terms &amp; Conditions
             </a>
@@ -365,7 +360,7 @@ const Index = () => {
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-200"
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
             >
               Privacy Policy
             </a>
