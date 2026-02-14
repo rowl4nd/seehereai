@@ -13,24 +13,24 @@ import splitSupport from "@/assets/split-support.jpg";
 const ScrollSection = ({
   children,
   className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) => {
+  delay = 0
+
+
+
+
+}: {children: React.ReactNode;className?: string;delay?: number;}) => {
   const { ref, isVisible } = useScrollAnimation();
   return (
     <div
       ref={ref}
       className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
       style={{
-        transitionDelay: `${delay}ms`,
-      }}
-    >
+        transitionDelay: `${delay}ms`
+      }}>
+
       {children}
-    </div>
-  );
+    </div>);
+
 };
 
 const Index = () => {
@@ -44,20 +44,20 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
-          {!loading &&
-            (user ? (
-              <Link to="/dashboard">
+          {!loading && (
+          user ?
+          <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="text-sm">
                   Dashboard
                 </Button>
-              </Link>
-            ) : (
-              <Link to="/auth">
+              </Link> :
+
+          <Link to="/auth">
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
-              </Link>
-            ))}
+              </Link>)
+          }
         </div>
       </header>
 
@@ -85,14 +85,14 @@ const Index = () => {
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.05] text-foreground tracking-tight">
             A quiet space<br />to talk
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Text-based conversations available 24/7. Empathic reflections,<br className="hidden md:block" /> privately and without judgement.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">Psychologically informed AI conversations available 24/7. Gentle reflections, in private and without judgement.
+            <br className="hidden md:block" /> privately and without judgement.
           </p>
           <Link to="/auth" className="inline-block pt-4">
             <Button
               size="lg"
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-            >
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+
               Start your first session (free)
             </Button>
           </Link>
@@ -104,11 +104,11 @@ const Index = () => {
         <div className="grid md:grid-cols-2">
           {/* Image side */}
           <div className="aspect-square md:aspect-auto md:min-h-[600px] overflow-hidden">
-            <img 
+            <img
               src={splitSafeSpace}
               alt="Safe space for reflection"
-              className="w-full h-full object-cover"
-            />
+              className="w-full h-full object-cover" />
+
           </div>
 
           {/* Text side */}
@@ -248,8 +248,8 @@ const Index = () => {
                   <Link to="/auth">
                     <Button
                       size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
+                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+
                       Begin a free conversation
                     </Button>
                   </Link>
@@ -260,11 +260,11 @@ const Index = () => {
 
           {/* Image side */}
           <div className="aspect-square md:aspect-auto md:min-h-[600px] overflow-hidden order-1 md:order-2">
-            <img 
+            <img
               src={splitSupport}
               alt="Calm and supportive environment"
-              className="w-full h-full object-cover"
-            />
+              className="w-full h-full object-cover" />
+
           </div>
         </div>
       </section>
@@ -359,23 +359,23 @@ const Index = () => {
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Terms &amp; Conditions
             </a>
             <a
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Privacy Policy
             </a>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
