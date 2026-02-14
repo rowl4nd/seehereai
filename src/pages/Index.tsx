@@ -112,7 +112,7 @@ const Index = () => {
       <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden pb-16">
 
 
-        <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in flex flex-col items-center">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-10 animate-fade-in flex flex-col items-center">
           <img src={heroLogo} alt="see here" className="h-32 md:h-40 w-auto mb-2" />
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-tight text-foreground">
             A quiet space to talk
