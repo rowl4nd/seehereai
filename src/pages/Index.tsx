@@ -125,7 +125,7 @@ const Index = () => {
               "Gain clarity at your own pace",
             ].map((text, i) => (
               <div key={text} className="contents">
-                <div className="w-36 h-28 flex items-center justify-center px-4 rounded-xl bg-[#cbb7ef] border border-[#cbb7ef]/40 shadow-sm text-center">
+                <div className="w-36 h-28 flex items-center justify-center px-4 rounded-xl bg-[#b9a3e0] border border-[#b9a3e0]/40 shadow-sm text-center">
                   <p className="text-base font-bold text-background leading-snug">{text}</p>
                 </div>
                 {i < 2 && (
