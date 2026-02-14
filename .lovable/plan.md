@@ -1,17 +1,24 @@
 
-# Disable Voice Mode (Keep Code, Hide UI)
 
-## Summary
-Hide the voice mode microphone button from the Mirror session UI so users cannot activate it. All voice-related code stays in place for future re-enabling.
+## Replace Homepage Code
 
-## Change
+Replace the entire `src/pages/Index.tsx` with your updated version, which includes the following changes compared to the current file:
 
-### `src/pages/Mirror.tsx`
-1. **Hide the mic toggle button** -- Wrap the mic `<Button>` (around lines 721-730) in a condition that prevents rendering. The simplest approach: wrap with `{false && (...)}` or add a `VOICE_ENABLED` flag set to `false`.
-2. **Hide the voice-mode listening UI** -- The block at lines 688-718 that renders the listening/processing state when `voiceModeEnabled` is true will never activate since the button is hidden, but for safety we can guard it the same way.
+### New Additions
+- **Safety notice banner** below the header with crisis contact information (Samaritans 116 123, SHOUT 85258)
+- **"How does it work?" FAQ item** added to the accordion
+- **Descriptive subtitles** added under section headings ("Whether you're processing a difficult conversation..." and "Warmth, understanding, and room to breathe")
+- **"Who this is for" section** with a bulleted list of use cases (processing decisions, managing stress, life transitions, understanding emotions)
 
-No other files need changes. The hooks, edge functions, and all voice infrastructure remain untouched and ready to re-enable by flipping the flag to `true`.
+### Content Updates
+- Hero CTA button text changed from "Try for free..." to "Start your first session (free)"
+- Second CTA button text changed from "When you're ready, let's talk" to "Begin a free conversation"
+- Section heading changed from "SeeHere is a private space..." to "A space designed for you"
+- Updated quote text to a more descriptive version
+- Added a tagline under the hero heading about text-based conversations
 
-## Technical Details
+### Technical Details
+- The file will be fully rewritten with the same imports, components, and styling patterns
+- All class names reference existing Tailwind/theme variables -- no new dependencies needed
+- The stripped JSX in the user's paste will be reconstructed with proper attributes matching the project's visual identity (sage green buttons, lavender cards, organic background shapes)
 
-A `const VOICE_FEATURE_ENABLED = false;` constant will be added near the top of the component. The mic button and voice-mode input area will be conditionally rendered only when this flag is `true`. To re-enable later, simply change it to `true`.
