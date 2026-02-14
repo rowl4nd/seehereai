@@ -183,7 +183,7 @@ const Index = () => {
 
           {/* What you will get */}
           <ScrollSection>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4 mt-24">
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-12 mt-24">
               What you will get
             </h2>
             <p className="text-center text-muted-foreground mb-16 max-w-md mx-auto">
