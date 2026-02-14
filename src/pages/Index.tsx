@@ -393,7 +393,7 @@ const Index = () => {
         <div className="relative z-10 space-y-4">
           <p className="text-sm text-muted-foreground">A space for reflection</p>
           <div className="flex justify-center gap-8">
-            <a
+            
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
@@ -401,7 +401,7 @@ const Index = () => {
             >
               Terms &amp; Conditions
             </a>
-            <a
+            
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
