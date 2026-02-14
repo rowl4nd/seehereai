@@ -163,11 +163,8 @@ const Index = () => {
           {/* SeeHere cards */}
           <ScrollSection>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-center text-foreground mb-4">
-              SeeHere
+              SeeHere is a private space...
             </h2>
-            <p className="text-center text-muted-foreground mb-16 max-w-md mx-auto">
-              Is a private space...
-            </p>
           </ScrollSection>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
