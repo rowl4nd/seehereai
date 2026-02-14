@@ -118,18 +118,21 @@ const Index = () => {
             A quiet space to talk
           </h1>
           {/* Step cards */}
-          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-2 w-full max-w-xl">
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full max-w-xl">
             {[
               "Share what's on your mind",
               "Receive gentle reflection",
               "Gain clarity at your own pace",
             ].map((text, i) => (
-              <div key={text} className="flex items-center gap-2 md:gap-2 w-full md:w-auto">
-                <div className="flex-1 md:flex-none px-4 py-3 rounded-xl bg-card/70 backdrop-blur-sm border border-border/20 shadow-sm text-center">
+              <div key={text} className="contents">
+                <div className="w-36 h-28 flex items-center justify-center px-4 rounded-xl bg-card/70 backdrop-blur-sm border border-border/20 shadow-sm text-center">
                   <p className="text-sm text-muted-foreground leading-snug">{text}</p>
                 </div>
                 {i < 2 && (
-                  <span className="hidden md:block text-muted-foreground/40 text-lg">→</span>
+                  <>
+                    <span className="hidden md:block text-muted-foreground/40 text-lg">→</span>
+                    <span className="block md:hidden text-muted-foreground/40 text-lg">↓</span>
+                  </>
                 )}
               </div>
             ))}
