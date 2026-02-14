@@ -211,7 +211,7 @@ const Index = () => {
               <Link to="/auth">
                 <Button
                   size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-base font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                  className="bg-background hover:bg-background/90 text-[#4a7a4f] border-[3px] border-[#b1cfac] px-12 py-5 text-base font-sans font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
                 >
                   When you're ready, let's talk
                 </Button>
