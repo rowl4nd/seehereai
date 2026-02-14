@@ -85,8 +85,8 @@ const Index = () => {
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.05] text-foreground tracking-tight">
             A quiet space<br />to talk
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">Psychologically informed AI conversations available 24/7. Gentle reflections, in private and without judgement.
-            <br className="hidden md:block" /> privately and without judgement.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Psychologically informed AI conversations available 24/7. Gentle reflections, in private and without judgement.
           </p>
           <Link to="/auth" className="inline-block pt-4">
             <Button
