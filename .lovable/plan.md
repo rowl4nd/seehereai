@@ -1,18 +1,25 @@
 
 
-## Fix Mobile Zoom on Text Input Focus
+## Match AI Message Text Color to User Message Text Color
 
-Mobile browsers (especially iOS Safari) automatically zoom in when a user taps on an input field with a font-size smaller than 16px. This makes the send button inaccessible.
+Currently in the Mirror chat:
+- **User messages**: white text (`#ffffff`) on green background (`#8aaf8e`)
+- **AI messages**: peach text (`#ffedd5`) on purple background (`#9a86be`)
 
-### The Fix
+### The Change
 
-Set the font-size of the chat input textarea to 16px (or `text-base` in Tailwind) on mobile. This tells the browser there's no need to zoom in, keeping the full page width visible including the send button.
+Update the AI message text color from `#ffedd5` to `#ffffff` so both sides use the same white text.
 
 ### Technical Details
 
-**File: `src/pages/Mirror.tsx`**
+**File: `src/pages/Mirror.tsx`** (line 635)
 
-- Locate the `<textarea>` (or `<Textarea>`) element used for message input in the chat footer
-- Add `text-base` (16px) to its className to ensure the font size is at least 16px on all devices
-- This is the standard solution for preventing unwanted mobile zoom on focus
+Change the AI message inline style from:
+```
+{ backgroundColor: '#9a86be', color: '#ffedd5' }
+```
+to:
+```
+{ backgroundColor: '#9a86be', color: '#ffffff' }
+```
 
