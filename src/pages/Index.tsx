@@ -9,6 +9,7 @@ import Logo from "@/components/Logo";
 import heroLogo from "@/assets/see-here-logo.png";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
 import splitSupport from "@/assets/split-support.jpg";
+import chatPreview from "@/assets/chat-preview.png";
 
 const ScrollSection = ({
   children,
@@ -168,13 +169,13 @@ const Index = () => {
             </h2>
           </ScrollSection>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <ScrollSection delay={0}>
-              <div className="group flex flex-col items-center text-center p-8 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-6 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
+              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px]">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   1
                 </div>
-                <h3 className="text-xl font-serif font-light text-foreground mb-3">Share what's on your mind</h3>
+                <h3 className="text-lg font-serif font-light text-foreground mb-3">Share what's on your mind</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Type freely in a private, text-based conversation. No scheduling, no pressure.
                 </p>
@@ -182,11 +183,11 @@ const Index = () => {
             </ScrollSection>
 
             <ScrollSection delay={100}>
-              <div className="group flex flex-col items-center text-center p-8 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-6 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
+              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px]">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   2
                 </div>
-                <h3 className="text-xl font-serif font-light text-foreground mb-3">Receive empathic reflection</h3>
+                <h3 className="text-lg font-serif font-light text-foreground mb-3">Receive empathic reflection</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Get thoughtful responses that help you see your situation more clearly.
                 </p>
@@ -194,14 +195,20 @@ const Index = () => {
             </ScrollSection>
 
             <ScrollSection delay={200}>
-              <div className="group flex flex-col items-center text-center p-8 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-6 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
+              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px]">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   3
                 </div>
-                <h3 className="text-xl font-serif font-light text-foreground mb-3">Reflect and return</h3>
+                <h3 className="text-lg font-serif font-light text-foreground mb-3">Reflect and return</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Sessions are available 24/7. Come back to chat after a brief cooldown period.
                 </p>
+              </div>
+            </ScrollSection>
+
+            <ScrollSection delay={300}>
+              <div className="group rounded-lg overflow-hidden border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px]">
+                <img src={chatPreview} alt="Example conversation with SeeHere" className="w-full h-full object-cover" />
               </div>
             </ScrollSection>
           </div>
