@@ -1,25 +1,17 @@
 
 
-## Match AI Message Text Color to User Message Text Color
+## Lighten Auth Form Placeholder Text
 
-Currently in the Mirror chat:
-- **User messages**: white text (`#ffffff`) on green background (`#8aaf8e`)
-- **AI messages**: peach text (`#ffedd5`) on purple background (`#9a86be`)
+The placeholder text ("you@example.com" and "••••••••") on the login/signup form currently appears too dark, making it look like pre-filled text rather than hints.
 
 ### The Change
 
-Update the AI message text color from `#ffedd5` to `#ffffff` so both sides use the same white text.
+**File: `src/pages/Auth.tsx`**
 
-### Technical Details
+Add a custom className or inline style to both `<Input>` elements to make their placeholder text a lighter color. This will be done by adding a Tailwind `placeholder:` modifier:
 
-**File: `src/pages/Mirror.tsx`** (line 635)
+- Email input (line ~139): Add `placeholder:text-muted-foreground/30` to the className
+- Password input (line ~150): Add `placeholder:text-muted-foreground/30` to the className
 
-Change the AI message inline style from:
-```
-{ backgroundColor: '#9a86be', color: '#ffedd5' }
-```
-to:
-```
-{ backgroundColor: '#9a86be', color: '#ffffff' }
-```
+This uses the existing muted foreground color at 30% opacity, making the placeholders clearly distinguishable from actual typed text while still being readable as hints.
 
