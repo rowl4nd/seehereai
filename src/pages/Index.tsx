@@ -187,7 +187,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-xl font-serif font-light text-foreground mb-3">Reflect and return</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Sessions are available 24/7. Come back to continue the conversation anytime.
+                  Sessions are available 24/7. Come back to chat after a brief cooldown period.
                 </p>
               </div>
             </ScrollSection>
