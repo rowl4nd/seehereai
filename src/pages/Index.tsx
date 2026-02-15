@@ -138,8 +138,8 @@ const Index = () => {
                   Built by people who understand
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
-                  SeeHere was created by therapists who know how many people need space to think out loud — but don't
-                  think they are ready for or could easily access traditional therapy.
+                  SeeHere was created by therapists who know how many people need space to think out loud — but don't think they are ready for or can easily access traditional therapy.
+                
                 </p>
                 <p className="text-base text-muted-foreground leading-relaxed">
                   We combined evidence-based therapeutic principles with AI to create a companion that:
