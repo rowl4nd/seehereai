@@ -487,6 +487,7 @@ const Index = () => {
                     onChange={(e) => setBetaEmail(e.target.value)}
                     required
                     maxLength={255}
+                    className="placeholder:text-muted-foreground/30"
                   />
                 </div>
                 <div className="space-y-2">
@@ -499,7 +500,7 @@ const Index = () => {
                     value={betaReason}
                     onChange={(e) => setBetaReason(e.target.value)}
                     maxLength={1000}
-                    className="min-h-[100px]"
+                    className="min-h-[100px] placeholder:text-muted-foreground/30"
                   />
                 </div>
                 <Button
