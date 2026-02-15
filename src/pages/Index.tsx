@@ -146,7 +146,7 @@ const Index = () => {
                     <Button
                       size="lg"
                       className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                      Begin free session
+                      Begin a free conversation
                     </Button>
                   </Link>
                 </div>
