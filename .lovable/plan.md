@@ -1,15 +1,27 @@
 
 
-## Restore Light Placeholder Text on Auth Inputs
+## Add Beta Access Banner Below Header
 
-The `placeholder:text-muted-foreground/30` class that was added earlier got lost during the button color update. Both the email and password inputs need it re-added.
+Add the provided beta testing banner markup directly below the `<header>` element on the homepage.
 
 ### Technical Details
 
-**File: `src/pages/Auth.tsx`**
+**File: `src/pages/Index.tsx`**
 
-- **Email input (line 158)**: Change className from `"bg-card border-border/50 focus:border-primary/50"` to `"bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"`
-- **Password input (line 175)**: Change className from `"bg-card border-border/50 focus:border-primary/50"` to `"bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"`
+Insert the following block immediately after the closing `</header>` tag (after line 57):
 
-This restores the light, subtle placeholder appearance so "you@example.com" and the dots don't look like typed text.
+```jsx
+{/* Beta Access Banner */}
+<div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-3 px-6 text-center">
+  <p className="text-sm text-foreground">
+    <span className="font-medium">Beta Testing Phase</span> — We're limiting early access to ensure quality.
+    <a href="#beta-signup" className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium ml-1">
+      Join our first 50 testers
+    </a>
+    {" "}and receive 16 free sessions.
+  </p>
+</div>
+```
+
+No other files need to change.
 
