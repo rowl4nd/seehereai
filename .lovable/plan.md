@@ -1,18 +1,16 @@
 
-## Re-add the "Why SeeHere?" FAQ Question
+## Align Messages to Bottom of Chat Area
 
-The "Why SeeHere?" accordion item was accidentally removed when the contact form changes were applied. It needs to be added back as the first FAQ question.
+Currently, messages start at the top of the chat area and grow downward. This change will make messages anchored to the bottom, so the first message appears near the input field and subsequent messages push earlier ones upward — similar to how most modern chat apps work.
 
-### What will be done
+### What will change
 
-Add a new `AccordionItem` with value `"why"` as the first item in the FAQ Accordion (before "Is this therapy?"), containing:
+**File: `src/pages/Mirror.tsx`**
 
-- **Question**: "Why SeeHere?"
-- **Answer**: A bulleted list with three points comparing SeeHere to generic AI, traditional therapy, and mental health apps
+The `<main>` element (line 619) and its inner message container (line 620) will be updated to use flexbox with `justify-end` so content is pushed to the bottom of the available space.
 
 ### Technical details
 
-- **File**: `src/pages/Index.tsx`
-- **Location**: Inside the `<Accordion>` component, insert before the existing `"therapy"` AccordionItem (line 331)
-- The markup will match the existing accordion item styling (`border-b border-border/40 pb-4`, same trigger/content classes)
-- The answer will use `<ul className="list-disc pl-5 space-y-3">` with three `<li>` items, matching the format that was previously implemented
+- On the `<main>` element (line 619), add `flex flex-col` to make it a flex container
+- On the inner `<div>` wrapping messages (line 620), add `mt-auto` so the message list is pushed to the bottom of the scrollable area
+- This ensures that when there are few messages, they appear near the bottom (close to the input). As more messages arrive, the list naturally grows upward and scrolling still works correctly via the existing `scrollIntoView` logic
