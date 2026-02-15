@@ -1,17 +1,19 @@
 
 
-## Lighten Auth Form Placeholder Text
+## Change "Create Account" Button to Lavender
 
-The placeholder text ("you@example.com" and "••••••••") on the login/signup form currently appears too dark, making it look like pre-filled text rather than hints.
+When the user switches to the signup tab, the button text changes to "Create account". The button should also change its background color from the default sage green to lavender to match the purple branding of the "Here" tab.
 
-### The Change
+### Technical Details
 
 **File: `src/pages/Auth.tsx`**
 
-Add a custom className or inline style to both `<Input>` elements to make their placeholder text a lighter color. This will be done by adding a Tailwind `placeholder:` modifier:
+Update the `<Button>` element (around line 173) to conditionally apply a lavender background when in signup mode:
 
-- Email input (line ~139): Add `placeholder:text-muted-foreground/30` to the className
-- Password input (line ~150): Add `placeholder:text-muted-foreground/30` to the className
+- Current: `className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"`
+- Updated: Add a conditional class so that when `mode === "signup"`, the button uses lavender (`#b9a3e0`) instead of the default green primary color
+- The className will become: `cn("w-full text-white", mode === "signup" ? "bg-[#b9a3e0] hover:bg-[#a48fd0]" : "bg-primary hover:bg-primary/90")`
+- Import `cn` from `@/lib/utils` (if not already imported)
 
-This uses the existing muted foreground color at 30% opacity, making the placeholders clearly distinguishable from actual typed text while still being readable as hints.
+This keeps the green button for "Sign in" and "Send reset link", and switches to lavender only for "Create account" -- matching the purple accent used on the "First time Here?" tab.
 
