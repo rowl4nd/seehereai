@@ -1,16 +1,18 @@
 
-## Align Messages to Bottom of Chat Area
 
-Currently, messages start at the top of the chat area and grow downward. This change will make messages anchored to the bottom, so the first message appears near the input field and subsequent messages push earlier ones upward — similar to how most modern chat apps work.
+## Fix Mobile Zoom on Text Input Focus
 
-### What will change
+Mobile browsers (especially iOS Safari) automatically zoom in when a user taps on an input field with a font-size smaller than 16px. This makes the send button inaccessible.
+
+### The Fix
+
+Set the font-size of the chat input textarea to 16px (or `text-base` in Tailwind) on mobile. This tells the browser there's no need to zoom in, keeping the full page width visible including the send button.
+
+### Technical Details
 
 **File: `src/pages/Mirror.tsx`**
 
-The `<main>` element (line 619) and its inner message container (line 620) will be updated to use flexbox with `justify-end` so content is pushed to the bottom of the available space.
+- Locate the `<textarea>` (or `<Textarea>`) element used for message input in the chat footer
+- Add `text-base` (16px) to its className to ensure the font size is at least 16px on all devices
+- This is the standard solution for preventing unwanted mobile zoom on focus
 
-### Technical details
-
-- On the `<main>` element (line 619), add `flex flex-col` to make it a flex container
-- On the inner `<div>` wrapping messages (line 620), add `mt-auto` so the message list is pushed to the bottom of the scrollable area
-- This ensures that when there are few messages, they appear near the bottom (close to the input). As more messages arrive, the list naturally grows upward and scrolling still works correctly via the existing `scrollIntoView` logic
