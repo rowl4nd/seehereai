@@ -333,11 +333,11 @@ const Index = () => {
                   Why SeeHere?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for
-                  productivity or problem-solving. Unlike traditional therapy, there's no waiting list, no scheduling, no
-                  pressure to commit to weekly sessions, and sessions cost a fraction of what you'd pay for professional
-                  therapy. And unlike many mental health apps that offer CBT exercises or mood tracking, SeeHere focuses
-                  purely on giving you space to think out loud with a companion that listens without judgment.
+                  <ul className="list-disc pl-5 space-y-3">
+                    <li>Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for productivity or problem-solving.</li>
+                    <li>Unlike traditional therapy, there's no waiting list, no scheduling, no pressure to commit to weekly sessions, and sessions cost a fraction of what you'd pay for professional therapy.</li>
+                    <li>Unlike many mental health apps that offer CBT exercises or mood tracking, SeeHere focuses purely on giving you space to think out loud with a companion that listens without judgment.</li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
 
