@@ -31,7 +31,6 @@ const ScrollSection = ({
       style={{
         transitionDelay: `${delay}ms`
       }}>
-
       {children}
     </div>);
 
@@ -172,9 +171,9 @@ const Index = () => {
             </h2>
           </ScrollSection>
 
-          <div className="grid md:grid-cols-3 gap-4">
-            <ScrollSection delay={0}>
-              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px]">
+          <div className="grid md:grid-cols-3 gap-4 items-stretch">
+            <ScrollSection delay={0} className="h-full">
+              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 h-full">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   1
                 </div>
@@ -186,8 +185,8 @@ const Index = () => {
               </div>
             </ScrollSection>
 
-            <ScrollSection delay={100}>
-              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px]">
+            <ScrollSection delay={100} className="h-full">
+              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 h-full">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   2
                 </div>
@@ -199,8 +198,8 @@ const Index = () => {
               </div>
             </ScrollSection>
 
-            <ScrollSection delay={200}>
-              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px]">
+            <ScrollSection delay={200} className="h-full">
+              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 h-full">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   3
                 </div>
