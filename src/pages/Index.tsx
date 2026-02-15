@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -23,10 +23,6 @@ const ScrollSection = ({
   children,
   className = "",
   delay = 0
-
-
-
-
 }: {children: React.ReactNode;className?: string;delay?: number;}) => {
   const { ref, isVisible } = useScrollAnimation();
   return (
@@ -48,6 +44,14 @@ const Index = () => {
   const [betaReason, setBetaReason] = useState("");
   const [betaSending, setBetaSending] = useState(false);
   const [betaSent, setBetaSent] = useState(false);
+
+  useEffect(() => {
+    if (window.location.hash === '#beta-signup') {
+      setTimeout(() => {
+        document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+    }
+  }, []);
 
   const handleBetaSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
