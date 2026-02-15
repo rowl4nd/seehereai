@@ -1,10 +1,15 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 import heroLogo from "@/assets/see-here-logo.png";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
@@ -39,6 +44,36 @@ const ScrollSection = ({
 
 const Index = () => {
   const { user, loading } = useAuth();
+  const [betaEmail, setBetaEmail] = useState("");
+  const [betaReason, setBetaReason] = useState("");
+  const [betaSending, setBetaSending] = useState(false);
+  const [betaSent, setBetaSent] = useState(false);
+
+  const handleBetaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!betaEmail.trim()) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+    setBetaSending(true);
+    try {
+      const { error } = await supabase.functions.invoke("send-contact-email", {
+        body: {
+          name: "Beta Signup Request",
+          email: betaEmail.trim(),
+          message: betaReason.trim() || "No reason provided — just interested in beta access.",
+        },
+      });
+      if (error) throw error;
+      setBetaSent(true);
+      toast.success("Request sent — we'll be in touch!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setBetaSending(false);
+    }
+  };
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
       {/* ── Header ── */}
@@ -414,6 +449,72 @@ const Index = () => {
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
+          </div>
+        </ScrollSection>
+      </section>
+
+      {/* ── Beta Access Signup ── */}
+      <section id="beta-signup" className="relative py-24 px-6 md:px-12 bg-[#f8f6f3]">
+        <ScrollSection>
+          <div className="max-w-lg mx-auto text-center space-y-6">
+            <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground">
+              Join Our Beta
+            </h2>
+            <p className="text-base text-muted-foreground leading-relaxed">
+              We're carefully onboarding our first users to ensure the best possible
+              experience. The first 50 testers receive 16 free sessions — enough to
+              truly explore what SeeHere can offer.
+            </p>
+
+            {betaSent ? (
+              <div className="rounded-lg border border-border/40 bg-background/60 p-8 space-y-3">
+                <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
+                <p className="text-sm text-muted-foreground">
+                  We'll review your request and get back to you within 24–48 hours.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleBetaSubmit} className="space-y-4 text-left">
+                <div className="space-y-2">
+                  <label htmlFor="beta-email" className="text-sm font-medium text-foreground">
+                    Email address
+                  </label>
+                  <Input
+                    id="beta-email"
+                    type="email"
+                    placeholder="you@email.com"
+                    value={betaEmail}
+                    onChange={(e) => setBetaEmail(e.target.value)}
+                    required
+                    maxLength={255}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="beta-reason" className="text-sm font-medium text-foreground">
+                    Why would you like to try SeeHere? (Optional)
+                  </label>
+                  <Textarea
+                    id="beta-reason"
+                    placeholder="Tell us a little about yourself..."
+                    value={betaReason}
+                    onChange={(e) => setBetaReason(e.target.value)}
+                    maxLength={1000}
+                    className="min-h-[100px]"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  disabled={betaSending}
+                  className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-3"
+                >
+                  {betaSending ? "Sending…" : "Request Beta Access"}
+                </Button>
+              </form>
+            )}
+
+            <p className="text-xs text-muted-foreground">
+              We'll review your request and send access within 24–48 hours.
+            </p>
           </div>
         </ScrollSection>
       </section>
