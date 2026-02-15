@@ -31,7 +31,13 @@ const Terms = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">1. About See Here</h2>
               <p>
+                See Here is operated by See Here Ltd, registered in England and Wales under company number 17014368.
+              </p>
+              <p>
                 See Here is an AI-powered listening companion designed to provide reflective, supportive conversation. It is <strong>not</strong> a replacement for professional mental health care, therapy, counselling, or medical advice.
+              </p>
+              <p>
+                You must be at least 18 years old to use See Here. If you are under 18, you may only use this service with the consent and supervision of a parent or guardian. See Here is not designed for use by children.
               </p>
             </section>
 
@@ -60,7 +66,13 @@ const Terms = () => {
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">4. Privacy &amp; Data</h2>
               <p>
-                Your conversations are stored securely and are only accessible to you. Conversation messages are <strong>encrypted at rest</strong> using industry-standard encryption (AES-256-GCM), meaning they are not stored in a readable format — even at the database level. Conversation history is used solely to provide continuity between sessions — allowing the AI to remember previous discussions and offer more personalised support. Your data is never shared with third parties for marketing or advertising purposes.
+                Your conversations are stored securely and are only accessible to you. Conversation messages are <strong>encrypted at rest</strong> using industry-standard encryption (AES-256-GCM), meaning they are not stored in a readable format — even at the database level.
+              </p>
+              <p>
+                Conversation history is used solely to provide continuity between sessions — allowing the AI to remember previous discussions and offer more personalised support.
+              </p>
+              <p>
+                Your data is never shared with third parties for marketing or advertising purposes. For full details on how we collect, use, and protect your data, please see our Privacy Policy.
               </p>
             </section>
 
@@ -68,6 +80,12 @@ const Terms = () => {
               <h2 className="text-xl font-serif text-foreground">5. Sessions &amp; Credits</h2>
               <p>
                 New users receive 2 free sessions. Additional sessions can be purchased using credits. Free sessions last 25 minutes; paid sessions last 45 minutes. Only one session per user per day is allowed to encourage a cooldown period and time for reflection.
+              </p>
+              <p>
+                Credits are non-refundable except as required by law or in cases of technical failure on our part. Credits do not expire and remain valid until used.
+              </p>
+              <p>
+                All payments are processed securely through Stripe. By purchasing credits, you agree to Stripe's terms of service.
               </p>
             </section>
 
@@ -80,20 +98,53 @@ const Terms = () => {
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">7. Limitation of Liability</h2>
+              <p>We are not liable for:</p>
+              <ul className="list-disc list-inside space-y-1 ml-2">
+                <li>Any decisions, actions, or outcomes resulting from your use of See Here</li>
+                <li>Any indirect, consequential, or special losses</li>
+                <li>Any reliance you place on AI-generated responses</li>
+                <li>Any loss of data, business, or opportunity</li>
+              </ul>
               <p>
-                See Here is provided "as is" without warranties of any kind. We are not liable for any decisions, actions, or outcomes resulting from your use of this service. By using See Here, you acknowledge that AI-generated responses may not always be accurate or appropriate for your situation.
+                See Here is provided "as is" and "as available" without warranties of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement.
+              </p>
+              <p>
+                To the maximum extent permitted by law, our total liability to you for any claim arising from these Terms or your use of See Here shall not exceed the amount you have paid to See Here in the 12 months preceding the claim, or £100, whichever is lower.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h2 className="text-xl font-serif text-foreground">8. Changes to Terms</h2>
+              <h2 className="text-xl font-serif text-foreground">8. Account Termination</h2>
+              <p>
+                You may delete your account at any time through your account settings. Upon deletion, your conversation history and personal data will be permanently deleted within 30 days, except where we are required by law to retain certain information.
+              </p>
+              <p>We reserve the right to suspend or terminate your account immediately if:</p>
+              <ul className="list-disc list-inside space-y-1 ml-2">
+                <li>You breach these Terms</li>
+                <li>You use the service in a harmful, abusive, or illegal manner</li>
+                <li>We reasonably believe your use poses a risk to other users or our service</li>
+              </ul>
+              <p>
+                If your account is terminated for violating these Terms, any unused credits will be forfeited and non-refundable.
+              </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-xl font-serif text-foreground">9. Changes to Terms</h2>
               <p>
                 We may update these terms from time to time. Continued use of See Here after changes constitutes acceptance of the updated terms. We will notify users of significant changes where possible.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h2 className="text-xl font-serif text-foreground">9. Contact</h2>
+              <h2 className="text-xl font-serif text-foreground">10. Governing Law</h2>
+              <p>
+                These Terms are governed by the laws of England and Wales. Any disputes arising from these Terms or your use of See Here will be subject to the exclusive jurisdiction of the courts of England and Wales.
+              </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-xl font-serif text-foreground">11. Contact</h2>
               <p>
                 If you have questions about these terms, please contact us at{" "}
                 <a
