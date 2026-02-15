@@ -10,6 +10,7 @@ import heroLogo from "@/assets/see-here-logo.png";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
 import splitSupport from "@/assets/split-support.jpg";
 import chatPreview from "@/assets/chat-preview.png";
+import talkBubble from "@/assets/talk-bubble.png";
 
 const ScrollSection = ({
   children,
@@ -169,7 +170,7 @@ const Index = () => {
             </h2>
           </ScrollSection>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
             <ScrollSection delay={0}>
               <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px]">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
@@ -179,6 +180,7 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Type freely in a private, text-based conversation. No scheduling, no pressure.
                 </p>
+                <img src={talkBubble} alt="I just feel like I need someone to talk to" className="w-full h-auto max-h-[120px] object-contain rounded mt-4" />
               </div>
             </ScrollSection>
 
@@ -203,12 +205,6 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Sessions are available 24/7. Come back to chat after a brief cooldown period.
                 </p>
-              </div>
-            </ScrollSection>
-
-            <ScrollSection delay={300}>
-              <div className="group flex flex-col items-center justify-center rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px] p-4 overflow-hidden">
-                <img src={chatPreview} alt="Example conversation with SeeHere" className="w-full h-auto max-h-[250px] object-contain rounded" />
               </div>
             </ScrollSection>
           </div>
