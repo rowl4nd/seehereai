@@ -190,17 +190,14 @@ const Auth = () => {
               }
             </div>
 
-            {mode === "login" &&
-            <div className="text-right -mt-2">
+            <div className={cn("text-right -mt-2", mode !== "login" && "invisible")}>
                 <button
                 type="button"
                 onClick={() => setMode("forgot")}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-
                   Forgot your password?
                 </button>
               </div>
-            }
 
             <Button
               type="submit"
