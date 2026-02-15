@@ -140,6 +140,16 @@ const Index = () => {
                     <p className="text-base text-foreground font-medium">Never judges</p>
                   </div>
                 </div>
+
+                <div className="pt-6">
+                  <Link to="/auth">
+                    <Button
+                      size="lg"
+                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+                      Begin free session
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </ScrollSection>
           </div>
