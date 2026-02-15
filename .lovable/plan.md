@@ -1,27 +1,18 @@
 
-## Consistent Header Padding Across All Pages
+## Re-add the "Why SeeHere?" FAQ Question
 
-The homepage header uses compact padding (`px-4 py-2 md:px-8`) while all 12 other pages use larger padding (`p-6 md:p-8`). This makes headers look different widths.
+The "Why SeeHere?" accordion item was accidentally removed when the contact form changes were applied. It needs to be added back as the first FAQ question.
 
-### The Fix
+### What will be done
 
-Update all other pages to match the Index page's padding: `px-4 py-2 md:px-8`.
+Add a new `AccordionItem` with value `"why"` as the first item in the FAQ Accordion (before "Is this therapy?"), containing:
 
-### Pages to Update (12 files)
+- **Question**: "Why SeeHere?"
+- **Answer**: A bulleted list with three points comparing SeeHere to generic AI, traditional therapy, and mental health apps
 
-| Page | Current Padding | New Padding |
-|------|----------------|-------------|
-| Dashboard.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| Mirror.tsx | `px-4 md:px-6 py-[10px]` | `px-4 py-2 md:px-8` |
-| Auth.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| Credits.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| Cooldown.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| Guidance.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| SessionHistory.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| Onboarding.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| PaymentSuccess.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| ResetPassword.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| Terms.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
-| Privacy.tsx | `p-6 md:p-8` | `px-4 py-2 md:px-8` |
+### Technical details
 
-This ensures every page header has the same compact look as the homepage.
+- **File**: `src/pages/Index.tsx`
+- **Location**: Inside the `<Accordion>` component, insert before the existing `"therapy"` AccordionItem (line 331)
+- The markup will match the existing accordion item styling (`border-b border-border/40 pb-4`, same trigger/content classes)
+- The answer will use `<ul className="list-disc pl-5 space-y-3">` with three `<li>` items, matching the format that was previously implemented
