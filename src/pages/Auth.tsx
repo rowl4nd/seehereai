@@ -155,7 +155,7 @@ const Auth = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-card border-border/50 focus:border-primary/50"
+                  className="bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
                   placeholder="you@example.com" />
 
               </div>
@@ -172,7 +172,7 @@ const Auth = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="bg-card border-border/50 focus:border-primary/50"
+                  className="bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
                   placeholder="••••••••" />
 
                 </div>
