@@ -207,8 +207,8 @@ const Index = () => {
             </ScrollSection>
 
             <ScrollSection delay={300}>
-              <div className="group rounded-lg overflow-hidden border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px]">
-                <img src={chatPreview} alt="Example conversation with SeeHere" className="w-full h-full object-cover" />
+              <div className="group flex flex-col items-center justify-center rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 min-h-[280px] p-4 overflow-hidden">
+                <img src={chatPreview} alt="Example conversation with SeeHere" className="w-full h-auto max-h-[250px] object-contain rounded" />
               </div>
             </ScrollSection>
           </div>
