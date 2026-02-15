@@ -11,6 +11,7 @@ import splitSafeSpace from "@/assets/split-safe-space.jpg";
 import splitSupport from "@/assets/split-support.jpg";
 import chatPreview from "@/assets/chat-preview.png";
 import talkBubble from "@/assets/talk-bubble.png";
+import replyBubble from "@/assets/reply-bubble.png";
 
 const ScrollSection = ({
   children,
@@ -193,6 +194,7 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Get thoughtful responses that help you see your situation more clearly.
                 </p>
+                <img src={replyBubble} alt="I'm glad you reached out; I'm here and ready to listen" className="w-full h-auto max-h-[120px] object-contain rounded mt-4" />
               </div>
             </ScrollSection>
 
