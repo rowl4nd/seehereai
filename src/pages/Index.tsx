@@ -328,6 +328,19 @@ const Index = () => {
             <p className="text-center text-muted-foreground mb-16">Everything you might want to know</p>
 
             <Accordion type="single" collapsible className="space-y-4">
+              <AccordionItem value="why" className="border-b border-border/40 pb-4">
+                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
+                  Why SeeHere?
+                </AccordionTrigger>
+                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
+                  <ul className="list-disc pl-5 space-y-3">
+                    <li>Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for productivity or problem-solving.</li>
+                    <li>Unlike traditional therapy, there's no waiting list, no scheduling, no pressure to commit to weekly sessions, and sessions cost a fraction of what you'd pay for professional therapy.</li>
+                    <li>Unlike many mental health apps that offer CBT exercises or mood tracking, SeeHere focuses purely on giving you space to think out loud with a companion that listens without judgment.</li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+
               <AccordionItem value="therapy" className="border-b border-border/40 pb-4">
                 <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
                   Is this therapy?
