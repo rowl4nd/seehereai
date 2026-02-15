@@ -182,7 +182,7 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Type freely in a private, text-based conversation. No scheduling, no pressure.
                 </p>
-                <img src={talkBubble} alt="I just feel like I need someone to talk to" className="w-full h-auto max-h-[120px] object-contain rounded mt-4" />
+                <img src={talkBubble} alt="I just feel like I need someone to talk to" className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
               </div>
             </ScrollSection>
 
@@ -195,7 +195,7 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Get thoughtful responses that help you see your situation more clearly.
                 </p>
-                <img src={replyBubble} alt="I'm glad you reached out; I'm here and ready to listen" className="w-full h-auto max-h-[120px] object-contain rounded mt-4" />
+                <img src={replyBubble} alt="I'm glad you reached out; I'm here and ready to listen" className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
               </div>
             </ScrollSection>
 
@@ -208,7 +208,7 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Sessions are available 24/7. Come back to chat after a brief cooldown period.
                 </p>
-                <img src={reflectBubble} alt="Time to reflect" className="w-full h-auto max-h-[120px] object-contain rounded mt-4" />
+                <img src={reflectBubble} alt="Time to reflect" className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
               </div>
             </ScrollSection>
           </div>
