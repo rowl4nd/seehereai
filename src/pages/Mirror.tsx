@@ -714,7 +714,7 @@ const Mirror = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Share what's on your mind..."
-                className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50"
+                className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50 text-base"
                 disabled={isLoading || sessionEnded}
                 autoFocus
               />
