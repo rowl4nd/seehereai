@@ -126,7 +126,7 @@ const Index = () => {
                   We combined evidence-based therapeutic principles with AI to create a companion that:
                 </p>
                 
-                <div className="space-y-4 pt-2">
+                <div className="space-y-4 pt-2 items-end">
                   <div className="flex items-center gap-3 justify-end flex-row-reverse">
                     <Heart className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                     <p className="text-base text-foreground font-medium">Listens with empathy</p>
