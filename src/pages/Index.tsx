@@ -78,7 +78,7 @@ const Index = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-[1.05] text-foreground tracking-tight">
             A quiet space to talk
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground">Psychologically informed AI support</p>
+          <p className="text-lg md:text-xl text-muted-foreground">​AI companion trained to listen and support          </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-muted-foreground text-base md:text-lg">
             <span className="flex items-center gap-2">
               <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -248,7 +248,7 @@ const Index = () => {
             <ScrollSection>
               <div className="max-w-lg space-y-6">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
-                  What you'll experience   
+                  What you will get
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
                   Warmth, understanding, and room to breathe. Grounded in person-centred principles.
