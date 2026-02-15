@@ -12,6 +12,7 @@ import splitSupport from "@/assets/split-support.jpg";
 import chatPreview from "@/assets/chat-preview.png";
 import talkBubble from "@/assets/talk-bubble.png";
 import replyBubble from "@/assets/reply-bubble.png";
+import reflectBubble from "@/assets/reflect-bubble.png";
 
 const ScrollSection = ({
   children,
@@ -207,6 +208,7 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Sessions are available 24/7. Come back to chat after a brief cooldown period.
                 </p>
+                <img src={reflectBubble} alt="Time to reflect" className="w-full h-auto max-h-[120px] object-contain rounded mt-4" />
               </div>
             </ScrollSection>
           </div>
