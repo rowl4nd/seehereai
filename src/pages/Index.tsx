@@ -17,24 +17,24 @@ import reflectBubble from "@/assets/reflect-bubble.png";
 const ScrollSection = ({
   children,
   className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) => {
+  delay = 0
+
+
+
+
+}: {children: React.ReactNode;className?: string;delay?: number;}) => {
   const { ref, isVisible } = useScrollAnimation();
   return (
     <div
       ref={ref}
       className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
       style={{
-        transitionDelay: `${delay}ms`,
-      }}
-    >
+        transitionDelay: `${delay}ms`
+      }}>
+
       {children}
-    </div>
-  );
+    </div>);
+
 };
 
 const Index = () => {
@@ -48,20 +48,20 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
-          {!loading &&
-            (user ? (
-              <Link to="/dashboard">
+          {!loading && (
+          user ?
+          <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="text-sm">
                   Dashboard
                 </Button>
-              </Link>
-            ) : (
-              <Link to="/auth">
+              </Link> :
+
+          <Link to="/auth">
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
-              </Link>
-            ))}
+              </Link>)
+          }
         </div>
       </header>
 
@@ -85,8 +85,8 @@ const Index = () => {
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
+                  clipRule="evenodd" />
+
               </svg>
               Available 24/7
             </span>
@@ -95,8 +95,8 @@ const Index = () => {
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
+                  clipRule="evenodd" />
+
               </svg>
               Fully private & encrypted
             </span>
@@ -105,8 +105,8 @@ const Index = () => {
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
+                  clipRule="evenodd" />
+
               </svg>
               No subscriptions
             </span>
@@ -114,8 +114,8 @@ const Index = () => {
           <Link to="/auth" className="inline-block pt-4">
             <Button
               size="lg"
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-            >
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+
               Start your first session (free)
             </Button>
           </Link>
@@ -164,8 +164,8 @@ const Index = () => {
                   <Link to="/auth">
                     <Button
                       size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
+                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+
                       Begin a free conversation
                     </Button>
                   </Link>
@@ -198,8 +198,8 @@ const Index = () => {
                 <img
                   src={talkBubble}
                   alt="I just feel like I need someone to talk to"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
-                />
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
+
               </div>
             </ScrollSection>
 
@@ -215,8 +215,8 @@ const Index = () => {
                 <img
                   src={replyBubble}
                   alt="I'm glad you reached out; I'm here and ready to listen"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
-                />
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
+
               </div>
             </ScrollSection>
 
@@ -232,8 +232,8 @@ const Index = () => {
                 <img
                   src={reflectBubble}
                   alt="Time to reflect"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
-                />
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
+
               </div>
             </ScrollSection>
           </div>
@@ -248,7 +248,7 @@ const Index = () => {
             <ScrollSection>
               <div className="max-w-lg space-y-6">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
-                  What you will get
+                  What you'll experience   
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
                   Warmth, understanding, and room to breathe. Grounded in person-centred principles.
@@ -289,8 +289,8 @@ const Index = () => {
                   <Link to="/auth">
                     <Button
                       size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
+                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+
                       Begin a free conversation
                     </Button>
                   </Link>
@@ -328,19 +328,6 @@ const Index = () => {
             <p className="text-center text-muted-foreground mb-16">Everything you might want to know</p>
 
             <Accordion type="single" collapsible className="space-y-4">
-              <AccordionItem value="why" className="border-b border-border/40 pb-4">
-                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
-                  Why SeeHere?
-                </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  <ul className="list-disc pl-5 space-y-3">
-                    <li>Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for productivity or problem-solving.</li>
-                    <li>Unlike traditional therapy, there's no waiting list, no scheduling, no pressure to commit to weekly sessions, and sessions cost a fraction of what you'd pay for professional therapy.</li>
-                    <li>Unlike many mental health apps that offer CBT exercises or mood tracking, SeeHere focuses purely on giving you space to think out loud with a companion that listens without judgment.</li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-
               <AccordionItem value="therapy" className="border-b border-border/40 pb-4">
                 <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
                   Is this therapy?
@@ -413,8 +400,8 @@ const Index = () => {
           In crisis? Contact{" "}
           <a
             href="tel:116123"
-            className="underline underline-offset-2 hover:text-foreground transition-colors font-medium"
-          >
+            className="underline underline-offset-2 hover:text-foreground transition-colors font-medium">
+
             Samaritans: 116 123
           </a>{" "}
           or text SHOUT to 85258
@@ -430,23 +417,23 @@ const Index = () => {
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Terms &amp; Conditions
             </a>
             <a
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Privacy Policy
             </a>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
