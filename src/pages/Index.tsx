@@ -117,33 +117,27 @@ const Index = () => {
             <ScrollSection>
               <div className="max-w-lg space-y-6">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
-                  A space designed for you
+                  Built by people who understand
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
-                  Whether you're processing a difficult conversation, feeling stuck in a decision, navigating a transition, or simply need to think out loud — SeeHere is here.
+                  SeeHere was created by therapists who noticed how many people needed space to think out loud — but didn't think they were ready for or couldn't easily access traditional therapy.
+                </p>
+                <p className="text-base text-muted-foreground leading-relaxed">
+                  We combine evidence-based therapeutic principles with AI to create a companion that:
                 </p>
                 
-                <div className="space-y-4 pt-4">
-                  <div className="flex items-start gap-3">
-                    <MessageCircle className="w-5 h-5 text-[#4a7a4f] mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h3 className="font-medium text-foreground mb-1">To talk</h3>
-                      <p className="text-sm text-muted-foreground">A space to say what's on your mind — openly and freely.</p>
-                    </div>
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-center gap-3">
+                    <Heart className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
+                    <p className="text-base text-foreground font-medium">Listens with empathy</p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <Heart className="w-5 h-5 text-[#4a7a4f] mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h3 className="font-medium text-foreground mb-1">Not to be judged</h3>
-                      <p className="text-sm text-muted-foreground">Complete acceptance. No criticism, no agenda.</p>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <MessageCircle className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
+                    <p className="text-base text-foreground font-medium">Asks thoughtful questions</p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <Compass className="w-5 h-5 text-[#4a7a4f] mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h3 className="font-medium text-foreground mb-1">To be understood</h3>
-                      <p className="text-sm text-muted-foreground">Empathic reflections that help you make sense of what you're feeling.</p>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <Shield className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
+                    <p className="text-base text-foreground font-medium">Never judges</p>
                   </div>
                 </div>
               </div>
