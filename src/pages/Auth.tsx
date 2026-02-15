@@ -60,7 +60,7 @@ const Auth = () => {
           toast.success("Welcome to See Here");
           // Fire-and-forget welcome email
           supabase.functions.invoke('send-welcome-email', {
-            body: { email },
+            body: { email }
           }).catch(() => {});
         }
       }
@@ -69,25 +69,25 @@ const Auth = () => {
     }
   };
 
-  const title = mode === "forgot"
-    ? "Reset your password"
-    : mode === "login"
-    ? "Welcome back"
-    : "Begin your journey";
+  const title = mode === "forgot" ?
+  "Reset your password" :
+  mode === "login" ?
+  "Welcome back" :
+  "Begin your journey";
 
-  const subtitle = mode === "forgot"
-    ? "We'll send you a link to reset it"
-    : mode === "login"
-    ? "Take your time"
-    : "Create a space for yourself";
+  const subtitle = mode === "forgot" ?
+  "We'll send you a link to reset it" :
+  mode === "login" ?
+  "Take your time" :
+  "Create a space for yourself";
 
-  const buttonLabel = isSubmitting
-    ? "Please wait..."
-    : mode === "forgot"
-    ? "Send reset link"
-    : mode === "login"
-    ? "Sign in"
-    : "Create account";
+  const buttonLabel = isSubmitting ?
+  "Please wait..." :
+  mode === "forgot" ?
+  "Send reset link" :
+  mode === "login" ?
+  "Sign in" :
+  "Create account";
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -105,23 +105,23 @@ const Auth = () => {
             <h1 className="text-6xl font-serif font-light text-foreground">
               {mode === "forgot" ? "Reset your password" : "Welcome"}
             </h1>
-            {mode !== "forgot" && (
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                In order to make your experience private but also personal, we require you to have an account with us.
+            {mode !== "forgot" &&
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                To make your experience private but also personal, we require you to have an account.  
               </p>
-            )}
+            }
           </div>
 
           {/* Tabs */}
-          {mode !== "forgot" ? (
-            <Tabs
-              value={tabValue}
-              onValueChange={(val) => {
-                setMode(val as "login" | "signup");
-                setPassword("");
-              }}
-              className="w-full"
-            >
+          {mode !== "forgot" ?
+          <Tabs
+            value={tabValue}
+            onValueChange={(val) => {
+              setMode(val as "login" | "signup");
+              setPassword("");
+            }}
+            className="w-full">
+
               <TabsList className="w-full">
                 <TabsTrigger value="login" className="flex-1 text-sm flex flex-col items-center py-2">
                   <span>Nice to <span style={{ color: '#709474', fontWeight: 700 }}>See</span> you again</span>
@@ -132,14 +132,14 @@ const Auth = () => {
                   <span className="text-xs text-muted-foreground">Create account</span>
                 </TabsTrigger>
               </TabsList>
-            </Tabs>
-          ) : (
-            <div className="text-center">
+            </Tabs> :
+
+          <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 We'll send you a link to reset it
               </p>
             </div>
-          )}
+          }
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -154,67 +154,67 @@ const Auth = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
-                  placeholder="you@example.com"
-                />
+                  className="bg-card border-border/50 focus:border-primary/50"
+                  placeholder="you@example.com" />
+
               </div>
 
-              {mode !== "forgot" && (
-                <div className="space-y-2">
+              {mode !== "forgot" &&
+              <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-normal text-muted-foreground">
                     Password
                   </Label>
                   <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    className="bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
-                    placeholder="••••••••"
-                  />
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="bg-card border-border/50 focus:border-primary/50"
+                  placeholder="••••••••" />
+
                 </div>
-              )}
+              }
             </div>
 
-            {mode === "login" && (
-              <div className="text-right -mt-2">
+            {mode === "login" &&
+            <div className="text-right -mt-2">
                 <button
-                  type="button"
-                  onClick={() => setMode("forgot")}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                type="button"
+                onClick={() => setMode("forgot")}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+
                   Forgot your password?
                 </button>
               </div>
-            )}
+            }
 
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+
               {buttonLabel}
             </Button>
           </form>
 
           {/* Back link for forgot mode */}
-          {mode === "forgot" && (
-            <div className="text-center">
+          {mode === "forgot" &&
+          <div className="text-center">
               <button
-                type="button"
-                onClick={() => setMode("login")}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              type="button"
+              onClick={() => setMode("login")}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+
                 Back to sign in
               </button>
             </div>
-          )}
+          }
         </div>
       </main>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Auth;
