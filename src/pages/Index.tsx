@@ -115,7 +115,7 @@ const Index = () => {
           {/* Text side */}
           <div className="bg-[#cbb7ef]/10 flex items-center px-8 md:px-16 py-16 md:py-20">
             <ScrollSection>
-              <div className="max-w-lg space-y-6">
+                <div className="max-w-lg space-y-6 text-right ml-auto">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
                   Built by people who understand
                 </h2>
