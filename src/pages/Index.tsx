@@ -17,23 +17,24 @@ import reflectBubble from "@/assets/reflect-bubble.png";
 const ScrollSection = ({
   children,
   className = "",
-  delay = 0
-
-
-
-
-}: {children: React.ReactNode;className?: string;delay?: number;}) => {
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) => {
   const { ref, isVisible } = useScrollAnimation();
   return (
     <div
       ref={ref}
       className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
       style={{
-        transitionDelay: `${delay}ms`
-      }}>
+        transitionDelay: `${delay}ms`,
+      }}
+    >
       {children}
-    </div>);
-
+    </div>
+  );
 };
 
 const Index = () => {
@@ -47,23 +48,22 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
-          {!loading && (
-          user ?
-          <Link to="/dashboard">
+          {!loading &&
+            (user ? (
+              <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="text-sm">
                   Dashboard
                 </Button>
-              </Link> :
-
-          <Link to="/auth">
+              </Link>
+            ) : (
+              <Link to="/auth">
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
-              </Link>)
-          }
+              </Link>
+            ))}
         </div>
       </header>
-
 
       {/* ── Hero - Clean, minimal ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-[#f8f6f3] to-background">
@@ -78,28 +78,44 @@ const Index = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-[1.05] text-foreground tracking-tight">
             A quiet space to talk
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground">
-            Psychologically informed AI support
-          </p>
+          <p className="text-lg md:text-xl text-muted-foreground">Psychologically informed AI support</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-muted-foreground text-base md:text-lg">
             <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+              <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
               Available 24/7
             </span>
             <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-              Private self-reflection
+              <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Fully private & encrypted
             </span>
             <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+              <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
               No subscriptions
             </span>
           </div>
           <Link to="/auth" className="inline-block pt-4">
             <Button
               size="lg"
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+            >
               Start your first session (free)
             </Button>
           </Link>
@@ -111,27 +127,24 @@ const Index = () => {
         <div className="grid md:grid-cols-2">
           {/* Image side */}
           <div className="aspect-square md:aspect-auto md:min-h-[600px] overflow-hidden">
-            <img
-              src={splitSafeSpace}
-              alt="Safe space for reflection"
-              className="w-full h-full object-cover" />
-
+            <img src={splitSafeSpace} alt="Safe space for reflection" className="w-full h-full object-cover" />
           </div>
 
           {/* Text side */}
           <div className="bg-[#cbb7ef]/10 flex items-center justify-end px-8 md:px-16 py-16 md:py-20">
             <ScrollSection>
-                <div className="max-w-lg space-y-6 text-right ml-auto">
+              <div className="max-w-lg space-y-6 text-right ml-auto">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
                   Built by people who understand
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
-                  SeeHere was created by therapists who know how many people need space to think out loud — but don't think they are ready for or could easily access traditional therapy.
+                  SeeHere was created by therapists who know how many people need space to think out loud — but don't
+                  think they are ready for or could easily access traditional therapy.
                 </p>
                 <p className="text-base text-muted-foreground leading-relaxed">
                   We combined evidence-based therapeutic principles with AI to create a companion that:
                 </p>
-                
+
                 <div className="space-y-4 pt-2 items-end">
                   <div className="flex items-center gap-3 justify-end">
                     <p className="text-base text-foreground font-medium">Listens with empathy</p>
@@ -151,7 +164,8 @@ const Index = () => {
                   <Link to="/auth">
                     <Button
                       size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
                       Begin a free conversation
                     </Button>
                   </Link>
@@ -181,7 +195,11 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Type freely in a private, text-based conversation. No scheduling, no pressure.
                 </p>
-                <img src={talkBubble} alt="I just feel like I need someone to talk to" className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
+                <img
+                  src={talkBubble}
+                  alt="I just feel like I need someone to talk to"
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
+                />
               </div>
             </ScrollSection>
 
@@ -194,7 +212,11 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Get thoughtful responses that help you see your situation more clearly.
                 </p>
-                <img src={replyBubble} alt="I'm glad you reached out; I'm here and ready to listen" className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
+                <img
+                  src={replyBubble}
+                  alt="I'm glad you reached out; I'm here and ready to listen"
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
+                />
               </div>
             </ScrollSection>
 
@@ -207,7 +229,11 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Sessions are available 24/7. Come back to chat after a brief cooldown period.
                 </p>
-                <img src={reflectBubble} alt="Time to reflect" className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
+                <img
+                  src={reflectBubble}
+                  alt="Time to reflect"
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
+                />
               </div>
             </ScrollSection>
           </div>
@@ -227,7 +253,7 @@ const Index = () => {
                 <p className="text-base text-muted-foreground leading-relaxed">
                   Warmth, understanding, and room to breathe. Grounded in person-centred principles.
                 </p>
-                
+
                 <div className="space-y-5 pt-4">
                   <div>
                     <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
@@ -235,7 +261,8 @@ const Index = () => {
                       Person-centred listening
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Grounded in unconditional positive regard and empathic understanding. You are accepted fully, without judgment.
+                      Grounded in unconditional positive regard and empathic understanding. You are accepted fully,
+                      without judgment.
                     </p>
                   </div>
                   <div>
@@ -262,8 +289,8 @@ const Index = () => {
                   <Link to="/auth">
                     <Button
                       size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-
+                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
                       Begin a free conversation
                     </Button>
                   </Link>
@@ -274,11 +301,7 @@ const Index = () => {
 
           {/* Image side */}
           <div className="aspect-square md:aspect-auto md:min-h-[600px] overflow-hidden order-1 md:order-2">
-            <img
-              src={splitSupport}
-              alt="Calm and supportive environment"
-              className="w-full h-full object-cover" />
-
+            <img src={splitSupport} alt="Calm and supportive environment" className="w-full h-full object-cover" />
           </div>
         </div>
       </section>
@@ -288,7 +311,8 @@ const Index = () => {
         <ScrollSection>
           <div className="max-w-3xl mx-auto text-center space-y-8">
             <blockquote className="text-2xl md:text-3xl font-serif font-light text-foreground/90 leading-relaxed">
-              "SeeHere is a reflective space, not a clinical service. Think of it as a thoughtful companion for self-exploration — available whenever you need it."
+              "SeeHere is a reflective space, not a clinical service. Think of it as a thoughtful companion for
+              self-exploration — available whenever you need it."
             </blockquote>
           </div>
         </ScrollSection>
@@ -301,9 +325,7 @@ const Index = () => {
             <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-foreground mb-6">
               Common questions
             </h2>
-            <p className="text-center text-muted-foreground mb-16">
-              Everything you might want to know
-            </p>
+            <p className="text-center text-muted-foreground mb-16">Everything you might want to know</p>
 
             <Accordion type="single" collapsible className="space-y-4">
               <AccordionItem value="therapy" className="border-b border-border/40 pb-4">
@@ -311,7 +333,9 @@ const Index = () => {
                   Is this therapy?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  No. SeeHere is a reflective space grounded in person-centred principles, not a substitute for professional therapy. It offers empathic conversation and gentle techniques to help you process thoughts and feelings, but it does not provide diagnoses, treatment plans, or clinical intervention.
+                  No. SeeHere is a reflective space grounded in person-centred principles, not a substitute for
+                  professional therapy. It offers empathic conversation and gentle techniques to help you process
+                  thoughts and feelings, but it does not provide diagnoses, treatment plans, or clinical intervention.
                 </AccordionContent>
               </AccordionItem>
 
@@ -320,7 +344,9 @@ const Index = () => {
                   How does it work?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  SeeHere uses AI trained in person-centred principles to provide gentle reflections through text-based conversations. The AI remembers your previous conversations, building continuity and understanding over time — helping you explore your feelings with deeper context.
+                  SeeHere uses AI trained in person-centred principles to provide gentle reflections through text-based
+                  conversations. The AI remembers your previous conversations, building continuity and understanding
+                  over time — helping you explore your feelings with deeper context.
                 </AccordionContent>
               </AccordionItem>
 
@@ -329,7 +355,8 @@ const Index = () => {
                   Are my conversations confidential?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  Yes. Your conversations are encrypted and private. We do not share your data with third parties, and sessions are designed to be a safe, confidential space.
+                  Yes. Your conversations are encrypted and private. We do not share your data with third parties, and
+                  sessions are designed to be a safe, confidential space.
                 </AccordionContent>
               </AccordionItem>
 
@@ -338,7 +365,8 @@ const Index = () => {
                   How much does it cost?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  You get 2 free sessions to try SeeHere with no commitment. After that, sessions can be purchased in credit packs starting from £5. Credits never expire.
+                  You get 2 free sessions to try SeeHere with no commitment. After that, sessions can be purchased in
+                  credit packs starting from £5. Credits never expire.
                 </AccordionContent>
               </AccordionItem>
 
@@ -347,7 +375,8 @@ const Index = () => {
                   Who is this for?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  Anyone looking for a quiet, judgement-free space to reflect. Whether you're navigating a difficult time, working through everyday stress, or simply want to understand yourself better.
+                  Anyone looking for a quiet, judgement-free space to reflect. Whether you're navigating a difficult
+                  time, working through everyday stress, or simply want to understand yourself better.
                 </AccordionContent>
               </AccordionItem>
 
@@ -356,7 +385,8 @@ const Index = () => {
                   What if I'm struggling or in crisis?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  SeeHere is not a crisis service. If you are in immediate danger or experiencing a mental health crisis, please contact the Samaritans on 116 123 (24/7), text SHOUT to 85258, or call 999.
+                  SeeHere is not a crisis service. If you are in immediate danger or experiencing a mental health
+                  crisis, please contact the Samaritans on 116 123 (24/7), text SHOUT to 85258, or call 999.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -368,7 +398,10 @@ const Index = () => {
       <div className="relative z-10 bg-[#fae5da]/20 border-t border-border/30 py-2 px-6 text-center">
         <p className="text-xs text-muted-foreground">
           In crisis? Contact{" "}
-          <a href="tel:116123" className="underline underline-offset-2 hover:text-foreground transition-colors font-medium">
+          <a
+            href="tel:116123"
+            className="underline underline-offset-2 hover:text-foreground transition-colors font-medium"
+          >
             Samaritans: 116 123
           </a>{" "}
           or text SHOUT to 85258
@@ -384,23 +417,23 @@ const Index = () => {
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
-
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
               Terms &amp; Conditions
             </a>
             <a
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
-
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
               Privacy Policy
             </a>
           </div>
         </div>
       </footer>
-    </div>);
-
+    </div>
+  );
 };
 
 export default Index;
