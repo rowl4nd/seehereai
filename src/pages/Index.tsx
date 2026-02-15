@@ -127,15 +127,15 @@ const Index = () => {
                 </p>
                 
                 <div className="space-y-4 pt-2">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 justify-end flex-row-reverse">
                     <Heart className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                     <p className="text-base text-foreground font-medium">Listens with empathy</p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 justify-end flex-row-reverse">
                     <MessageCircle className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                     <p className="text-base text-foreground font-medium">Asks thoughtful questions</p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 justify-end flex-row-reverse">
                     <Shield className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                     <p className="text-base text-foreground font-medium">Never judges</p>
                   </div>
