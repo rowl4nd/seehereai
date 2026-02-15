@@ -429,6 +429,11 @@ const Index = () => {
 
               Privacy Policy
             </a>
+            <a
+              href="/contact"
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+              Contact Us
+            </a>
           </div>
         </div>
       </footer>
