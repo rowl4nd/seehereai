@@ -185,7 +185,7 @@ const Index = () => {
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-6 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   3
                 </div>
-                <h3 className="text-xl font-serif font-light text-foreground mb-3">Return whenever you need</h3>
+                <h3 className="text-xl font-serif font-light text-foreground mb-3">Reflect and return</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Sessions are available 24/7. Come back to continue the conversation anytime.
                 </p>
