@@ -128,16 +128,16 @@ const Index = () => {
                 
                 <div className="space-y-4 pt-2 items-end">
                   <div className="flex items-center gap-3 justify-end">
-                    <Heart className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                     <p className="text-base text-foreground font-medium">Listens with empathy</p>
+                    <Heart className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                   </div>
                   <div className="flex items-center gap-3 justify-end">
-                    <MessageCircle className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                     <p className="text-base text-foreground font-medium">Asks thoughtful questions</p>
+                    <MessageCircle className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                   </div>
                   <div className="flex items-center gap-3 justify-end">
-                    <Shield className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                     <p className="text-base text-foreground font-medium">Never judges</p>
+                    <Shield className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                   </div>
                 </div>
 
