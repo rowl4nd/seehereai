@@ -616,8 +616,8 @@ const Mirror = () => {
       </header>
 
       {/* Messages */}
-      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-6">
-        <div className="max-w-2xl mx-auto space-y-6">
+      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-6 flex flex-col">
+        <div className="max-w-2xl mx-auto space-y-6 mt-auto w-full">
           {messages.map((message) => (
             <div
               key={message.id}
