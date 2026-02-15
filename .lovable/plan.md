@@ -1,19 +1,15 @@
 
 
-## Change "Create Account" Button to Lavender
+## Restore Light Placeholder Text on Auth Inputs
 
-When the user switches to the signup tab, the button text changes to "Create account". The button should also change its background color from the default sage green to lavender to match the purple branding of the "Here" tab.
+The `placeholder:text-muted-foreground/30` class that was added earlier got lost during the button color update. Both the email and password inputs need it re-added.
 
 ### Technical Details
 
 **File: `src/pages/Auth.tsx`**
 
-Update the `<Button>` element (around line 173) to conditionally apply a lavender background when in signup mode:
+- **Email input (line 158)**: Change className from `"bg-card border-border/50 focus:border-primary/50"` to `"bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"`
+- **Password input (line 175)**: Change className from `"bg-card border-border/50 focus:border-primary/50"` to `"bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"`
 
-- Current: `className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"`
-- Updated: Add a conditional class so that when `mode === "signup"`, the button uses lavender (`#b9a3e0`) instead of the default green primary color
-- The className will become: `cn("w-full text-white", mode === "signup" ? "bg-[#b9a3e0] hover:bg-[#a48fd0]" : "bg-primary hover:bg-primary/90")`
-- Import `cn` from `@/lib/utils` (if not already imported)
-
-This keeps the green button for "Sign in" and "Send reset link", and switches to lavender only for "Create account" -- matching the purple accent used on the "First time Here?" tab.
+This restores the light, subtle placeholder appearance so "you@example.com" and the dots don't look like typed text.
 
