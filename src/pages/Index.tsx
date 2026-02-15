@@ -320,7 +320,7 @@ const Index = () => {
                   How does it work?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  SeeHere uses AI trained in person-centred principles to provide empathic reflections through text-based conversations. You type what's on your mind, and receive thoughtful responses designed to help you explore your feelings and gain clarity. Sessions are available 24/7 with no scheduling required.
+                  SeeHere uses AI trained in person-centred principles to provide gentle reflections through text-based conversations. The AI remembers your previous conversations, building continuity and understanding over time — helping you explore your feelings with deeper context.
                 </AccordionContent>
               </AccordionItem>
 
