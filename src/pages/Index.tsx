@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 import heroLogo from "@/assets/see-here-logo.png";
-import heroBackgroundLeft from "@/assets/hero-bg-left.jpg";
+
 import heroBackgroundRight from "@/assets/hero-bg-right.jpg";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
 import splitSupport from "@/assets/split-support.jpg";
@@ -131,29 +131,14 @@ const Index = () => {
 
       {/* ── Hero with split background images ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Background images on left and right (hidden on mobile) */}
-        <div className="absolute inset-0 hidden md:flex">
-          {/* Left image - forest */}
-          <div className="w-1/2 relative">
-            <img
-              src={heroBackgroundLeft}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            {/* Gradient fade to center */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#f8f6f3]/60 to-[#f8f6f3]" />
-          </div>
-
-          {/* Right image - coffee/conversation */}
-          <div className="w-1/2 relative">
-            <img
-              src={heroBackgroundRight}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            {/* Gradient fade to center */}
-            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#f8f6f3]/60 to-[#f8f6f3]" />
-          </div>
+        {/* Background image (hidden on mobile) */}
+        <div className="absolute inset-0 hidden md:block">
+          <img
+            src={heroBackgroundRight}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[#f8f6f3]/60" />
         </div>
 
         {/* Solid center overlay with subtle gradient blobs */}
