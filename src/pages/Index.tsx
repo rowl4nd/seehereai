@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 import heroLogo from "@/assets/see-here-logo.png";
+import heroBackgroundLeft from "@/assets/hero-bg-left.jpg";
+import heroBackgroundRight from "@/assets/hero-bg-right.jpg";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
 import splitSupport from "@/assets/split-support.jpg";
 import chatPreview from "@/assets/chat-preview.png";
@@ -23,7 +25,11 @@ const ScrollSection = ({
   children,
   className = "",
   delay = 0
-}: {children: React.ReactNode;className?: string;delay?: number;}) => {
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) => {
   const { ref, isVisible } = useScrollAnimation();
   return (
     <div
@@ -31,11 +37,11 @@ const ScrollSection = ({
       className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
       style={{
         transitionDelay: `${delay}ms`
-      }}>
-
+      }}
+    >
       {children}
-    </div>);
-
+    </div>
+  );
 };
 
 const Index = () => {
@@ -78,6 +84,7 @@ const Index = () => {
       setBetaSending(false);
     }
   };
+
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
       {/* ── Header ── */}
@@ -87,20 +94,20 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
-          {!loading && (
-          user ?
-          <Link to="/dashboard">
+          {!loading &&
+            (user ? (
+              <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="text-sm">
                   Dashboard
                 </Button>
-              </Link> :
-
-          <Link to="/auth">
+              </Link>
+            ) : (
+              <Link to="/auth">
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
-              </Link>)
-          }
+              </Link>
+            ))}
         </div>
       </header>
 
@@ -108,35 +115,78 @@ const Index = () => {
       <div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-3 px-6 text-center">
         <p className="text-sm text-foreground">
           <span className="font-medium">Beta Testing Phase</span> — We're limiting early access to ensure quality.
-          <a href="#beta-signup" onClick={(e) => { e.preventDefault(); document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' }); }} className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium ml-1">
+          
+            href="#beta-signup"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium ml-1"
+          >
             Join our first 50 testers
           </a>
           {" "}and receive 8 free sessions.
         </p>
       </div>
 
-      {/* ── Hero - Clean, minimal ── */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-[#f8f6f3] to-background">
-        {/* Subtle background shapes */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* ── Hero with split background images ── */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        {/* Background images on left and right (hidden on mobile) */}
+        <div className="absolute inset-0 hidden md:flex">
+          {/* Left image - forest */}
+          <div className="w-1/2 relative">
+            <img
+              src={heroBackgroundLeft}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Gradient fade to center */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#f8f6f3]/60 to-[#f8f6f3]" />
+          </div>
+
+          {/* Right image - coffee/conversation */}
+          <div className="w-1/2 relative">
+            <img
+              src={heroBackgroundRight}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Gradient fade to center */}
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#f8f6f3]/60 to-[#f8f6f3]" />
+          </div>
+        </div>
+
+        {/* Solid center overlay with subtle gradient blobs */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="hidden md:block absolute inset-0 bg-[#f8f6f3]/90"
+            style={{
+              maskImage: 'radial-gradient(ellipse 50% 60% at 50% 50%, black 40%, transparent 75%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 50% 60% at 50% 50%, black 40%, transparent 75%)'
+            }}
+          />
+          {/* Mobile: solid gradient background */}
+          <div className="md:hidden absolute inset-0 bg-gradient-to-b from-background via-[#f8f6f3] to-background" />
+          {/* Subtle background shapes */}
           <div className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full bg-[#cbb7ef]/8 blur-[100px]" />
           <div className="absolute bottom-20 right-10 w-[350px] h-[350px] rounded-full bg-[#b1cfac]/8 blur-[100px]" />
         </div>
 
+        {/* Central content */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
           <img src={heroLogo} alt="see here" className="h-36 md:h-48 w-auto mx-auto mb-4" />
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-[1.05] text-foreground tracking-tight">
             A quiet space to talk
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground">​AI companion trained to listen and support          </p>
+          <p className="text-lg md:text-xl text-muted-foreground">AI companion trained to listen and support</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-muted-foreground text-base md:text-lg">
             <span className="flex items-center gap-2">
               <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd" />
-
+                  clipRule="evenodd"
+                />
               </svg>
               Available 24/7
             </span>
@@ -145,8 +195,8 @@ const Index = () => {
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd" />
-
+                  clipRule="evenodd"
+                />
               </svg>
               Fully private & encrypted
             </span>
@@ -155,8 +205,8 @@ const Index = () => {
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd" />
-
+                  clipRule="evenodd"
+                />
               </svg>
               No subscriptions
             </span>
@@ -164,8 +214,8 @@ const Index = () => {
           <Link to="/auth" className="inline-block pt-4">
             <Button
               size="lg"
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+            >
               Start your first session (free)
             </Button>
           </Link>
@@ -188,8 +238,8 @@ const Index = () => {
                   Built by people who understand
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
-                  SeeHere was created by therapists who know how many people need space to think out loud — but don't think they are ready for or can easily access traditional therapy.
-                
+                  SeeHere was created by therapists who know how many people need space to think out loud — but don't
+                  think they are ready for or can easily access traditional therapy.
                 </p>
                 <p className="text-base text-muted-foreground leading-relaxed">
                   We combined evidence-based therapeutic principles with AI to create a companion that:
@@ -214,8 +264,8 @@ const Index = () => {
                   <Link to="/auth">
                     <Button
                       size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-
+                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
                       Begin a free conversation
                     </Button>
                   </Link>
@@ -248,8 +298,8 @@ const Index = () => {
                 <img
                   src={talkBubble}
                   alt="I just feel like I need someone to talk to"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
-
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
+                />
               </div>
             </ScrollSection>
 
@@ -265,8 +315,8 @@ const Index = () => {
                 <img
                   src={replyBubble}
                   alt="I'm glad you reached out; I'm here and ready to listen"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
-
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
+                />
               </div>
             </ScrollSection>
 
@@ -282,8 +332,8 @@ const Index = () => {
                 <img
                   src={reflectBubble}
                   alt="Time to reflect"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
-
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
+                />
               </div>
             </ScrollSection>
           </div>
@@ -339,8 +389,8 @@ const Index = () => {
                   <Link to="/auth">
                     <Button
                       size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-
+                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
                       Begin a free conversation
                     </Button>
                   </Link>
@@ -384,9 +434,18 @@ const Index = () => {
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
                   <ul className="list-disc pl-5 space-y-3">
-                    <li>Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for productivity or problem-solving.</li>
-                    <li>Unlike traditional therapy, there's no waiting list, no scheduling, no pressure to commit to weekly sessions, and sessions cost a fraction of what you'd pay for professional therapy.</li>
-                    <li>Unlike many mental health apps that offer CBT exercises or mood tracking, SeeHere focuses purely on giving you space to think out loud with a companion that listens without judgment.</li>
+                    <li>
+                      Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for
+                      productivity or problem-solving.
+                    </li>
+                    <li>
+                      Unlike traditional therapy, there's no waiting list, no scheduling, no pressure to commit to
+                      weekly sessions, and sessions cost a fraction of what you'd pay for professional therapy.
+                    </li>
+                    <li>
+                      Unlike many mental health apps that offer CBT exercises or mood tracking, SeeHere focuses purely
+                      on giving you space to think out loud with a companion that listens without judgment.
+                    </li>
                   </ul>
                 </AccordionContent>
               </AccordionItem>
@@ -461,13 +520,10 @@ const Index = () => {
       <section id="beta-signup" className="relative py-24 px-6 md:px-12 bg-[#f8f6f3]">
         <ScrollSection>
           <div className="max-w-lg mx-auto text-center space-y-6">
-            <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground">
-              Join Our Beta
-            </h2>
+            <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground">Join Our Beta</h2>
             <p className="text-base text-muted-foreground leading-relaxed">
-              We're carefully onboarding our first users to ensure the best possible
-              experience. The first 50 testers receive 8 free sessions — enough to
-              truly explore what SeeHere can offer.
+              We're carefully onboarding our first users to ensure the best possible experience. The first 50 testers
+              receive 8 free sessions — enough to truly explore what SeeHere can offer.
             </p>
 
             {betaSent ? (
@@ -528,10 +584,7 @@ const Index = () => {
       <div className="relative z-10 bg-[#fae5da]/20 border-t border-border/30 py-2 px-6 text-center">
         <p className="text-xs text-muted-foreground">
           In crisis? Contact{" "}
-          <a
-            href="tel:116123"
-            className="underline underline-offset-2 hover:text-foreground transition-colors font-medium">
-
+          <a href="tel:116123" className="underline underline-offset-2 hover:text-foreground transition-colors font-medium">
             Samaritans: 116 123
           </a>{" "}
           or text SHOUT to 85258
@@ -543,32 +596,30 @@ const Index = () => {
         <div className="relative z-10 space-y-4">
           <p className="text-sm text-muted-foreground">A space for reflection</p>
           <div className="flex justify-center gap-8">
-            <a
+            
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
-
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
               Terms &amp; Conditions
             </a>
-            <a
+            
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
-
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
               Privacy Policy
             </a>
-            <a
-              href="/contact"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+            <a href="/contact" className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
               Contact Us
             </a>
           </div>
         </div>
       </footer>
-    </div>);
-
+    </div>
+  );
 };
 
 export default Index;
