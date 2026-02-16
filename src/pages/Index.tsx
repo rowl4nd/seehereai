@@ -111,7 +111,7 @@ const Index = () => {
           <a href="#beta-signup" onClick={(e) => { e.preventDefault(); document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' }); }} className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium ml-1">
             Join our first 50 testers
           </a>
-          {" "}and receive 16 free sessions.
+          {" "}and receive 8 free sessions.
         </p>
       </div>
 
@@ -466,7 +466,7 @@ const Index = () => {
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed">
               We're carefully onboarding our first users to ensure the best possible
-              experience. The first 50 testers receive 16 free sessions — enough to
+              experience. The first 50 testers receive 8 free sessions — enough to
               truly explore what SeeHere can offer.
             </p>
 
