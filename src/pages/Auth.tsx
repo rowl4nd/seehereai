@@ -105,7 +105,7 @@ const Auth = () => {
           <a href="/#beta-signup" className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium ml-1">
             Join our first 50 testers
           </a>
-          {" "}and receive 16 free sessions.
+          {" "}and receive 8 free sessions.
         </p>
       </div>
 
