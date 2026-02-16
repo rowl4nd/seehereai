@@ -131,14 +131,17 @@ const Index = () => {
 
       {/* ── Hero with split background images ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Background image (hidden on mobile) */}
-        <div className="absolute inset-0 hidden md:block">
-          <img
-            src={heroBackgroundRight}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-[#f8f6f3]/60" />
+        {/* Background image on right side (hidden on mobile) */}
+        <div className="absolute inset-0 hidden md:flex">
+          <div className="w-1/2" />
+          <div className="w-1/2 relative">
+            <img
+              src={heroBackgroundRight}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#f8f6f3]/60 to-[#f8f6f3]" />
+          </div>
         </div>
 
         {/* Solid center overlay with subtle gradient blobs */}
