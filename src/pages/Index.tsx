@@ -115,7 +115,7 @@ const Index = () => {
       </div>
 
       {/* ── Hero - Clean, minimal ── */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20">
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-[#cbb7ef]/20 via-[#f5e6d0]/20 to-[#b1cfac]/20">
         {/* Subtle background shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full bg-[#cbb7ef]/8 blur-[100px]" />
