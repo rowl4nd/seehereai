@@ -161,14 +161,33 @@ const Index = () => {
               No subscriptions
             </span>
           </div>
-          <Link to="/auth" className="inline-block pt-4">
-            <Button
-              size="lg"
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-
-              Start your first session (free)
-            </Button>
-          </Link>
+          {betaSent ? (
+            <div className="pt-4">
+              <div className="rounded-lg border border-border/40 bg-background/60 p-6 space-y-2 max-w-md mx-auto">
+                <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
+                <p className="text-sm text-muted-foreground">We'll review your request and get back to you within 24–48 hours.</p>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleBetaSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 max-w-md mx-auto w-full">
+              <Input
+                type="email"
+                placeholder="you@email.com"
+                value={betaEmail}
+                onChange={(e) => setBetaEmail(e.target.value)}
+                required
+                maxLength={255}
+                className="placeholder:text-muted-foreground/30 h-12 flex-1"
+              />
+              <Button
+                type="submit"
+                size="lg"
+                disabled={betaSending}
+                className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-8 h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap">
+                {betaSending ? "Sending…" : "Request beta access"}
+              </Button>
+            </form>
+          )}
         </div>
       </section>
 
@@ -211,14 +230,12 @@ const Index = () => {
                 </div>
 
                 <div className="pt-6">
-                  <Link to="/auth">
-                    <Button
-                      size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-
-                      Begin a free conversation
-                    </Button>
-                  </Link>
+                  <Button
+                    size="lg"
+                    onClick={() => document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+                    Request beta access
+                  </Button>
                 </div>
               </div>
             </ScrollSection>
@@ -336,14 +353,12 @@ const Index = () => {
                 </div>
 
                 <div className="pt-6">
-                  <Link to="/auth">
-                    <Button
-                      size="lg"
-                      className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-
-                      Begin a free conversation
-                    </Button>
-                  </Link>
+                  <Button
+                    size="lg"
+                    onClick={() => document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+                    Request beta access
+                  </Button>
                 </div>
               </div>
             </ScrollSection>
