@@ -1,32 +1,41 @@
 
-## Update Homepage Buttons and Add Hero Email Form
 
-### Changes
+# Switch Stripe from Test to Live Mode
 
-**1. Rename buttons to "Request beta access"**
-- Hero button (line 169): Change "Start your first session (free)" to "Request beta access"
-- "Built by people who understand" section button (line 219): Change "Begin a free conversation" to "Request beta access"
-- "What you will get" section button (line 344): Change "Begin a free conversation" to "Request beta access"
+There are 3 things that need updating to go live:
 
-**2. Make the two section buttons scroll to the beta form instead of linking to /auth**
-- "Built by people who understand" button (lines 214-221): Replace `<Link to="/auth">` with an `onClick` handler that smooth-scrolls to `#beta-signup`
-- "What you will get" button (lines 339-346): Same change -- smooth-scroll to `#beta-signup`
+## 1. Update the STRIPE_SECRET_KEY secret
+Your current secret key is likely a test key (starting with `sk_test_`). You need to replace it with your **live secret key** (starting with `sk_live_`).
 
-**3. Add a mini email form in the hero section**
-- Place a compact inline form just above the hero "Request beta access" button (around line 164)
-- The form will have a single email input and the submit button side by side
-- It will share the same state and submission logic (`handleBetaSubmit`, `betaEmail`, `betaSending`, `betaSent`) as the full beta form at the bottom
-- On success, show the same thank-you message inline
-- The hero button becomes the submit button for this mini form (no separate link)
+You can find your live secret key at: **Stripe Dashboard > Developers > API Keys**
 
-### Technical Details
+## 2. Create live products and prices + update the code
+Products and prices created in test mode do NOT carry over to live mode. We need to create 4 new products with prices in live mode:
 
-**File: `src/pages/Index.tsx`**
+| Package | Price (GBP) |
+|---------|-------------|
+| 1 Session | 5.00 |
+| 4 Sessions | 12.00 |
+| 8 Sessions | 20.00 |
+| 16 Sessions | 32.00 |
 
-- Replace the hero `<Link to="/auth">` block (lines 164-171) with a mini form containing:
-  - An email `<Input>` field (same validation rules: required, type email, maxLength 255)
-  - A submit `<Button>` labeled "Request beta access"
-  - Wrapped in a `<form>` using the existing `handleBetaSubmit` handler
-  - If `betaSent` is true, show a brief confirmation instead of the form
+I will create these using the Stripe tools, then update the price IDs in `supabase/functions/create-checkout/index.ts`.
 
-- For the two section buttons, replace the `<Link to="/auth">` wrapper with a plain `<button>` or anchor that calls `document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' })`
+## 3. Update the STRIPE_WEBHOOK_SECRET
+You need to create a **new webhook endpoint** in Stripe's live mode dashboard:
+
+- **URL**: `https://ntmcghgamswdygvnnsrc.supabase.co/functions/v1/stripe-webhook`
+- **Event**: `checkout.session.completed`
+
+Then update the `STRIPE_WEBHOOK_SECRET` with the new signing secret from that live webhook.
+
+## Steps in order
+1. I will ask you to update the `STRIPE_SECRET_KEY` to your live key
+2. I will create the 4 live products and prices in Stripe
+3. I will update the price IDs in the checkout function code
+4. I will ask you to set up the live webhook and update `STRIPE_WEBHOOK_SECRET`
+
+---
+
+### Technical detail
+Only one file changes: `supabase/functions/create-checkout/index.ts` -- the 4 `priceId` values in the `PACKAGES` map get replaced with the new live-mode price IDs.
