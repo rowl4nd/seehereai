@@ -243,7 +243,7 @@ const Index = () => {
       </section>
 
       {/* ── How it works - 3 cards ── */}
-      <section className="relative py-24 px-6 md:px-12 bg-[#f8f6f3]">
+      <section className="relative py-24 px-6 md:px-12 bg-[#f5e6d0]/25">
         <div className="max-w-6xl mx-auto">
           <ScrollSection>
             <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-foreground mb-20">
