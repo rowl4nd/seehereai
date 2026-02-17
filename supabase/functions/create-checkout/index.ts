@@ -11,22 +11,22 @@ const corsHeaders = {
 // Map package IDs to Stripe price IDs and session counts
 const PACKAGES: Record<string, { priceId: string; sessions: number; amount: number }> = {
   single: {
-    priceId: "price_1SxpnMH4NHPtrdivIN9lXhaV",
+    priceId: "price_1T1tBCQUMEZeg45ZfRF5lERS",
     sessions: 1,
     amount: 500,
   },
   four: {
-    priceId: "price_1SxpndH4NHPtrdivdaQSzsnW",
+    priceId: "price_1T1tBfQUMEZeg45ZAySnWEfA",
     sessions: 4,
     amount: 1200,
   },
   eight: {
-    priceId: "price_1SxpnsH4NHPtrdivK857YRF4",
+    priceId: "price_1T1tCAQUMEZeg45ZoRs5Xmmx",
     sessions: 8,
     amount: 2000,
   },
   sixteen: {
-    priceId: "price_1Sxpo1H4NHPtrdivABgbUPFG",
+    priceId: "price_1T1tCQQUMEZeg45ZMeiFYUX9",
     sessions: 16,
     amount: 3200,
   },
