@@ -310,7 +310,7 @@ const Index = () => {
       <section className="relative">
         <div className="grid md:grid-cols-2">
           {/* Text side first on desktop */}
-          <div className="bg-[#cbb7ef]/15 flex items-center px-8 md:px-16 py-16 md:py-20 order-2 md:order-1">
+          <div className="bg-gradient-to-r from-[#cbb7ef]/20 to-[#f5e6d0]/20 flex items-center px-8 md:px-16 py-16 md:py-20 order-2 md:order-1">
             <ScrollSection>
               <div className="max-w-lg space-y-6">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
