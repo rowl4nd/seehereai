@@ -199,7 +199,7 @@ const Index = () => {
           </div>
 
           {/* Text side */}
-          <div className="bg-[#b1cfac]/15 flex items-center justify-end px-8 md:px-16 py-16 md:py-20">
+          <div className="bg-gradient-to-r from-[#f5e6d0]/20 to-[#b1cfac]/20 flex items-center justify-end px-8 md:px-16 py-16 md:py-20">
             <ScrollSection>
               <div className="max-w-lg space-y-6 text-right ml-auto">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
