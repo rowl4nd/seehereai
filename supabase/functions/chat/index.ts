@@ -23,6 +23,38 @@ const SYSTEM_PROMPT = `You are See Here, a warm and psychologically informed AI 
 - **Congruence**: Be genuine and transparent. You are an AI companion — be honest about that.
 - **Respect autonomy**: Never push. Always frame suggestions as optional invitations. The person knows their own experience best.
 
+## Reading the Room
+
+IMPORTANT: These guidelines apply to TONE only. 
+All safety guardrails, crisis detection, and boundary rules remain active at all times — regardless of how light or casual the conversation feels.
+
+Not everyone who comes to SeeHere is in distress. Some people simply want to talk — about their day, a frustrating situation, or something on their mind. That's completely valid and welcome.
+
+Always match the energy and tone of the person:
+- If they're light and conversational — be warm 
+  and natural, like a good friend. Don't over-therapise.
+- If they're distressed — shift into your fuller 
+  supportive listening mode.
+- If they're somewhere in between — follow their lead.
+
+Signs someone just wants a chat:
+- Casual, informal language
+- Everyday topics (work, relationships, minor frustrations)
+- Short, punchy messages
+- No expressions of hopelessness or distress
+
+In these moments:
+- Be conversational and warm, not clinical
+- You don't need to reflect every feeling back
+- Gentle humour is fine if it feels natural
+- Don't ask probing therapeutic questions unprompted
+- Just be present
+
+HOWEVER — always stay alert. People often start light and move into something deeper. A casual conversation about work stress can become something more significant. 
+Never switch off your awareness, even in lighter moments.
+
+The therapeutic depth and safety awareness are always there. Just don't lead with them when they're not needed.
+
 ## Supportive Techniques (CBT-Informed)
 
 ### When to offer techniques
@@ -174,23 +206,24 @@ serve(async (req) => {
     // Build context from past conversations if available
     let conversationContext = "";
     if (pastConversations && Array.isArray(pastConversations) && pastConversations.length > 0) {
-      conversationContext = "\n\n## PAST SESSION CONTEXT\nHere are summaries of previous sessions with this person. Use this to provide continuity and remember what they've shared before:\n\n";
-      
-      pastConversations.slice(-5).forEach((conv: { messages: Array<{ role: string; content: string }> }, index: number) => {
-        conversationContext += `### Session ${index + 1}\n`;
-        const msgs = conv.messages || [];
-        // Include key exchanges (first few and last few messages)
-        const keyMessages = msgs.length > 6 
-          ? [...msgs.slice(0, 3), ...msgs.slice(-3)]
-          : msgs;
-        keyMessages.forEach((msg: { role: string; content: string }) => {
-          const speaker = msg.role === "user" ? "They said" : "You said";
-          // Remove the 5 minute warning tag if present
-          const cleanContent = msg.content.replace(/^\[5 MINUTE WARNING\]\s*/i, '');
-          conversationContext += `- ${speaker}: "${cleanContent.substring(0, 200)}${cleanContent.length > 200 ? '...' : ''}"\n`;
+      conversationContext =
+        "\n\n## PAST SESSION CONTEXT\nHere are summaries of previous sessions with this person. Use this to provide continuity and remember what they've shared before:\n\n";
+
+      pastConversations
+        .slice(-5)
+        .forEach((conv: { messages: Array<{ role: string; content: string }> }, index: number) => {
+          conversationContext += `### Session ${index + 1}\n`;
+          const msgs = conv.messages || [];
+          // Include key exchanges (first few and last few messages)
+          const keyMessages = msgs.length > 6 ? [...msgs.slice(0, 3), ...msgs.slice(-3)] : msgs;
+          keyMessages.forEach((msg: { role: string; content: string }) => {
+            const speaker = msg.role === "user" ? "They said" : "You said";
+            // Remove the 5 minute warning tag if present
+            const cleanContent = msg.content.replace(/^\[5 MINUTE WARNING\]\s*/i, "");
+            conversationContext += `- ${speaker}: "${cleanContent.substring(0, 200)}${cleanContent.length > 200 ? "..." : ""}"\n`;
+          });
+          conversationContext += "\n";
         });
-        conversationContext += "\n";
-      });
     }
     // Build user name context
     let nameContext = "\n\n## USER NAME CONTEXT\n";
@@ -199,7 +232,8 @@ serve(async (req) => {
     } else if (nameDeclined) {
       nameContext += "The person has previously declined to share their name. Do NOT ask for it.";
     } else {
-      nameContext += "No name has been provided yet. You may gently invite them to share their name early in the conversation.";
+      nameContext +=
+        "No name has been provided yet. You may gently invite them to share their name early in the conversation.";
     }
 
     // Combine system prompt with conversation history and name context
@@ -208,15 +242,12 @@ serve(async (req) => {
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: fullSystemPrompt },
-          ...messages,
-        ],
+        messages: [{ role: "system", content: fullSystemPrompt }, ...messages],
         max_tokens: 300,
         temperature: 0.7,
       }),
@@ -256,19 +287,19 @@ serve(async (req) => {
       JSON.stringify({ message, detectedName, nameDeclined: detectedNameDeclined, endSession: endSessionFlag }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     console.error("Error in chat function:", error);
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: error.message,
-        message: "I'm having trouble connecting right now. Please try again in a moment."
+        message: "I'm having trouble connecting right now. Please try again in a moment.",
       }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   }
 });
