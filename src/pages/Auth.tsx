@@ -90,25 +90,15 @@ const AuthPage = () => {
       {/* Main container */}
       <main style={styles.main}>
         <div style={styles.rectangle}>
-          {/* ── LEFT PANEL ── */}
+          {/* ── LEFT PANEL (Login) ── */}
           <div
             style={{
               ...styles.panel,
               opacity: isLogin && !isAnimating ? 1 : !isLogin && !isAnimating ? 1 : 0.3,
               transition: "opacity 0.3s ease",
-            }}
+            } as React.CSSProperties}
           >
-            {/* Login form */}
-            <div
-              style={{
-                ...styles.formPanel,
-                opacity: isLogin ? 1 : 0,
-                transform: isLogin ? "translateX(0)" : "translateX(-20px)",
-                transition: "all 0.4s ease",
-                pointerEvents: isLogin ? "auto" : "none",
-                position: isLogin ? "relative" : "absolute",
-              }}
-            >
+            <div style={styles.formPanel}>
               <div style={styles.formHeader}>
                 <h2 style={styles.formTitle}>{forgotMode ? "Reset password" : "Welcome back"}</h2>
                 <p style={styles.formSubtitle}>{forgotMode ? "We'll send you a reset link" : "Take your time"}</p>
@@ -146,7 +136,7 @@ const AuthPage = () => {
                   </div>
                 )}
 
-                <div style={{ textAlign: "right", marginTop: "-4px" }}>
+                <div style={{ textAlign: "right" as const, marginTop: "-4px" }}>
                   {!forgotMode ? (
                     <button type="button" onClick={() => setForgotMode(true)} style={styles.textBtn}>
                       Forgot password?
@@ -163,20 +153,17 @@ const AuthPage = () => {
                 </button>
               </form>
             </div>
+          </div>
 
-            {/* Signup form — shown on left when in signup mode */}
-            <div
-              style={{
-                ...styles.formPanel,
-                opacity: !isLogin ? 1 : 0,
-                transform: !isLogin ? "translateX(0)" : "translateX(20px)",
-                transition: "all 0.4s ease",
-                pointerEvents: !isLogin ? "auto" : "none",
-                position: !isLogin ? "relative" : "absolute",
-                top: !isLogin ? "auto" : 0,
-                width: "100%",
-              }}
-            >
+          {/* ── RIGHT PANEL (Signup) ── */}
+          <div
+            style={{
+              ...styles.panel,
+              opacity: !isLogin && !isAnimating ? 1 : isLogin && !isAnimating ? 1 : 0.3,
+              transition: "opacity 0.3s ease",
+            } as React.CSSProperties}
+          >
+            <div style={styles.formPanel}>
               <div style={styles.formHeader}>
                 <h2 style={styles.formTitle}>Begin your journey</h2>
                 <p style={styles.formSubtitle}>Create a space for yourself</p>
@@ -231,9 +218,8 @@ const AuthPage = () => {
                 : "linear-gradient(135deg, #8daa90 0%, #709474 100%)",
               borderRadius: isLogin ? "0 16px 16px 0" : "16px 0 0 16px",
               transition: "left 0.65s cubic-bezier(0.77, 0, 0.175, 1), background 0.65s ease, border-radius 0.4s ease",
-            }}
+            } as React.CSSProperties}
           >
-            {/* Decorative circles */}
             <div style={styles.deco1} />
             <div style={styles.deco2} />
 
@@ -245,8 +231,8 @@ const AuthPage = () => {
                   opacity: isLogin ? 1 : 0,
                   transform: isLogin ? "translateY(0)" : "translateY(10px)",
                   transition: "all 0.4s ease 0.2s",
-                  pointerEvents: isLogin ? "auto" : "none",
-                  position: "absolute",
+                  pointerEvents: isLogin ? "auto" as const : "none" as const,
+                  position: "absolute" as const,
                 }}
               >
                 <p style={styles.cardEyebrow}>New here?</p>
@@ -275,8 +261,8 @@ const AuthPage = () => {
                   opacity: !isLogin ? 1 : 0,
                   transform: !isLogin ? "translateY(0)" : "translateY(10px)",
                   transition: "all 0.4s ease 0.2s",
-                  pointerEvents: !isLogin ? "auto" : "none",
-                  position: "absolute",
+                  pointerEvents: !isLogin ? "auto" as const : "none" as const,
+                  position: "absolute" as const,
                 }}
               >
                 <p style={styles.cardEyebrow}>Already have an account?</p>
