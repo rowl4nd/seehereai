@@ -18,6 +18,9 @@ import chatPreview from "@/assets/chat-preview.png";
 import talkBubble from "@/assets/talk-bubble.png";
 import replyBubble from "@/assets/reply-bubble.png";
 import reflectBubble from "@/assets/reflect-bubble.png";
+import quoteCard1 from "@/assets/quote-card-1.png";
+import quoteCard2 from "@/assets/quote-card-2.png";
+import quoteCard3 from "@/assets/quote-card-3.png";
 
 const ScrollSection = ({
   children,
@@ -391,14 +394,13 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── Quote section with subtle bg ── */}
+      {/* ── Quote cards ── */}
       <section className="relative py-24 px-6 bg-[#f8f6f3]">
         <ScrollSection>
-          <div className="max-w-3xl mx-auto text-center space-y-8">
-            <blockquote className="text-2xl md:text-3xl font-serif font-light text-foreground/90 leading-relaxed">
-              "SeeHere is a reflective space, not a clinical service. Think of it as a thoughtful companion for
-              self-exploration — available whenever you need it."
-            </blockquote>
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+            <img src={quoteCard1} alt="Reflective space quote" className="w-full h-auto object-cover rounded-xl shadow-lg" />
+            <img src={quoteCard2} alt="Founder quote" className="w-full h-auto object-cover rounded-xl shadow-lg" />
+            <img src={quoteCard3} alt="User quote" className="w-full h-auto object-cover rounded-xl shadow-lg" />
           </div>
         </ScrollSection>
       </section>
