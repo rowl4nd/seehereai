@@ -45,7 +45,6 @@ const Cooldown = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8">
         <Logo />
@@ -63,31 +62,24 @@ const Cooldown = () => {
 
           {/* Title */}
           <div className="space-y-4">
-            <h1 className="text-3xl font-serif font-light text-foreground">
-              Time to reflect
-            </h1>
+            <h1 className="text-3xl font-serif font-light text-foreground">Time to reflect</h1>
             <p className="text-muted-foreground leading-relaxed">
-              Give yourself space to process what we discussed. Sometimes the most meaningful insights come in the quiet moments after.
+              Give yourself space to process what we discussed. Sometimes the most meaningful insights come in the quiet
+              moments afterwards.
             </p>
           </div>
 
           {/* Time remaining */}
           {timeUntilNext && (
             <div className="bg-card/50 border border-border/50 rounded-xl p-6">
-              <p className="text-sm text-muted-foreground mb-2">
-                Your next session is available
-              </p>
-              <p className="text-2xl font-serif text-foreground">
-                Tomorrow
-              </p>
+              <p className="text-sm text-muted-foreground mb-2">Your next session is available</p>
+              <p className="text-2xl font-serif text-foreground">Tomorrow</p>
             </div>
           )}
 
           {/* Journaling prompt */}
           <div className="space-y-3 pt-4">
-            <p className="text-sm text-muted-foreground/70">
-              While you wait, you might consider:
-            </p>
+            <p className="text-sm text-muted-foreground/70">While you wait, you might consider:</p>
             <p className="text-sm text-foreground italic">
               "What's one thing from our conversation that stayed with you?"
             </p>
