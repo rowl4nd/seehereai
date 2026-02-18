@@ -134,8 +134,9 @@ const Index = () => {
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
           <img src={heroLogo} alt="see here" className="h-28 md:h-38 w-auto mx-auto mb-4" />
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-[1.05] text-foreground tracking-tight">
-            A quiet space to talk with your AI listening companion  
+          <h1 className="font-serif font-light leading-[1.05] text-foreground tracking-tight">
+            <span className="block text-4xl md:text-5xl lg:text-6xl">A quiet space to talk</span>
+            <span className="block text-2xl md:text-3xl lg:text-4xl mt-2 opacity-85">with your AI listening companion</span>
           </h1>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-muted-foreground text-base md:text-lg">
