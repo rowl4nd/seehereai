@@ -75,8 +75,8 @@ const Index = () => {
         body: {
           name: "Beta Signup Request",
           email: betaEmail.trim(),
-          message: betaReason.trim() || "No reason provided — just interested in beta access.",
-        },
+          message: betaReason.trim() || "No reason provided — just interested in beta access."
+        }
       });
       if (error) throw error;
       setBetaSent(true);
@@ -118,7 +118,7 @@ const Index = () => {
       <div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-1.5 px-6 text-center">
         <p className="text-sm text-foreground">
           <span className="font-medium">Beta Testing Phase</span> — We're limiting early access to ensure quality.{" "}
-          <a href="#beta-signup" onClick={(e) => { e.preventDefault(); document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' }); }} className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium">
+          <a href="#beta-signup" onClick={(e) => {e.preventDefault();document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' });}} className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium">
             Join our first 50 testers
           </a>.
         </p>
@@ -170,11 +170,11 @@ const Index = () => {
               No subscriptions
             </span>
           </div>
-          {betaSent ? (
-            <div className="pt-4">
+          {betaSent ?
+          <div className="pt-4">
               <div className="rounded-lg border border-border/40 bg-background/60 p-6 space-y-2 max-w-md mx-auto">
-                {alreadyApproved ? (
-                  <>
+                {alreadyApproved ?
+              <>
                     <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
                     <p className="text-sm text-muted-foreground">Please create your account using the Log in button at the top of the page.</p>
                     <Link to="/auth">
@@ -182,35 +182,35 @@ const Index = () => {
                         Create your account
                       </Button>
                     </Link>
-                  </>
-                ) : (
-                  <>
+                  </> :
+
+              <>
                     <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
                     <p className="text-sm text-muted-foreground">We'll review your request and get back to you within 24–48 hours.</p>
                   </>
-                )}
+              }
               </div>
-            </div>
-          ) : (
-            <form onSubmit={handleBetaSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 max-w-md mx-auto w-full">
+            </div> :
+
+          <form onSubmit={handleBetaSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 max-w-md mx-auto w-full">
               <Input
-                type="email"
-                placeholder="you@email.com"
-                value={betaEmail}
-                onChange={(e) => setBetaEmail(e.target.value)}
-                required
-                maxLength={255}
-                className="placeholder:text-muted-foreground/30 h-12 flex-1"
-              />
+              type="email"
+              placeholder="you@email.com"
+              value={betaEmail}
+              onChange={(e) => setBetaEmail(e.target.value)}
+              required
+              maxLength={255}
+              className="placeholder:text-muted-foreground/30 h-12 flex-1" />
+
               <Button
-                type="submit"
-                size="lg"
-                disabled={betaSending}
-                className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-8 h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap">
+              type="submit"
+              size="lg"
+              disabled={betaSending}
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-8 h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap">
                 {betaSending ? "Sending…" : "Request beta access"}
               </Button>
             </form>
-          )}
+          }
         </div>
       </section>
 
@@ -230,7 +230,7 @@ const Index = () => {
                   Built by people who understand
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
-                  SeeHere was created by therapists who know how many people need space to think out loud — but don't think they are ready for or can easily access traditional therapy.
+                  SeeHere was created by therapists who know how many people need space to think out loud — but don't think they are ready for, or can easily access traditional therapy.
                 
                 </p>
                 <p className="text-base text-muted-foreground leading-relaxed">
@@ -508,10 +508,10 @@ const Index = () => {
               truly explore what SeeHere can offer.
             </p>
 
-            {betaSent ? (
-              <div className="rounded-lg border border-border/40 bg-background/60 p-8 space-y-3">
-                {alreadyApproved ? (
-                  <>
+            {betaSent ?
+            <div className="rounded-lg border border-border/40 bg-background/60 p-8 space-y-3">
+                {alreadyApproved ?
+              <>
                     <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
                     <p className="text-sm text-muted-foreground">Please create your account using the Log in button at the top of the page.</p>
                     <Link to="/auth">
@@ -519,55 +519,55 @@ const Index = () => {
                         Create your account
                       </Button>
                     </Link>
-                  </>
-                ) : (
-                  <>
+                  </> :
+
+              <>
                     <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
                     <p className="text-sm text-muted-foreground">
                       We'll review your request and get back to you within 24–48 hours.
                     </p>
                   </>
-                )}
-              </div>
-            ) : (
-              <form onSubmit={handleBetaSubmit} className="space-y-4 text-left">
+              }
+              </div> :
+
+            <form onSubmit={handleBetaSubmit} className="space-y-4 text-left">
                 <div className="space-y-2">
                   <label htmlFor="beta-email" className="text-sm font-medium text-foreground">
                     Email address
                   </label>
                   <Input
-                    id="beta-email"
-                    type="email"
-                    placeholder="you@email.com"
-                    value={betaEmail}
-                    onChange={(e) => setBetaEmail(e.target.value)}
-                    required
-                    maxLength={255}
-                    className="placeholder:text-muted-foreground/30"
-                  />
+                  id="beta-email"
+                  type="email"
+                  placeholder="you@email.com"
+                  value={betaEmail}
+                  onChange={(e) => setBetaEmail(e.target.value)}
+                  required
+                  maxLength={255}
+                  className="placeholder:text-muted-foreground/30" />
+
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="beta-reason" className="text-sm font-medium text-foreground">
                     Why would you like to try SeeHere? (Optional)
                   </label>
                   <Textarea
-                    id="beta-reason"
-                    placeholder="Tell us a little about yourself..."
-                    value={betaReason}
-                    onChange={(e) => setBetaReason(e.target.value)}
-                    maxLength={1000}
-                    className="min-h-[100px] placeholder:text-muted-foreground/30"
-                  />
+                  id="beta-reason"
+                  placeholder="Tell us a little about yourself..."
+                  value={betaReason}
+                  onChange={(e) => setBetaReason(e.target.value)}
+                  maxLength={1000}
+                  className="min-h-[100px] placeholder:text-muted-foreground/30" />
+
                 </div>
                 <Button
-                  type="submit"
-                  disabled={betaSending}
-                  className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-3"
-                >
+                type="submit"
+                disabled={betaSending}
+                className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-3">
+
                   {betaSending ? "Sending…" : "Request Beta Access"}
                 </Button>
               </form>
-            )}
+            }
 
             <p className="text-xs text-muted-foreground">
               We'll review your request and send access within 24–48 hours.
