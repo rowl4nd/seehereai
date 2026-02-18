@@ -256,12 +256,12 @@ const AuthPage = () => {
                   onClick={() => switchMode("signup")}
                   style={styles.cardBtn}
                   onMouseEnter={(e) => {
-                    e.target.style.background = "rgba(255,255,255,0.25)";
-                    e.target.style.transform = "translateY(-1px)";
+                    (e.target as HTMLElement).style.background = "rgba(255,255,255,0.25)";
+                    (e.target as HTMLElement).style.transform = "translateY(-1px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.background = "rgba(255,255,255,0.15)";
-                    e.target.style.transform = "translateY(0)";
+                    (e.target as HTMLElement).style.background = "rgba(255,255,255,0.15)";
+                    (e.target as HTMLElement).style.transform = "translateY(0)";
                   }}
                 >
                   Create account
@@ -286,12 +286,12 @@ const AuthPage = () => {
                   onClick={() => switchMode("login")}
                   style={styles.cardBtn}
                   onMouseEnter={(e) => {
-                    e.target.style.background = "rgba(255,255,255,0.25)";
-                    e.target.style.transform = "translateY(-1px)";
+                    (e.target as HTMLElement).style.background = "rgba(255,255,255,0.25)";
+                    (e.target as HTMLElement).style.transform = "translateY(-1px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.background = "rgba(255,255,255,0.15)";
-                    e.target.style.transform = "translateY(0)";
+                    (e.target as HTMLElement).style.background = "rgba(255,255,255,0.15)";
+                    (e.target as HTMLElement).style.transform = "translateY(0)";
                   }}
                 >
                   Sign in
@@ -526,6 +526,6 @@ const styles = {
     letterSpacing: "0.04em",
     transition: "background 0.2s, transform 0.15s",
   },
-};
+} as const;
 
 export default AuthPage;
