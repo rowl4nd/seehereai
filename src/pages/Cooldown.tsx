@@ -56,8 +56,7 @@ const Cooldown = () => {
           {/* Icon/visual */}
           <div className="flex justify-center">
             <div className="w-20 h-20 rounded-full bg-accent/50 flex items-center justify-center">
-              <div className="w-10 h-10 rounded-full bg-primary/20" />
-            </div>
+              <div className="w-10 h-10 rounded-full bg-primary/20 animate-pulse" />
           </div>
 
           {/* Title */}
