@@ -350,9 +350,9 @@ const Index = () => {
                       <Heart className="w-4 h-4 text-[#4a7a4f]" />
                       Person-centred listening
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Grounded in unconditional positive regard and empathic understanding. You are accepted fully,
-                      without judgment.
+                    <p className="text-sm text-muted-foreground leading-relaxed">Based on unconditional positive regard and empathic understanding. You are accepted fully, without judgment.
+
+
                     </p>
                   </div>
                   <div>
