@@ -44,6 +44,7 @@ const Index = () => {
   const [betaReason, setBetaReason] = useState("");
   const [betaSending, setBetaSending] = useState(false);
   const [betaSent, setBetaSent] = useState(false);
+  const [alreadyApproved, setAlreadyApproved] = useState(false);
 
   useEffect(() => {
     if (window.location.hash === '#beta-signup') {
@@ -61,6 +62,15 @@ const Index = () => {
     }
     setBetaSending(true);
     try {
+      // Check if email is already in allowed_testers
+      const { data: isAllowed } = await supabase.rpc('is_email_allowed', { _email: betaEmail.trim() });
+      if (isAllowed) {
+        setAlreadyApproved(true);
+        setBetaSent(true);
+        toast.success("Great news — your access is already live! Please create your account using the Log in button at the top of the page.");
+        return;
+      }
+
       const { error } = await supabase.functions.invoke("send-contact-email", {
         body: {
           name: "Beta Signup Request",
@@ -163,8 +173,22 @@ const Index = () => {
           {betaSent ? (
             <div className="pt-4">
               <div className="rounded-lg border border-border/40 bg-background/60 p-6 space-y-2 max-w-md mx-auto">
-                <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
-                <p className="text-sm text-muted-foreground">We'll review your request and get back to you within 24–48 hours.</p>
+                {alreadyApproved ? (
+                  <>
+                    <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
+                    <p className="text-sm text-muted-foreground">Please create your account using the Log in button at the top of the page.</p>
+                    <Link to="/auth">
+                      <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
+                        Create your account
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
+                    <p className="text-sm text-muted-foreground">We'll review your request and get back to you within 24–48 hours.</p>
+                  </>
+                )}
               </div>
             </div>
           ) : (
@@ -486,10 +510,24 @@ const Index = () => {
 
             {betaSent ? (
               <div className="rounded-lg border border-border/40 bg-background/60 p-8 space-y-3">
-                <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
-                <p className="text-sm text-muted-foreground">
-                  We'll review your request and get back to you within 24–48 hours.
-                </p>
+                {alreadyApproved ? (
+                  <>
+                    <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
+                    <p className="text-sm text-muted-foreground">Please create your account using the Log in button at the top of the page.</p>
+                    <Link to="/auth">
+                      <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
+                        Create your account
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
+                    <p className="text-sm text-muted-foreground">
+                      We'll review your request and get back to you within 24–48 hours.
+                    </p>
+                  </>
+                )}
               </div>
             ) : (
               <form onSubmit={handleBetaSubmit} className="space-y-4 text-left">
