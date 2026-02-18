@@ -8,7 +8,7 @@ import Logo from "@/components/Logo";
 const guidanceCards = [
   {
     title: "Welcome to your space",
-    content: "Take a breath. This is your quiet corner of the internet.",
+    content: "Take a breath.",
   },
   {
     title: "A supportive reflection",
@@ -22,12 +22,11 @@ const guidanceCards = [
   },
   {
     title: "A natural rhythm",
-    content: "Sessions last 25 or 45 minutes. This gentle boundary helps you stay grounded in the present moment.",
+    content: "Sessions are time limited - up to 45 minutes. This helps you stay grounded in the moment.",
   },
   {
     title: "Space to breathe",
-    content:
-      "We meet once a day. This cooldown ensures your reflections have the room they need to take root in your life.",
+    content: "We meet once a day. This cooldown ensures your reflections have the time to be processed.",
   },
   {
     title: "No rush, no pressure",
@@ -131,7 +130,7 @@ const Guidance = () => {
                 aria-label="Next guidance card"
               >
                 <span className="text-[10px] uppercase tracking-[0.5em] text-[#a39e96] group-hover:text-[#af9cd3] transition-colors duration-500">
-                  Deepen
+                  Continue
                 </span>
                 <div className="w-[0.5px] h-12 bg-[#e0ddd7] group-hover:bg-[#af9cd3] group-hover:h-16 transition-all duration-700" />
               </button>
