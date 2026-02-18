@@ -338,7 +338,7 @@ const Index = () => {
             <ScrollSection>
               <div className="max-w-lg space-y-6">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
-                  What you will get
+                  What you will experience 
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
                   Warmth, understanding, and room to breathe. Grounded in person-centred principles.
