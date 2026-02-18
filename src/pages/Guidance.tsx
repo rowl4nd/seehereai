@@ -60,7 +60,7 @@ const Guidance = () => {
       setTimeout(() => {
         setCurrentCard((prev) => prev + 1);
         setIsTransitioning(false);
-      }, 600); // Slightly slower transition for a "misty" feel
+      }, 800); // Slower, more rhythmic transition
     }
   };
 
@@ -71,7 +71,7 @@ const Guidance = () => {
   if (authLoading || profileLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f8f6f3]">
-        <div className="animate-pulse text-muted-foreground font-serif italic">Entering the quiet...</div>
+        <div className="animate-pulse text-[#a39e96] font-serif italic tracking-wide">Preparing the space...</div>
       </div>
     );
   }
@@ -80,72 +80,74 @@ const Guidance = () => {
   const card = guidanceCards[currentCard];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8f6f3] text-slate-800 transition-colors duration-1000">
-      {/* Header */}
-      <header className="p-6 md:px-12">
+    <div className="min-h-screen flex flex-col bg-[#f8f6f3] selection:bg-[#af9cd3]/20 transition-colors duration-1000">
+      {/* Header - Subtle Branding */}
+      <header className="p-6 md:px-12 opacity-40 hover:opacity-100 transition-opacity duration-500">
         <Logo />
       </header>
 
       {/* Main content */}
       <main className="flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-lg text-center space-y-16">
-          {/* Subtle Progress Indicator */}
-          <div className="flex justify-center items-center gap-3">
+          {/* Progress Indicator - Muted Lavender dots */}
+          <div className="flex justify-center items-center gap-4">
             {guidanceCards.map((_, index) => (
               <div
                 key={index}
-                className={`transition-all duration-700 rounded-full ${
+                className={`transition-all duration-1000 rounded-full ${
                   index === currentCard
-                    ? "w-2 h-2 bg-primary shadow-[0_0_8px_rgba(175,156,211,0.6)]"
-                    : "w-1 h-1 bg-primary/20"
+                    ? "w-1.5 h-1.5 bg-[#af9cd3] shadow-[0_0_12px_rgba(175,156,211,0.4)]"
+                    : "w-1 h-1 bg-[#d1cdc7]"
                 }`}
               />
             ))}
           </div>
 
-          {/* Card Content with "Misty" Fade */}
+          {/* Card Content - The "Soothed" Typography */}
           <div
             className={`space-y-8 transition-all duration-1000 transform ${
-              isTransitioning ? "opacity-0 blur-sm translate-y-1" : "opacity-100 blur-0 translate-y-0"
+              isTransitioning ? "opacity-0 blur-md translate-y-1" : "opacity-100 blur-0 translate-y-0"
             }`}
           >
-            <h2 className="text-3xl md:text-4xl font-serif font-light tracking-tight text-slate-900">{card.title}</h2>
-            <p className="text-lg md:text-xl text-slate-600/80 leading-relaxed max-w-md mx-auto font-light italic">
+            <h2 className="text-3xl md:text-4xl font-serif font-light tracking-tight text-[#3d3a35]">{card.title}</h2>
+            <p className="text-lg md:text-xl text-[#6b665f] leading-relaxed max-w-md mx-auto font-light italic opacity-90">
               {card.content}
             </p>
           </div>
 
-          {/* Actions */}
-          <div className="pt-8 transition-opacity duration-1000 delay-300">
+          {/* Interaction Area */}
+          <div className="pt-8 min-h-[120px] flex flex-col items-center justify-center transition-opacity duration-1000">
             {isLastCard ? (
               <Button
                 onClick={handleContinue}
-                className="bg-primary hover:bg-primary/90 text-white px-10 py-6 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-500 animate-fade-in"
+                className="bg-[#af9cd3] hover:bg-[#9d8bbd] text-white px-12 py-7 rounded-full text-lg font-light shadow-sm hover:shadow-md transition-all duration-700 animate-fade-in border-none"
               >
                 Begin your reflection
               </Button>
             ) : (
-              <button onClick={handleNext} className="group flex flex-col items-center mx-auto space-y-2">
-                <span className="text-sm uppercase tracking-[0.2em] text-slate-400 group-hover:text-primary transition-colors duration-300">
+              <button onClick={handleNext} className="group flex flex-col items-center space-y-4 outline-none">
+                <span className="text-[10px] uppercase tracking-[0.4em] text-[#a39e96] group-hover:text-[#af9cd3] transition-colors duration-500">
                   Continue
                 </span>
-                <div className="w-px h-8 bg-slate-300 group-hover:bg-primary transition-all duration-500" />
+                {/* Visual anchor - elegant vertical divider */}
+                <div className="w-[0.5px] h-12 bg-[#e0ddd7] group-hover:bg-[#af9cd3] group-hover:h-16 transition-all duration-700" />
               </button>
             )}
           </div>
         </div>
       </main>
 
-      {/* Footer Navigation */}
-      <footer className="p-12 text-center flex flex-col gap-4">
+      {/* Footer - Minimalist Safety and Navigation */}
+      <footer className="p-10 text-center flex flex-col gap-6">
         <Link
           to="/dashboard"
-          className="text-xs uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors"
+          className="text-[10px] uppercase tracking-[0.25em] text-[#a39e96] hover:text-[#3d3a35] transition-colors duration-300"
         >
           Return to Dashboard
         </Link>
-        <div className="text-[10px] text-slate-300 uppercase tracking-tighter">
-          If you are in immediate danger, please call 999 or 111.
+        <div className="text-[9px] text-[#c2beb8] uppercase tracking-[0.1em] max-w-xs mx-auto leading-loose font-light">
+          If you are in immediate danger or need urgent support, please contact 999 (UK) or your local emergency
+          services.
         </div>
       </footer>
     </div>
