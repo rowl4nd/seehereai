@@ -71,16 +71,12 @@ const Index = () => {
         return;
       }
 
-      const { error } = await supabase.functions.invoke("send-contact-email", {
-        body: {
-          name: "Beta Signup Request",
-          email: betaEmail.trim(),
-          message: betaReason.trim() || "No reason provided — just interested in beta access."
-        }
+      const { error } = await supabase.functions.invoke("grant-beta-access", {
+        body: { email: betaEmail.trim() }
       });
       if (error) throw error;
       setBetaSent(true);
-      toast.success("Request sent — we'll be in touch!");
+      toast.success("Request received — please check your emails (and junk folder)");
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong. Please try again.");
@@ -186,8 +182,8 @@ const Index = () => {
                   </> :
 
               <>
-                    <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
-                    <p className="text-sm text-muted-foreground">We'll review your request and get back to you within 24–48 hours.</p>
+                    <p className="text-lg font-medium text-foreground">Request received!</p>
+                    <p className="text-sm text-muted-foreground">Please check your emails (and junk folder).</p>
                   </>
               }
               </div>
@@ -523,9 +519,9 @@ const Index = () => {
                   </> :
 
               <>
-                    <p className="text-lg font-medium text-foreground">Thank you for your interest!</p>
+                    <p className="text-lg font-medium text-foreground">Request received!</p>
                     <p className="text-sm text-muted-foreground">
-                      We'll review your request and get back to you within 24–48 hours.
+                      Please check your emails (and junk folder).
                     </p>
                   </>
               }
@@ -571,7 +567,7 @@ const Index = () => {
             }
 
             <p className="text-xs text-muted-foreground">
-              We'll review your request and send access within 24–48 hours.
+              Access is granted instantly — check your inbox.
             </p>
           </div>
         </ScrollSection>
