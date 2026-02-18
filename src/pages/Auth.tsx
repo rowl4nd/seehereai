@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 import { cn } from "@/lib/utils";
@@ -125,25 +125,39 @@ const Auth = () => {
 
           {/* Tabs */}
           {mode !== "forgot" ?
-          <Tabs
-            value={tabValue}
-            onValueChange={(val) => {
-              setMode(val as "login" | "signup");
-              setPassword("");
-            }}
-            className="w-full">
-
-              <TabsList className="w-full">
-                <TabsTrigger value="login" className="flex-1 text-sm flex flex-col items-center py-2">
+          <div className="relative w-full overflow-hidden rounded-lg bg-popover p-1">
+              {/* Sliding pill */}
+              <div
+                className={cn(
+                  "absolute top-1 left-1 w-[calc(50%-4px)] h-[calc(100%-8px)] rounded-md bg-background shadow-sm transition-all duration-300 ease-in-out",
+                  tabValue === "signup" && "translate-x-[calc(100%+4px)]"
+                )}
+              />
+              <div className="relative flex">
+                <button
+                  type="button"
+                  onClick={() => { setMode("login"); setPassword(""); }}
+                  className={cn(
+                    "flex-1 text-sm flex flex-col items-center py-2 rounded-md transition-colors duration-200 z-10",
+                    tabValue === "login" ? "text-foreground" : "text-muted-foreground"
+                  )}
+                >
                   <span>Nice to <span style={{ color: '#709474', fontWeight: 700 }}>See</span> you again</span>
                   <span className="text-xs text-muted-foreground">Sign in</span>
-                </TabsTrigger>
-                <TabsTrigger value="signup" className="flex-1 text-sm flex flex-col items-center py-2">
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setMode("signup"); setPassword(""); }}
+                  className={cn(
+                    "flex-1 text-sm flex flex-col items-center py-2 rounded-md transition-colors duration-200 z-10",
+                    tabValue === "signup" ? "text-foreground" : "text-muted-foreground"
+                  )}
+                >
                   <span>First time <span style={{ color: '#8775aa', fontWeight: 700 }}>Here</span>?</span>
                   <span className="text-xs text-muted-foreground">Create account</span>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs> :
+                </button>
+              </div>
+            </div> :
 
           <div className="text-center">
               <p className="text-sm text-muted-foreground">
