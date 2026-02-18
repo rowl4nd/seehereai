@@ -142,7 +142,7 @@ const Auth = () => {
                     tabValue === "login" ? "text-foreground" : "text-muted-foreground"
                   )}
                 >
-                  <span>Nice to <span style={{ color: '#709474', fontWeight: 700 }}>See</span> you again</span>
+                  <span className="font-bold">Nice to <span style={{ color: '#709474' }}>See</span> you again</span>
                   <span className="text-xs text-muted-foreground">Sign in</span>
                 </button>
                 <button
@@ -153,7 +153,7 @@ const Auth = () => {
                     tabValue === "signup" ? "text-foreground" : "text-muted-foreground"
                   )}
                 >
-                  <span>First time <span style={{ color: '#8775aa', fontWeight: 700 }}>Here</span>?</span>
+                  <span className="font-bold">New <span style={{ color: '#8775aa' }}>Here</span>?</span>
                   <span className="text-xs text-muted-foreground">Create account</span>
                 </button>
               </div>
