@@ -50,15 +50,31 @@ const Mirror = () => {
   const playTTSRef = useRef<((text: string) => Promise<void>) | null>(null);
   const voiceModeEnabledRef = useRef(false);
 
-  // Build personalised greeting based on profile state
+  // Determine time of day from local clock
+  const getTimeOfDay = (): "morning" | "afternoon" | "evening" | "night" => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour <= 11) return "morning";
+    if (hour >= 12 && hour <= 16) return "afternoon";
+    if (hour >= 17 && hour <= 20) return "evening";
+    return "night";
+  };
+
+  // Build personalised greeting based on profile state and time of day
   const getGreeting = () => {
+    const timeOfDay = getTimeOfDay();
+    const salutation =
+      timeOfDay === "morning" ? "Good morning" :
+      timeOfDay === "afternoon" ? "Good afternoon" :
+      timeOfDay === "evening" ? "Good evening" : "Hi there";
+    const closing = timeOfDay === "evening" || timeOfDay === "night" ? "tonight" : "today";
+
     if (profile?.display_name) {
-      return `Hello, ${profile.display_name}. Welcome back. I'm here to listen. Take your time — there's no rush. What's on your mind today?`;
+      return `${salutation}, ${profile.display_name}. I'm here to listen. Take your time — there's no rush. What's on your mind ${closing}?`;
     }
     if (profile?.name_declined) {
-      return "Hello. Welcome back. I'm here to listen. Take your time — there's no rush. What's on your mind today?";
+      return `${salutation}. I'm here to listen. Take your time — there's no rush. What's on your mind ${closing}?`;
     }
-    return "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind today?";
+    return `${salutation}. I'm here to listen. Take your time — there's no rush. What's on your mind ${closing}?`;
   };
 
   // Use localSession as the source of truth, falling back to activeSession from hook
@@ -338,6 +354,7 @@ const Mirror = () => {
           pastConversations: pastConversations,
           userName: profile?.display_name || undefined,
           nameDeclined: profile?.name_declined || false,
+          timeOfDay: getTimeOfDay(),
         },
       });
 
@@ -420,6 +437,7 @@ const Mirror = () => {
           pastConversations: pastConversations,
           userName: profile?.display_name || undefined,
           nameDeclined: profile?.name_declined || false,
+          timeOfDay: getTimeOfDay(),
         },
       });
 
@@ -512,6 +530,7 @@ const Mirror = () => {
           pastConversations: pastConversations,
           userName: profile?.display_name || undefined,
           nameDeclined: profile?.name_declined || false,
+          timeOfDay: getTimeOfDay(),
         },
       });
 
