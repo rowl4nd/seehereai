@@ -197,7 +197,7 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const { messages, pastConversations, userName, nameDeclined } = await req.json();
+    const { messages, pastConversations, userName, nameDeclined, timeOfDay } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
       throw new Error("Messages array is required");
@@ -236,8 +236,14 @@ serve(async (req) => {
         "No name has been provided yet. You may gently invite them to share their name early in the conversation.";
     }
 
-    // Combine system prompt with conversation history and name context
-    const fullSystemPrompt = SYSTEM_PROMPT + conversationContext + nameContext;
+    // Build time-of-day context
+    let timeContext = "";
+    if (timeOfDay && ["morning", "afternoon", "evening", "night"].includes(timeOfDay)) {
+      timeContext = `\n\n## TIME OF DAY CONTEXT\nIt is currently ${timeOfDay}. Adjust your tone subtly:\n- Morning: gentle, fresh energy\n- Afternoon: warm, steady\n- Evening: cosy, winding-down energy\n- Night: calm, soft, acknowledging the late hour\nUse time-appropriate language naturally (e.g. "tonight" instead of "today").`;
+    }
+
+    // Combine system prompt with conversation history, name context, and time context
+    const fullSystemPrompt = SYSTEM_PROMPT + conversationContext + nameContext + timeContext;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
