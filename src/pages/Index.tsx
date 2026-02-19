@@ -8,6 +8,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
+import SanctuaryBackground from "@/components/SanctuaryBackground";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -31,14 +32,13 @@ const ScrollSection = ({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
+      className={`transition-all duration-[900ms] ease-out ${isVisible ? "opacity-100 translate-y-0 blur-0 scale-100" : "opacity-0 translate-y-4 blur-xl scale-95"} ${className}`}
       style={{
         transitionDelay: `${delay}ms`
       }}>
-
       {children}
-    </div>);
-
+    </div>
+  );
 };
 
 const Index = () => {
@@ -65,7 +65,6 @@ const Index = () => {
     }
     setBetaSending(true);
     try {
-      // Check if email is already in allowed_testers
       const { data: isAllowed } = await supabase.rpc('is_email_allowed', { _email: betaEmail.trim() });
       if (isAllowed) {
         setAlreadyApproved(true);
@@ -87,13 +86,16 @@ const Index = () => {
       setBetaSending(false);
     }
   };
+
   return (
-    <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
+    <div className="min-h-screen flex flex-col overflow-x-clip relative">
+      <SanctuaryBackground />
+
       {/* ── Header ── */}
-      <header className="sticky top-0 z-50 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">
+      <header className="sticky top-0 z-50 flex justify-between items-center px-4 py-2 md:px-8 bg-white/60 backdrop-blur-md border-b border-white/30">
         <Logo />
         <div className="flex items-center gap-4">
-          <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
+          <a href="#faq" className="text-sm text-[#6b665f] hover:text-[#3d3a35] transition-colors duration-200">
             FAQs
           </a>
           {!loading && (
@@ -103,7 +105,6 @@ const Index = () => {
                   Dashboard
                 </Button>
               </Link> :
-
           <Link to="/auth">
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
@@ -114,8 +115,8 @@ const Index = () => {
       </header>
 
       {/* Beta Access Banner */}
-      <div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-1.5 px-6 text-center">
-        <p className="text-sm text-foreground">
+      <div className="relative z-10 bg-white/30 backdrop-blur-sm border-b border-white/20 py-1.5 px-6 text-center">
+        <p className="text-sm text-[#3d3a35]">
           <span className="font-medium">Beta Testing Phase</span> — We're limiting early access to ensure quality.{" "}
           <a href="#beta-signup" onClick={(e) => {e.preventDefault();document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' });}} className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium">
             Join our first 50 testers
@@ -124,74 +125,55 @@ const Index = () => {
       </div>
 
       {/* ── Hero - Clean, minimal ── */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-[#cbb7ef]/20 via-[#f5e6d0]/20 to-[#b1cfac]/20">
-        {/* Subtle background shapes */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full bg-[#cbb7ef]/8 blur-[100px]" />
-          <div className="absolute bottom-20 right-10 w-[350px] h-[350px] rounded-full bg-[#b1cfac]/8 blur-[100px]" />
-        </div>
-
+      <section className="relative z-10 min-h-[85vh] flex items-center justify-center overflow-hidden bg-transparent">
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
           <img src={heroLogo} alt="see here" className="h-28 md:h-38 w-auto mx-auto mb-4" />
-          <h1 className="font-serif font-light leading-[1.05] text-foreground tracking-tight">
+          <h1 className="font-serif font-light leading-[1.05] text-[#3d3a35] tracking-tight">
             <span className="block text-4xl md:text-5xl lg:text-6xl">A quiet space to talk</span>
             <span className="block text-2xl md:text-3xl lg:text-4xl mt-2 opacity-85">with your AI listening companion</span>
           </h1>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-muted-foreground text-base md:text-lg">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-[#6b665f] text-base md:text-lg">
             <span className="flex items-center gap-2">
               <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd" />
-
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               Available 24/7
             </span>
             <span className="flex items-center gap-2">
               <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd" />
-
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               Fully private & encrypted
             </span>
             <span className="flex items-center gap-2">
               <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd" />
-
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               No subscriptions
             </span>
           </div>
+
           {betaSent ?
           <div className="pt-4">
-              <div className="rounded-lg border border-border/40 bg-background/60 p-6 space-y-2 max-w-md mx-auto">
+              <div className="rounded-2xl border border-white/30 bg-white/40 backdrop-blur-md p-6 space-y-2 max-w-md mx-auto shadow-sm">
                 {alreadyApproved ?
               <>
-                    <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
-                    <p className="text-sm text-muted-foreground">Please create your account using the Log in button at the top of the page.</p>
+                    <p className="text-lg font-medium text-[#3d3a35]">Great news — your access is already live!</p>
+                    <p className="text-sm text-[#6b665f]">Please create your account using the Log in button at the top of the page.</p>
                     <Link to="/auth">
                       <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                         Create your account
                       </Button>
                     </Link>
                   </> :
-
               <>
-                    <p className="text-lg font-medium text-foreground">Request received!</p>
-                    <p className="text-sm text-muted-foreground">Please check your emails (and junk folder).</p>
+                    <p className="text-lg font-medium text-[#3d3a35]">Request received!</p>
+                    <p className="text-sm text-[#6b665f]">Please check your emails (and junk folder).</p>
                   </>
               }
               </div>
             </div> :
-
           <form onSubmit={handleBetaSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 max-w-md mx-auto w-full">
               <Input
               type="email"
@@ -200,8 +182,7 @@ const Index = () => {
               onChange={(e) => setBetaEmail(e.target.value)}
               required
               maxLength={255}
-              className="placeholder:text-muted-foreground/30 h-12 flex-1" />
-
+              className="placeholder:text-[#6b665f]/30 h-12 flex-1 bg-white/40 backdrop-blur-md border-white/30 shadow-sm rounded-2xl" />
               <Button
               type="submit"
               size="lg"
@@ -215,39 +196,35 @@ const Index = () => {
       </section>
 
       {/* ── Split content - Image + Text ── */}
-      <section className="relative">
+      <section className="relative z-10">
         <div className="grid md:grid-cols-2">
-          {/* Image side */}
           <div className="aspect-square md:aspect-auto md:min-h-[600px] overflow-hidden">
             <img src={splitSafeSpace} alt="Safe space for reflection" className="w-full h-full object-cover" />
           </div>
-
-          {/* Text side */}
-          <div className="bg-gradient-to-r from-[#f5e6d0]/20 to-[#b1cfac]/20 flex items-center justify-end px-8 md:px-16 py-16 md:py-20">
+          <div className="bg-white/30 backdrop-blur-sm flex items-center justify-end px-8 md:px-16 py-16 md:py-20">
             <ScrollSection>
               <div className="max-w-lg space-y-6 text-right ml-auto">
-                <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
+                <h2 className="text-4xl md:text-5xl font-serif font-light text-[#3d3a35] leading-tight">
                   Built by people who understand
                 </h2>
-                <p className="text-base text-muted-foreground leading-relaxed">
+                <p className="text-base text-[#6b665f] leading-relaxed">
                   SeeHere was created by therapists who know how many people need space to think out loud — but don't think they are ready for, or can easily access traditional therapy.
-                
                 </p>
-                <p className="text-base text-muted-foreground leading-relaxed">
+                <p className="text-base text-[#6b665f] leading-relaxed">
                   We combined evidence-based therapeutic principles with AI to create a companion that:
                 </p>
 
                 <div className="space-y-4 pt-2 items-end">
                   <div className="flex items-center gap-3 justify-end">
-                    <p className="text-base text-foreground font-medium">Listens with empathy</p>
+                    <p className="text-base text-[#3d3a35] font-medium">Listens with empathy</p>
                     <Heart className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                   </div>
                   <div className="flex items-center gap-3 justify-end">
-                    <p className="text-base text-foreground font-medium">Asks thoughtful questions</p>
+                    <p className="text-base text-[#3d3a35] font-medium">Asks thoughtful questions</p>
                     <MessageCircle className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                   </div>
                   <div className="flex items-center gap-3 justify-end">
-                    <p className="text-base text-foreground font-medium">Never judges</p>
+                    <p className="text-base text-[#3d3a35] font-medium">Never judges</p>
                     <Shield className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
                   </div>
                 </div>
@@ -267,63 +244,51 @@ const Index = () => {
       </section>
 
       {/* ── How it works - 3 cards ── */}
-      <section className="relative py-24 px-6 md:px-12 bg-[#f5e6d0]/25">
+      <section className="relative z-10 py-24 px-6 md:px-12">
         <div className="max-w-6xl mx-auto">
           <ScrollSection>
-            <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-foreground mb-20">
+            <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-[#3d3a35] mb-20">
               How it works
             </h2>
           </ScrollSection>
 
           <div className="grid md:grid-cols-3 gap-4 items-stretch">
             <ScrollSection delay={0} className="h-full">
-              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 h-full">
+              <div className="group flex flex-col items-center text-center p-6 rounded-[60px] bg-white/40 backdrop-blur-md border-0 shadow-none hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   1
                 </div>
-                <h3 className="text-lg font-serif font-light text-foreground mb-3">Share what's on your mind</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <h3 className="text-lg font-serif font-light text-[#3d3a35] mb-3">Share what's on your mind</h3>
+                <p className="text-sm text-[#6b665f] leading-relaxed">
                   Type freely in a private, text-based conversation. No scheduling, no pressure.
                 </p>
-                <img
-                  src={talkBubble}
-                  alt="I just feel like I need someone to talk to"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
-
+                <img src={talkBubble} alt="I just feel like I need someone to talk to" className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
               </div>
             </ScrollSection>
 
             <ScrollSection delay={100} className="h-full">
-              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 h-full">
+              <div className="group flex flex-col items-center text-center p-6 rounded-[60px] bg-white/40 backdrop-blur-md border-0 shadow-none hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   2
                 </div>
-                <h3 className="text-lg font-serif font-light text-foreground mb-3">Receive empathic reflection</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <h3 className="text-lg font-serif font-light text-[#3d3a35] mb-3">Receive empathic reflection</h3>
+                <p className="text-sm text-[#6b665f] leading-relaxed">
                   Get thoughtful responses that help you see your situation more clearly.
                 </p>
-                <img
-                  src={replyBubble}
-                  alt="I'm glad you reached out; I'm here and ready to listen"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
-
+                <img src={replyBubble} alt="I'm glad you reached out; I'm here and ready to listen" className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
               </div>
             </ScrollSection>
 
             <ScrollSection delay={200} className="h-full">
-              <div className="group flex flex-col items-center text-center p-6 rounded-lg bg-card/60 backdrop-blur-md border border-border/30 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-300 h-full">
+              <div className="group flex flex-col items-center text-center p-6 rounded-[60px] bg-white/40 backdrop-blur-md border-0 shadow-none hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   3
                 </div>
-                <h3 className="text-lg font-serif font-light text-foreground mb-3">Reflect and return</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <h3 className="text-lg font-serif font-light text-[#3d3a35] mb-3">Reflect and return</h3>
+                <p className="text-sm text-[#6b665f] leading-relaxed">
                   Sessions are available 24/7. Come back to chat after a brief cooldown period.
                 </p>
-                <img
-                  src={reflectBubble}
-                  alt="Time to reflect"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
-
+                <img src={reflectBubble} alt="Time to reflect" className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
               </div>
             </ScrollSection>
           </div>
@@ -331,45 +296,41 @@ const Index = () => {
       </section>
 
       {/* ── What you will get - Reverse split ── */}
-      <section className="relative">
+      <section className="relative z-10">
         <div className="grid md:grid-cols-2">
-          {/* Text side first on desktop */}
-          <div className="bg-gradient-to-r from-[#cbb7ef]/20 to-[#f5e6d0]/20 flex items-center px-8 md:px-16 py-16 md:py-20 order-2 md:order-1">
+          <div className="bg-white/30 backdrop-blur-sm flex items-center px-8 md:px-16 py-16 md:py-20 order-2 md:order-1">
             <ScrollSection>
               <div className="max-w-lg space-y-6">
-                <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
+                <h2 className="text-4xl md:text-5xl font-serif font-light text-[#3d3a35] leading-tight">
                   What you will experience 
                 </h2>
-                <p className="text-base text-muted-foreground leading-relaxed">
+                <p className="text-base text-[#6b665f] leading-relaxed">
                   Warmth, understanding, and room to breathe. Grounded in person-centred principles.
                 </p>
 
                 <div className="space-y-5 pt-4">
                   <div>
-                    <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                    <h3 className="font-medium text-[#3d3a35] mb-2 flex items-center gap-2">
                       <Heart className="w-4 h-4 text-[#4a7a4f]" />
                       Person-centred listening
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">Based on unconditional positive regard and empathic understanding. You are accepted fully, without judgment.
-
-
-                    </p>
+                    <p className="text-sm text-[#6b665f] leading-relaxed">Based on unconditional positive regard and empathic understanding. You are accepted fully, without judgment.</p>
                   </div>
                   <div>
-                    <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                    <h3 className="font-medium text-[#3d3a35] mb-2 flex items-center gap-2">
                       <Shield className="w-4 h-4 text-[#4a7a4f]" />
                       Gentle, practical support
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm text-[#6b665f] leading-relaxed">
                       Psychologically informed techniques offered as invitations, never prescriptions.
                     </p>
                   </div>
                   <div>
-                    <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                    <h3 className="font-medium text-[#3d3a35] mb-2 flex items-center gap-2">
                       <Clock className="w-4 h-4 text-[#4a7a4f]" />
                       Your pace, your space
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm text-[#6b665f] leading-relaxed">
                       Sessions that respect your time. No pressure, no rush. You decide when and how to engage.
                     </p>
                   </div>
@@ -387,7 +348,6 @@ const Index = () => {
             </ScrollSection>
           </div>
 
-          {/* Image side */}
           <div className="aspect-square md:aspect-auto md:min-h-[600px] overflow-hidden order-1 md:order-2">
             <img src={splitSupport} alt="Calm and supportive environment" className="w-full h-full object-cover" />
           </div>
@@ -395,7 +355,7 @@ const Index = () => {
       </section>
 
       {/* ── Quote cards ── */}
-      <section className="relative py-24 px-6 bg-[#f8f6f3]">
+      <section className="relative z-10 py-24 px-6">
         <ScrollSection>
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             <img src={quoteCard1} alt="Reflective space quote" className="w-full h-auto object-cover rounded-xl shadow-lg" />
@@ -406,20 +366,20 @@ const Index = () => {
       </section>
 
       {/* ── FAQ ── */}
-      <section id="faq" className="relative py-24 px-6 md:px-12">
+      <section id="faq" className="relative z-10 py-24 px-6 md:px-12">
         <ScrollSection>
           <div className="relative z-10 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-foreground mb-6">
+            <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-[#3d3a35] mb-6">
               Common questions
             </h2>
-            <p className="text-center text-muted-foreground mb-16">Everything you might want to know</p>
+            <p className="text-center text-[#6b665f] mb-16">Everything you might want to know</p>
 
             <Accordion type="single" collapsible className="space-y-4">
-              <AccordionItem value="why" className="border-b border-border/40 pb-4">
-                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
+              <AccordionItem value="why" className="border-b border-white/20 pb-4">
+                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-[#3d3a35] hover:no-underline text-left py-4">
                   Why SeeHere?
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
+                <AccordionContent className="text-base text-[#6b665f] leading-relaxed pt-2 pb-4">
                   <ul className="list-disc pl-5 space-y-3">
                     <li>Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for productivity or problem-solving.</li>
                     <li>Unlike traditional therapy, there's no waiting list, no scheduling, no pressure to commit to weekly sessions, and sessions cost a fraction of what you'd pay for professional therapy.</li>
@@ -428,63 +388,63 @@ const Index = () => {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="therapy" className="border-b border-border/40 pb-4">
-                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
+              <AccordionItem value="therapy" className="border-b border-white/20 pb-4">
+                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-[#3d3a35] hover:no-underline text-left py-4">
                   Is this therapy?
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
+                <AccordionContent className="text-base text-[#6b665f] leading-relaxed pt-2 pb-4">
                   No. SeeHere is a reflective space grounded in person-centred principles, not a substitute for
                   professional therapy. It offers empathic conversation and gentle techniques to help you process
                   thoughts and feelings, but it does not provide diagnoses, treatment plans, or clinical intervention.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="how" className="border-b border-border/40 pb-4">
-                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
+              <AccordionItem value="how" className="border-b border-white/20 pb-4">
+                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-[#3d3a35] hover:no-underline text-left py-4">
                   How does it work?
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
+                <AccordionContent className="text-base text-[#6b665f] leading-relaxed pt-2 pb-4">
                   SeeHere uses AI trained in person-centred principles to provide gentle reflections through text-based
                   conversations. The AI remembers your previous conversations, building continuity and understanding
                   over time — helping you explore your feelings with deeper context.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="confidential" className="border-b border-border/40 pb-4">
-                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
+              <AccordionItem value="confidential" className="border-b border-white/20 pb-4">
+                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-[#3d3a35] hover:no-underline text-left py-4">
                   Are my conversations confidential?
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
+                <AccordionContent className="text-base text-[#6b665f] leading-relaxed pt-2 pb-4">
                   Yes. Your conversations are encrypted and private. We do not share your data with third parties, and
                   sessions are designed to be a safe, confidential space.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="cost" className="border-b border-border/40 pb-4">
-                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
+              <AccordionItem value="cost" className="border-b border-white/20 pb-4">
+                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-[#3d3a35] hover:no-underline text-left py-4">
                   How much does it cost?
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
+                <AccordionContent className="text-base text-[#6b665f] leading-relaxed pt-2 pb-4">
                   You get 2 free sessions to try SeeHere with no commitment. After that, sessions can be purchased in
                   credit packs starting from £5. Credits never expire.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="who" className="border-b border-border/40 pb-4">
-                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
+              <AccordionItem value="who" className="border-b border-white/20 pb-4">
+                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-[#3d3a35] hover:no-underline text-left py-4">
                   Who is this for?
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
+                <AccordionContent className="text-base text-[#6b665f] leading-relaxed pt-2 pb-4">
                   Anyone looking for a quiet, judgement-free space to reflect. Whether you're navigating a difficult
                   time, working through everyday stress, or simply want to understand yourself better.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="crisis" className="border-b border-border/40 pb-4">
-                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
+              <AccordionItem value="crisis" className="border-b border-white/20 pb-4">
+                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-[#3d3a35] hover:no-underline text-left py-4">
                   What if I'm struggling or in crisis?
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
+                <AccordionContent className="text-base text-[#6b665f] leading-relaxed pt-2 pb-4">
                   SeeHere is not a crisis service. If you are in immediate danger or experiencing a mental health
                   crisis, please contact the Samaritans on 116 123 (24/7), text SHOUT to 85258, or call 999.
                 </AccordionContent>
@@ -495,43 +455,41 @@ const Index = () => {
       </section>
 
       {/* ── Beta Access Signup ── */}
-      <section id="beta-signup" className="relative py-24 px-6 md:px-12 bg-[#f8f6f3]">
+      <section id="beta-signup" className="relative z-10 py-24 px-6 md:px-12">
         <ScrollSection>
           <div className="max-w-lg mx-auto text-center space-y-6">
-            <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground">
+            <h2 className="text-4xl md:text-5xl font-serif font-light text-[#3d3a35]">
               Join Our Beta
             </h2>
-            <p className="text-base text-muted-foreground leading-relaxed">
+            <p className="text-base text-[#6b665f] leading-relaxed">
               We're carefully onboarding our first users to ensure the best possible
               experience. The first 50 testers receive 8 free sessions — enough to
               truly explore what SeeHere can offer.
             </p>
 
             {betaSent ?
-            <div className="rounded-lg border border-border/40 bg-background/60 p-8 space-y-3">
+            <div className="rounded-2xl border border-white/30 bg-white/40 backdrop-blur-md p-8 space-y-3 shadow-sm">
                 {alreadyApproved ?
               <>
-                    <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
-                    <p className="text-sm text-muted-foreground">Please create your account using the Log in button at the top of the page.</p>
+                    <p className="text-lg font-medium text-[#3d3a35]">Great news — your access is already live!</p>
+                    <p className="text-sm text-[#6b665f]">Please create your account using the Log in button at the top of the page.</p>
                     <Link to="/auth">
                       <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                         Create your account
                       </Button>
                     </Link>
                   </> :
-
               <>
-                    <p className="text-lg font-medium text-foreground">Request received!</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-lg font-medium text-[#3d3a35]">Request received!</p>
+                    <p className="text-sm text-[#6b665f]">
                       Please check your emails (and junk folder).
                     </p>
                   </>
               }
               </div> :
-
             <form onSubmit={handleBetaSubmit} className="space-y-4 text-left">
                 <div className="space-y-2">
-                  <label htmlFor="beta-email" className="text-sm font-medium text-foreground">
+                  <label htmlFor="beta-email" className="text-sm font-medium text-[#3d3a35]">
                     Email address
                   </label>
                   <Input
@@ -542,11 +500,10 @@ const Index = () => {
                   onChange={(e) => setBetaEmail(e.target.value)}
                   required
                   maxLength={255}
-                  className="placeholder:text-muted-foreground/30" />
-
+                  className="placeholder:text-[#6b665f]/30 bg-white/40 backdrop-blur-md border-white/30 shadow-sm rounded-2xl" />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="beta-reason" className="text-sm font-medium text-foreground">
+                  <label htmlFor="beta-reason" className="text-sm font-medium text-[#3d3a35]">
                     Why would you like to try SeeHere? (Optional)
                   </label>
                   <Textarea
@@ -555,20 +512,18 @@ const Index = () => {
                   value={betaReason}
                   onChange={(e) => setBetaReason(e.target.value)}
                   maxLength={1000}
-                  className="min-h-[100px] placeholder:text-muted-foreground/30" />
-
+                  className="min-h-[100px] placeholder:text-[#6b665f]/30 bg-white/40 backdrop-blur-md border-white/30 shadow-sm rounded-2xl" />
                 </div>
                 <Button
                 type="submit"
                 disabled={betaSending}
                 className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-3">
-
                   {betaSending ? "Sending…" : "Request Beta Access"}
                 </Button>
               </form>
             }
 
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-[#6b665f]">
               Access is granted instantly — check your inbox.
             </p>
           </div>
@@ -576,13 +531,12 @@ const Index = () => {
       </section>
 
       {/* Safety notice */}
-      <div className="relative z-10 bg-[#fae5da]/20 border-t border-border/30 py-2 px-6 text-center">
-        <p className="text-xs text-muted-foreground">
+      <div className="relative z-10 bg-white/20 backdrop-blur-sm border-t border-white/20 py-2 px-6 text-center">
+        <p className="text-xs text-[#6b665f]">
           In crisis? Contact{" "}
           <a
             href="tel:116123"
-            className="underline underline-offset-2 hover:text-foreground transition-colors font-medium">
-
+            className="underline underline-offset-2 hover:text-[#3d3a35] transition-colors font-medium">
             Samaritans: 116 123
           </a>{" "}
           or text SHOUT to 85258
@@ -590,36 +544,24 @@ const Index = () => {
       </div>
 
       {/* ── Footer ── */}
-      <footer className="relative py-12 px-6 text-center border-t border-border/30 bg-[#f8f6f3]">
+      <footer className="relative z-10 py-12 px-6 text-center border-t border-white/20">
         <div className="relative z-10 space-y-4">
-          <p className="text-sm text-muted-foreground">A space for reflection</p>
+          <p className="text-sm text-[#6b665f]">A space for reflection</p>
           <div className="flex justify-center gap-8">
-            <a
-              href="/terms"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
-
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-sm text-[#6b665f]/60 hover:text-[#3d3a35] transition-colors duration-200">
               Terms &amp; Conditions
             </a>
-            <a
-              href="/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
-
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-sm text-[#6b665f]/60 hover:text-[#3d3a35] transition-colors duration-200">
               Privacy Policy
             </a>
-            <a
-              href="/contact"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+            <a href="/contact" className="text-sm text-[#6b665f]/60 hover:text-[#3d3a35] transition-colors duration-200">
               Contact Us
             </a>
           </div>
         </div>
       </footer>
-    </div>);
-
+    </div>
+  );
 };
 
 export default Index;
