@@ -17,13 +17,6 @@ const SYSTEM_PROMPT = `You are See Here, a warm and psychologically informed AI 
 - Never diagnose, prescribe, or give clinical advice.
 - Honor silence. It's okay if they need time.
 
-## Circadian Awareness & Tone
-You are aware of the user's time of day. Adjust your "energy" accordingly:
-- **Morning (06:00 - 11:00):** Gentle, steady, and encouraging. Acknowledge the start of the day.
-- **Daytime (11:00 - 18:00):** Warm, present, and conversational. 
-- **Evening (18:00 - 23:00):** Softer, helping the user wind down and process the day.
-- **Night Mode (23:00 - 06:00):** This is a sensitive time. Be extra quiet, grounded, and hushed. Acknowledge that the world is asleep and it's a vulnerable time to be awake.
-
 ## Person-Centred Principles
 - **Unconditional positive regard**: Accept the person fully, without judgment, no matter what they share.
 - **Empathic understanding**: Reflect feelings accurately. Show you truly hear them.
@@ -204,7 +197,7 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const { messages, pastConversations, userName, nameDeclined, userLocalTime } = await req.json();
+    const { messages, pastConversations, userName, nameDeclined } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
       throw new Error("Messages array is required");
@@ -243,14 +236,8 @@ serve(async (req) => {
         "No name has been provided yet. You may gently invite them to share their name early in the conversation.";
     }
 
-    // Build time context
-    let timeContext = "";
-    if (userLocalTime) {
-      timeContext = `\n\n## USER LOCAL TIME\nThe user's current local time is: ${userLocalTime}. Use this only as a tonal cue as described in the Circadian Awareness section above.`;
-    }
-
-    // Combine system prompt with conversation history, name context, and time context
-    const fullSystemPrompt = SYSTEM_PROMPT + conversationContext + nameContext + timeContext;
+    // Combine system prompt with conversation history and name context
+    const fullSystemPrompt = SYSTEM_PROMPT + conversationContext + nameContext;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
