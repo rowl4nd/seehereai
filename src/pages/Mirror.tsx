@@ -25,8 +25,20 @@ const Mirror = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, updateProfile } = useProfile();
   const { credits } = useCredits();
-  const { activeSession, startSession, endSession, canStartSession, loading: sessionsLoading, addSessionToState } = useSessions();
-  const { createConversation: createEncryptedConversation, saveMessages, loadSessionMessages, loadHistory } = useEncryptedMessages();
+  const {
+    activeSession,
+    startSession,
+    endSession,
+    canStartSession,
+    loading: sessionsLoading,
+    addSessionToState,
+  } = useSessions();
+  const {
+    createConversation: createEncryptedConversation,
+    saveMessages,
+    loadSessionMessages,
+    loadHistory,
+  } = useEncryptedMessages();
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -36,9 +48,13 @@ const Mirror = () => {
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [showEndWarning, setShowEndWarning] = useState(false);
   const [sessionEnded, setSessionEnded] = useState(false);
-  const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
+  const [pastConversations, setPastConversations] = useState<
+    Array<{ messages: Array<{ role: string; content: string }> }>
+  >([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [localSession, setLocalSession] = useState<{ id: string; session_type: string; started_at: string } | null>(null);
+  const [localSession, setLocalSession] = useState<{ id: string; session_type: string; started_at: string } | null>(
+    null,
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initRef = useRef(false);
@@ -49,6 +65,10 @@ const Mirror = () => {
   const pendingVoiceResponseRef = useRef(false);
   const playTTSRef = useRef<((text: string) => Promise<void>) | null>(null);
   const voiceModeEnabledRef = useRef(false);
+
+  // Helper to get the user's current local time in 24hr format
+  const getUserLocalTime = () =>
+    new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
 
   // Build personalised greeting based on profile state
   const getGreeting = () => {
@@ -83,12 +103,12 @@ const Mirror = () => {
   // Fetch past conversations on mount
   useEffect(() => {
     if (!user) return;
-    
+
     const fetchPastConversations = async () => {
       const conversations = await loadHistory();
       setPastConversations(conversations as Array<{ messages: Array<{ role: string; content: string }> }>);
     };
-    
+
     fetchPastConversations();
   }, [user]);
 
@@ -100,7 +120,11 @@ const Mirror = () => {
     const initOrResumeSession = async () => {
       // If there's already an active session, try to resume it
       if (activeSession) {
-        setLocalSession({ id: activeSession.id, session_type: activeSession.session_type, started_at: activeSession.started_at });
+        setLocalSession({
+          id: activeSession.id,
+          session_type: activeSession.session_type,
+          started_at: activeSession.started_at,
+        });
         const startTime = new Date(activeSession.started_at).getTime();
         const duration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
         const endTime = startTime + duration * 1000;
@@ -115,13 +139,14 @@ const Mirror = () => {
         // Session still has time — load existing messages
         const existingConvos = await loadSessionMessages(activeSession.id);
 
-        const existingConvo = existingConvos.find((c) => 
-          Array.isArray(c.messages) && c.messages.length > 1
-        ) || existingConvos[0] || null;
+        const existingConvo =
+          existingConvos.find((c) => Array.isArray(c.messages) && c.messages.length > 1) || existingConvos[0] || null;
 
         if (existingConvo && Array.isArray(existingConvo.messages) && existingConvo.messages.length > 0) {
           // Resume with existing messages
-          const loadedMessages: Message[] = (existingConvo.messages as Array<{ role: string; content: string; timestamp?: string }>).map((m, i) => ({
+          const loadedMessages: Message[] = (
+            existingConvo.messages as Array<{ role: string; content: string; timestamp?: string }>
+          ).map((m, i) => ({
             id: m.timestamp || `loaded-${i}`,
             role: m.role as "user" | "assistant",
             content: m.content,
@@ -166,14 +191,14 @@ const Mirror = () => {
       }
 
       // Use atomic server-side function for session creation and credit deduction
-      const { data: rpcResult, error: rpcError } = await supabase.rpc('start_paid_session', {
-        _session_type: sessionType
+      const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session", {
+        _session_type: sessionType,
       });
 
       const result = rpcResult?.[0];
       if (rpcError || result?.error_msg || !result?.session_id) {
         toast.error(result?.error_msg || "Failed to start session");
-        if (result?.error_msg === 'Insufficient credits') {
+        if (result?.error_msg === "Insufficient credits") {
           navigate("/credits");
         } else {
           navigate("/dashboard");
@@ -181,7 +206,12 @@ const Mirror = () => {
         return;
       }
 
-      const session = { id: result.session_id, session_type: sessionType, started_at: new Date().toISOString(), is_active: true } as any;
+      const session = {
+        id: result.session_id,
+        session_type: sessionType,
+        started_at: new Date().toISOString(),
+        is_active: true,
+      } as any;
       setLocalSession({ id: session.id, session_type: session.session_type, started_at: session.started_at });
       // Add to sessions array so endSession can find it
       addSessionToState({
@@ -237,18 +267,22 @@ const Mirror = () => {
         const warningMsg: Message = {
           id: "warning-" + Date.now(),
           role: "assistant",
-          content: "We have about 5 minutes left. Take your time to share anything else on your mind, or we can begin to wrap up.",
+          content:
+            "We have about 5 minutes left. Take your time to share anything else on your mind, or we can begin to wrap up.",
         };
         setMessages((prev) => {
           const updated = [...prev, warningMsg];
           // Save warning message to DB immediately
           const cId = conversationIdRef.current;
           if (cId) {
-            saveMessages(cId, updated.map(m => ({
-              role: m.role,
-              content: m.content,
-              timestamp: m.id
-            })));
+            saveMessages(
+              cId,
+              updated.map((m) => ({
+                role: m.role,
+                content: m.content,
+                timestamp: m.id,
+              })),
+            );
           }
           return updated;
         });
@@ -260,10 +294,10 @@ const Mirror = () => {
         if (currentSession) {
           const cId = conversationIdRef.current;
           if (cId) {
-            const conversationMessages = messagesRef.current.map(m => ({
+            const conversationMessages = messagesRef.current.map((m) => ({
               role: m.role,
               content: m.content,
-              timestamp: m.id
+              timestamp: m.id,
             }));
             saveMessages(cId, conversationMessages);
           }
@@ -338,6 +372,7 @@ const Mirror = () => {
           pastConversations: pastConversations,
           userName: profile?.display_name || undefined,
           nameDeclined: profile?.name_declined || false,
+          userLocalTime: getUserLocalTime(),
         },
       });
 
@@ -375,10 +410,10 @@ const Mirror = () => {
       pendingSaveRef.current = updatedMessages;
       return;
     }
-    const conversationMessages = updatedMessages.map(m => ({
+    const conversationMessages = updatedMessages.map((m) => ({
       role: m.role,
       content: m.content,
-      timestamp: m.id
+      timestamp: m.id,
     }));
     await saveMessages(cId, conversationMessages);
   };
@@ -406,7 +441,7 @@ const Mirror = () => {
         role: m.role,
         content: m.content,
       }));
-      
+
       // Add wrap-up indicator to the latest user message if in wrap-up mode
       if (showEndWarning && messagesForAI.length > 0) {
         const lastMsg = messagesForAI[messagesForAI.length - 1];
@@ -420,6 +455,7 @@ const Mirror = () => {
           pastConversations: pastConversations,
           userName: profile?.display_name || undefined,
           nameDeclined: profile?.name_declined || false,
+          userLocalTime: getUserLocalTime(),
         },
       });
 
@@ -447,11 +483,14 @@ const Mirror = () => {
       if (response.data?.endSession && currentSession) {
         setSessionEnded(true);
         if (conversationIdRef.current) {
-          await saveMessages(conversationIdRef.current, updatedWithAssistant.map(m => ({
-            role: m.role,
-            content: m.content,
-            timestamp: m.id
-          })));
+          await saveMessages(
+            conversationIdRef.current,
+            updatedWithAssistant.map((m) => ({
+              role: m.role,
+              content: m.content,
+              timestamp: m.id,
+            })),
+          );
         }
         await endSession(currentSession.id);
       }
@@ -479,86 +518,90 @@ const Mirror = () => {
   };
 
   // Voice mode: send transcribed text as a message
-  const sendMessageFromVoice = useCallback(async (text: string) => {
-    if (!text.trim() || isLoading || sessionEnded) return;
+  const sendMessageFromVoice = useCallback(
+    async (text: string) => {
+      if (!text.trim() || isLoading || sessionEnded) return;
 
-    pendingVoiceResponseRef.current = true;
+      pendingVoiceResponseRef.current = true;
 
-    const userMessage: Message = {
-      id: "user-" + Date.now(),
-      role: "user",
-      content: text.trim(),
-    };
-
-    const updatedWithUser = [...messagesRef.current, userMessage];
-    setMessages(updatedWithUser);
-    setIsLoading(true);
-    saveMessagesToDb(updatedWithUser);
-
-    try {
-      const messagesForAI = updatedWithUser.map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
-
-      if (showEndWarning && messagesForAI.length > 0) {
-        const lastMsg = messagesForAI[messagesForAI.length - 1];
-        lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
-      }
-
-      const response = await supabase.functions.invoke("chat", {
-        body: {
-          messages: messagesForAI,
-          pastConversations: pastConversations,
-          userName: profile?.display_name || undefined,
-          nameDeclined: profile?.name_declined || false,
-        },
-      });
-
-      if (response.data?.detectedName && !profile?.display_name) {
-        updateProfile({ display_name: response.data.detectedName, name_declined: false });
-      }
-      if (response.data?.nameDeclined && !profile?.name_declined) {
-        updateProfile({ name_declined: true });
-      }
-
-      const assistantText = response.data?.message || "I hear you. Tell me more when you're ready.";
-      const assistantMessage: Message = {
-        id: "assistant-" + Date.now(),
-        role: "assistant",
-        content: assistantText,
+      const userMessage: Message = {
+        id: "user-" + Date.now(),
+        role: "user",
+        content: text.trim(),
       };
 
-      const updatedWithAssistant = [...updatedWithUser, assistantMessage];
-      setMessages(updatedWithAssistant);
-      saveMessagesToDb(updatedWithAssistant);
+      const updatedWithUser = [...messagesRef.current, userMessage];
+      setMessages(updatedWithUser);
+      setIsLoading(true);
+      saveMessagesToDb(updatedWithUser);
 
-      // Play TTS for the response via ref (avoids stale closure)
-      console.log("[Voice] voiceModeEnabledRef:", voiceModeEnabledRef.current, "playTTSRef:", !!playTTSRef.current);
-      if (voiceModeEnabledRef.current && playTTSRef.current) {
-        console.log("[Voice] Calling playTTS for assistant response");
-        playTTSRef.current(assistantText);
-      }
+      try {
+        const messagesForAI = updatedWithUser.map((m) => ({
+          role: m.role,
+          content: m.content,
+        }));
 
-      if (response.data?.endSession && currentSession) {
-        setSessionEnded(true);
-        await endSession(currentSession.id);
+        if (showEndWarning && messagesForAI.length > 0) {
+          const lastMsg = messagesForAI[messagesForAI.length - 1];
+          lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
+        }
+
+        const response = await supabase.functions.invoke("chat", {
+          body: {
+            messages: messagesForAI,
+            pastConversations: pastConversations,
+            userName: profile?.display_name || undefined,
+            nameDeclined: profile?.name_declined || false,
+            userLocalTime: getUserLocalTime(),
+          },
+        });
+
+        if (response.data?.detectedName && !profile?.display_name) {
+          updateProfile({ display_name: response.data.detectedName, name_declined: false });
+        }
+        if (response.data?.nameDeclined && !profile?.name_declined) {
+          updateProfile({ name_declined: true });
+        }
+
+        const assistantText = response.data?.message || "I hear you. Tell me more when you're ready.";
+        const assistantMessage: Message = {
+          id: "assistant-" + Date.now(),
+          role: "assistant",
+          content: assistantText,
+        };
+
+        const updatedWithAssistant = [...updatedWithUser, assistantMessage];
+        setMessages(updatedWithAssistant);
+        saveMessagesToDb(updatedWithAssistant);
+
+        // Play TTS for the response via ref (avoids stale closure)
+        console.log("[Voice] voiceModeEnabledRef:", voiceModeEnabledRef.current, "playTTSRef:", !!playTTSRef.current);
+        if (voiceModeEnabledRef.current && playTTSRef.current) {
+          console.log("[Voice] Calling playTTS for assistant response");
+          playTTSRef.current(assistantText);
+        }
+
+        if (response.data?.endSession && currentSession) {
+          setSessionEnded(true);
+          await endSession(currentSession.id);
+        }
+      } catch (error) {
+        console.error("Chat error:", error);
+        const errorMessage: Message = {
+          id: "error-" + Date.now(),
+          role: "assistant",
+          content: "I'm having trouble connecting right now. Please try again in a moment.",
+        };
+        const updatedWithError = [...updatedWithUser, errorMessage];
+        setMessages(updatedWithError);
+        saveMessagesToDb(updatedWithError);
+      } finally {
+        setIsLoading(false);
+        pendingVoiceResponseRef.current = false;
       }
-    } catch (error) {
-      console.error("Chat error:", error);
-      const errorMessage: Message = {
-        id: "error-" + Date.now(),
-        role: "assistant",
-        content: "I'm having trouble connecting right now. Please try again in a moment.",
-      };
-      const updatedWithError = [...updatedWithUser, errorMessage];
-      setMessages(updatedWithError);
-      saveMessagesToDb(updatedWithError);
-    } finally {
-      setIsLoading(false);
-      pendingVoiceResponseRef.current = false;
-    }
-  }, [isLoading, sessionEnded, showEndWarning, pastConversations, profile, currentSession]);
+    },
+    [isLoading, sessionEnded, showEndWarning, pastConversations, profile, currentSession],
+  );
 
   const voiceMode = useVoiceMode({
     onTranscriptCommit: sendMessageFromVoice,
@@ -609,7 +652,6 @@ const Mirror = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8">
         <Logo />
@@ -625,14 +667,12 @@ const Mirror = () => {
             >
               <div
                 className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                  message.role === "user"
-                    ? "rounded-br-md"
-                    : "rounded-bl-md"
+                  message.role === "user" ? "rounded-br-md" : "rounded-bl-md"
                 }`}
                 style={
                   message.role === "user"
-                    ? { backgroundColor: '#8aaf8e', color: '#ffffff' }
-                    : { backgroundColor: '#9a86be', color: '#ffffff' }
+                    ? { backgroundColor: "#8aaf8e", color: "#ffffff" }
+                    : { backgroundColor: "#9a86be", color: "#ffffff" }
                 }
               >
                 <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
@@ -683,7 +723,7 @@ const Mirror = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Input area */}
         <div className="p-4 md:p-6">
           <div className="max-w-2xl mx-auto flex gap-3 items-end">
@@ -695,9 +735,7 @@ const Mirror = () => {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
                     </span>
-                    <span className="text-sm text-muted-foreground">
-                      {voiceMode.partialText || "Listening..."}
-                    </span>
+                    <span className="text-sm text-muted-foreground">{voiceMode.partialText || "Listening..."}</span>
                   </div>
                 )}
                 {voiceMode.voiceState === "processing" && (
