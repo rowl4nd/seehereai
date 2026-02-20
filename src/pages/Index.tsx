@@ -57,6 +57,24 @@ const Index = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "SeeHere",
+      "url": "https://seehere.ai",
+      "logo": "https://seehere.ai/og-image.png",
+      "sameAs": [
+        "https://www.instagram.com/seehere.ai",
+        "https://www.facebook.com/profile.php?id=61588016676425"
+      ]
+    });
+    document.head.appendChild(script);
+    return () => { document.head.removeChild(script); };
+  }, []);
+
   const handleEarlySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!earlyEmail.trim()) {
