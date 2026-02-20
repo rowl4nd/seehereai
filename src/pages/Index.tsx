@@ -43,48 +43,48 @@ const ScrollSection = ({
 
 const Index = () => {
   const { user, loading } = useAuth();
-  const [betaEmail, setBetaEmail] = useState("");
-  const [betaReason, setBetaReason] = useState("");
-  const [betaSending, setBetaSending] = useState(false);
-  const [betaSent, setBetaSent] = useState(false);
+  const [earlyEmail, setEarlyEmail] = useState("");
+  const [earlyReason, setEarlyReason] = useState("");
+  const [earlySending, setEarlySending] = useState(false);
+  const [earlySent, setEarlySent] = useState(false);
   const [alreadyApproved, setAlreadyApproved] = useState(false);
 
   useEffect(() => {
-    if (window.location.hash === '#beta-signup') {
+    if (window.location.hash === '#early-access') {
       setTimeout(() => {
-        document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('early-access')?.scrollIntoView({ behavior: 'smooth' });
       }, 500);
     }
   }, []);
 
-  const handleBetaSubmit = async (e: React.FormEvent) => {
+  const handleEarlySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!betaEmail.trim()) {
+    if (!earlyEmail.trim()) {
       toast.error("Please enter your email address.");
       return;
     }
-    setBetaSending(true);
+    setEarlySending(true);
     try {
       // Check if email is already in allowed_testers
-      const { data: isAllowed } = await supabase.rpc('is_email_allowed', { _email: betaEmail.trim() });
+      const { data: isAllowed } = await supabase.rpc('is_email_allowed', { _email: earlyEmail.trim() });
       if (isAllowed) {
         setAlreadyApproved(true);
-        setBetaSent(true);
+        setEarlySent(true);
         toast.success("Great news — your access is already live! Please create your account using the Log in button at the top of the page.");
         return;
       }
 
       const { error } = await supabase.functions.invoke("grant-beta-access", {
-        body: { email: betaEmail.trim() }
+        body: { email: earlyEmail.trim() }
       });
       if (error) throw error;
-      setBetaSent(true);
+      setEarlySent(true);
       toast.success("Request received — please check your emails (and junk folder)");
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong. Please try again.");
     } finally {
-      setBetaSending(false);
+      setEarlySending(false);
     }
   };
   return (
@@ -113,11 +113,11 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Beta Access Banner */}
+      {/* Early Access Banner */}
       <div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-1.5 px-6 text-center">
         <p className="text-sm text-foreground">
-          <span className="font-medium">Beta Testing Phase</span> — We're limiting early access to ensure quality.{" "}
-          <a href="#beta-signup" onClick={(e) => {e.preventDefault();document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' });}} className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium">
+          <span className="font-medium">Early Access Phase</span> — We're limiting early access to ensure quality.{" "}
+          <a href="#early-access" onClick={(e) => {e.preventDefault();document.getElementById('early-access')?.scrollIntoView({ behavior: 'smooth' });}} className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium">
             Join our first 50 testers
           </a>.
         </p>
@@ -170,7 +170,7 @@ const Index = () => {
               No subscriptions
             </span>
           </div>
-          {betaSent ?
+          {earlySent ?
           <div className="pt-4">
               <div className="rounded-lg border border-border/40 bg-background/60 p-6 space-y-2 max-w-md mx-auto">
                 {alreadyApproved ?
@@ -192,12 +192,12 @@ const Index = () => {
               </div>
             </div> :
 
-          <form onSubmit={handleBetaSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 max-w-md mx-auto w-full">
+          <form onSubmit={handleEarlySubmit} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 max-w-md mx-auto w-full">
               <Input
               type="email"
               placeholder="you@email.com"
-              value={betaEmail}
-              onChange={(e) => setBetaEmail(e.target.value)}
+              value={earlyEmail}
+              onChange={(e) => setEarlyEmail(e.target.value)}
               required
               maxLength={255}
               className="placeholder:text-muted-foreground/30 h-12 flex-1" />
@@ -205,9 +205,9 @@ const Index = () => {
               <Button
               type="submit"
               size="lg"
-              disabled={betaSending}
+              disabled={earlySending}
               className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-8 h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap">
-                {betaSending ? "Sending…" : "Request beta access"}
+                {earlySending ? "Sending…" : "Request early access"}
               </Button>
             </form>
           }
@@ -255,9 +255,9 @@ const Index = () => {
                 <div className="pt-6">
                   <Button
                     size="lg"
-                    onClick={() => document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' })}
+                    onClick={() => document.getElementById('early-access')?.scrollIntoView({ behavior: 'smooth' })}
                     className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                    Request beta access
+                    Request early access
                   </Button>
                 </div>
               </div>
@@ -378,9 +378,9 @@ const Index = () => {
                 <div className="pt-6">
                   <Button
                     size="lg"
-                    onClick={() => document.getElementById('beta-signup')?.scrollIntoView({ behavior: 'smooth' })}
+                    onClick={() => document.getElementById('early-access')?.scrollIntoView({ behavior: 'smooth' })}
                     className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                    Request beta access
+                    Request early access
                   </Button>
                 </div>
               </div>
@@ -494,12 +494,12 @@ const Index = () => {
         </ScrollSection>
       </section>
 
-      {/* ── Beta Access Signup ── */}
-      <section id="beta-signup" className="relative py-24 px-6 md:px-12 bg-[#f8f6f3]">
+      {/* ── Early Access Signup ── */}
+      <section id="early-access" className="relative py-24 px-6 md:px-12 bg-[#f8f6f3]">
         <ScrollSection>
           <div className="max-w-lg mx-auto text-center space-y-6">
             <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground">
-              Join Our Beta
+              Join Early Access
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed">
               We're carefully onboarding our first users to ensure the best possible
@@ -507,7 +507,7 @@ const Index = () => {
               truly explore what SeeHere can offer.
             </p>
 
-            {betaSent ?
+            {earlySent ?
             <div className="rounded-lg border border-border/40 bg-background/60 p-8 space-y-3">
                 {alreadyApproved ?
               <>
@@ -529,41 +529,41 @@ const Index = () => {
               }
               </div> :
 
-            <form onSubmit={handleBetaSubmit} className="space-y-4 text-left">
+            <form onSubmit={handleEarlySubmit} className="space-y-4 text-left">
                 <div className="space-y-2">
-                  <label htmlFor="beta-email" className="text-sm font-medium text-foreground">
+                  <label htmlFor="early-email" className="text-sm font-medium text-foreground">
                     Email address
                   </label>
                   <Input
-                  id="beta-email"
+                  id="early-email"
                   type="email"
                   placeholder="you@email.com"
-                  value={betaEmail}
-                  onChange={(e) => setBetaEmail(e.target.value)}
+                  value={earlyEmail}
+                  onChange={(e) => setEarlyEmail(e.target.value)}
                   required
                   maxLength={255}
                   className="placeholder:text-muted-foreground/30" />
 
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="beta-reason" className="text-sm font-medium text-foreground">
+                  <label htmlFor="early-reason" className="text-sm font-medium text-foreground">
                     Why would you like to try SeeHere? (Optional)
                   </label>
                   <Textarea
-                  id="beta-reason"
+                  id="early-reason"
                   placeholder="Tell us a little about yourself..."
-                  value={betaReason}
-                  onChange={(e) => setBetaReason(e.target.value)}
+                  value={earlyReason}
+                  onChange={(e) => setEarlyReason(e.target.value)}
                   maxLength={1000}
                   className="min-h-[100px] placeholder:text-muted-foreground/30" />
 
                 </div>
                 <Button
                 type="submit"
-                disabled={betaSending}
+                disabled={earlySending}
                 className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-3">
 
-                  {betaSending ? "Sending…" : "Request Beta Access"}
+                  {earlySending ? "Sending…" : "Request Early Access"}
                 </Button>
               </form>
             }
