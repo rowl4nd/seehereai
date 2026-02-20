@@ -98,11 +98,11 @@ const Auth = () => {
         <Logo />
       </header>
 
-      {/* Beta Access Banner */}
+      {/* Early Access Banner */}
       <div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-1.5 px-6 text-center">
         <p className="text-sm text-foreground">
-          <span className="font-medium">Beta Testing Phase</span> — We're limiting early access to ensure quality.{" "}
-          <a href="/#beta-signup" className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium">
+          <span className="font-medium">Early Access Phase</span> — We're limiting early access to ensure quality.{" "}
+          <a href="/#early-access" className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium">
             Join our first 50 testers
           </a>.
         </p>
