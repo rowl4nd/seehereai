@@ -124,7 +124,7 @@ const Index = () => {
       </div>
 
       {/* ── Hero - Clean, minimal ── */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-[#cbb7ef]/20 via-[#f5e6d0]/20 to-[#b1cfac]/20">
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-[#cbb7ef]/20 via-[#f4eadf]/20 to-[#b1cfac]/20">
         {/* Subtle background shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full bg-[#cbb7ef]/8 blur-[100px]" />
@@ -223,7 +223,7 @@ const Index = () => {
           </div>
 
           {/* Text side */}
-          <div className="bg-gradient-to-r from-[#f5e6d0]/20 to-[#b1cfac]/20 flex items-center justify-end px-8 md:px-16 py-16 md:py-20">
+          <div className="bg-gradient-to-r from-[#f4eadf]/20 to-[#b1cfac]/20 flex items-center justify-end px-8 md:px-16 py-16 md:py-20">
             <ScrollSection>
               <div className="max-w-lg space-y-6 text-right ml-auto">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
@@ -267,7 +267,7 @@ const Index = () => {
       </section>
 
       {/* ── How it works - 3 cards ── */}
-      <section className="relative py-24 px-6 md:px-12 bg-[#f5e6d0]/25">
+      <section className="relative py-24 px-6 md:px-12 bg-[#f4eadf]/25">
         <div className="max-w-6xl mx-auto">
           <ScrollSection>
             <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-foreground mb-20">
@@ -334,7 +334,7 @@ const Index = () => {
       <section className="relative">
         <div className="grid md:grid-cols-2">
           {/* Text side first on desktop */}
-          <div className="bg-gradient-to-r from-[#cbb7ef]/20 to-[#f5e6d0]/20 flex items-center px-8 md:px-16 py-16 md:py-20 order-2 md:order-1">
+          <div className="bg-gradient-to-r from-[#cbb7ef]/20 to-[#f4eadf]/20 flex items-center px-8 md:px-16 py-16 md:py-20 order-2 md:order-1">
             <ScrollSection>
               <div className="max-w-lg space-y-6">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
@@ -576,7 +576,7 @@ const Index = () => {
       </section>
 
       {/* Safety notice */}
-      <div className="relative z-10 bg-[#fae5da]/20 border-t border-border/30 py-2 px-6 text-center">
+      <div className="relative z-10 bg-[#f4eadf]/20 border-t border-border/30 py-2 px-6 text-center">
         <p className="text-xs text-muted-foreground">
           In crisis? Contact{" "}
           <a
