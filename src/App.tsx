@@ -18,6 +18,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import ResetPassword from "./pages/ResetPassword";
 import SessionHistory from "./pages/SessionHistory";
 import Contact from "./pages/Contact";
+import MentalClarity from "./pages/MentalClarity";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/history/:sessionId" element={<SessionHistory />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/mental-clarity" element={<MentalClarity />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
