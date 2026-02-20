@@ -1,58 +1,41 @@
 
+# Replace all "Beta" wording with "Early"
 
-# Make the chatbot time-of-day aware
+A straightforward find-and-replace across two files.
 
-## What changes
+## Changes in `src/pages/Index.tsx`
 
-The chatbot will detect the user's local time of day and adjust both its greeting and conversational tone accordingly -- warmer and softer in the evening, brighter in the morning, etc.
+| Location | Current text | New text |
+|----------|-------------|----------|
+| Line 116 (comment) | `Beta Access Banner` | `Early Access Banner` |
+| Line 119 | `Beta Testing Phase` | `Early Access Phase` |
+| Line 120 | `#beta-signup` link | `#early-access` |
+| Line 210 | `"Request beta access"` | `"Request early access"` |
+| Line 258-260 | `#beta-signup` + `"Request beta access"` | `#early-access` + `"Request early access"` |
+| Line 381-383 | `#beta-signup` + `"Request beta access"` | `#early-access` + `"Request early access"` |
+| Line 497 (comment) | `Beta Access Signup` | `Early Access Signup` |
+| Line 498 | `id="beta-signup"` | `id="early-access"` |
+| Line 502 | `Join Our Beta` | `Join Early Access` |
+| Line 534 | `htmlFor="beta-email"` | `htmlFor="early-email"` |
+| Line 538 | `id="beta-email"` | `id="early-email"` |
+| Line 549 | `htmlFor="beta-reason"` | `htmlFor="early-reason"` |
+| Line 553 | `id="beta-reason"` | `id="early-reason"` |
+| Line 566 | `"Request Beta Access"` | `"Request Early Access"` |
+| Lines 46-48 | State vars `betaEmail`, `betaReason`, `betaSending`, `betaSent` | Rename to `earlyEmail`, `earlyReason`, `earlySending`, `earlySent` |
+| Lines 53-56 | `#beta-signup` hash check | `#early-access` |
+| Line 60 | `handleBetaSubmit` | `handleEarlySubmit` |
 
-## Two places to update
+## Changes in `src/pages/Auth.tsx`
 
-### 1. Frontend greeting (`src/pages/Mirror.tsx`)
+| Location | Current text | New text |
+|----------|-------------|----------|
+| Line 101 (comment) | `Beta Access Banner` | `Early Access Banner` |
+| Line 104 | `Beta Testing Phase` | `Early Access Phase` |
+| Line 105 | `/#beta-signup` | `/#early-access` |
 
-Update the `getGreeting()` function (around line 54) to use the current hour and vary the opening line:
+## Technical notes
 
-- **Morning (5am-11am)**: "Good morning" -- fresh, gentle energy
-- **Afternoon (12pm-4pm)**: "Good afternoon" -- warm, steady
-- **Evening (5pm-8pm)**: "Good evening" -- winding down, cosy
-- **Night (9pm-4am)**: "Hi there" -- calm, soft, acknowledging the late hour
-
-Example output: "Good evening, Sarah. I'm here to listen. Take your time -- there's no rush. What's on your mind tonight?"
-
-The closing word also shifts: "today" for daytime, "tonight" for evening/night.
-
-### 2. Backend system prompt + time context (`supabase/functions/chat/index.ts`)
-
-- Accept a new `timeOfDay` field in the request body (e.g. `"evening"`)
-- Pass it from the frontend when calling the chat function
-- Append a short section to the system prompt:
-
-```
-## TIME OF DAY CONTEXT
-It is currently [evening]. Adjust your tone subtly:
-- Morning: gentle, fresh energy
-- Afternoon: warm, steady
-- Evening: cosy, winding-down energy
-- Night: calm, soft, acknowledging the late hour
-Use time-appropriate language naturally (e.g. "tonight" instead of "today").
-```
-
-This keeps the AI's follow-up messages consistent with the greeting tone throughout the session.
-
-### 3. Frontend chat call (`src/pages/Mirror.tsx`)
-
-Update the two places where `supabase.functions.invoke("chat", ...)` is called (around lines 335 and 417) to include the `timeOfDay` value in the request body.
-
-## Technical details
-
-- Time of day is determined from `new Date().getHours()` on the client side -- this automatically uses the user's local timezone
-- The `timeOfDay` string is one of: `"morning"`, `"afternoon"`, `"evening"`, `"night"`
-- A small helper function `getTimeOfDay()` will be added near the top of `Mirror.tsx`
-- The `getGreeting()` function will call this helper to pick the right salutation
-- No new dependencies needed
-
-## Files modified
-
-- `src/pages/Mirror.tsx` -- time-aware greeting + pass `timeOfDay` to edge function
-- `supabase/functions/chat/index.ts` -- accept `timeOfDay`, append context to system prompt
-
+- All variable/function renames are internal -- no database or backend changes needed
+- The `grant-beta-access` edge function name stays the same (it's a backend detail, not user-facing)
+- The `allowed_testers` table name also stays the same
+- Only user-visible text and code identifiers in the two page files are updated
