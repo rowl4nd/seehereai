@@ -25,20 +25,24 @@ import quoteCard3 from "@/assets/quote-card-3.png";
 const ScrollSection = ({
   children,
   className = "",
-  delay = 0
-}: {children: React.ReactNode;className?: string;delay?: number;}) => {
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) => {
   const { ref, isVisible } = useScrollAnimation();
   return (
     <div
       ref={ref}
       className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
       style={{
-        transitionDelay: `${delay}ms`
-      }}>
-
+        transitionDelay: `${delay}ms`,
+      }}
+    >
       {children}
-    </div>);
-
+    </div>
+  );
 };
 
 const Index = () => {
@@ -50,9 +54,9 @@ const Index = () => {
   const [alreadyApproved, setAlreadyApproved] = useState(false);
 
   useEffect(() => {
-    if (window.location.hash === '#early-access') {
+    if (window.location.hash === "#early-access") {
       setTimeout(() => {
-        document.getElementById('early-access')?.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" });
       }, 500);
     }
   }, []);
@@ -60,19 +64,52 @@ const Index = () => {
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "application/ld+json";
-    script.textContent = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "SeeHere",
-      "url": "https://seehere.ai",
-      "logo": "https://seehere.ai/og-image.png",
-      "sameAs": [
-        "https://www.instagram.com/seehere.ai",
-        "https://www.facebook.com/profile.php?id=61588016676425"
-      ]
-    });
+    script.textContent = JSON.stringify([
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "SeeHere",
+        url: "https://seehere.ai",
+        logo: "https://seehere.ai/og-image.png",
+        sameAs: ["https://www.instagram.com/seehere.ai", "https://www.facebook.com/profile.php?id=61588016676425"],
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "Why SeeHere?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles. It offers a quiet space to think out loud with a companion that listens without judgment, with no waiting lists or scheduling required.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Is SeeHere.ai therapy?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "No. SeeHere is a reflective space grounded in person-centred principles, not a substitute for professional therapy. It offers empathic conversation to help you process thoughts, but does not provide clinical intervention or diagnoses.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Are my conversations confidential?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes. Your conversations are encrypted and private. We do not share your data with third parties, and sessions are designed to be a safe, confidential space for reflection.",
+            },
+          },
+        ],
+      },
+    ]);
     document.head.appendChild(script);
-    return () => { document.head.removeChild(script); };
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
   }, []);
 
   const handleEarlySubmit = async (e: React.FormEvent) => {
@@ -84,16 +121,18 @@ const Index = () => {
     setEarlySending(true);
     try {
       // Check if email is already in allowed_testers
-      const { data: isAllowed } = await supabase.rpc('is_email_allowed', { _email: earlyEmail.trim() });
+      const { data: isAllowed } = await supabase.rpc("is_email_allowed", { _email: earlyEmail.trim() });
       if (isAllowed) {
         setAlreadyApproved(true);
         setEarlySent(true);
-        toast.success("Great news — your access is already live! Please create your account using the Log in button at the top of the page.");
+        toast.success(
+          "Great news — your access is already live! Please create your account using the Log in button at the top of the page.",
+        );
         return;
       }
 
       const { error } = await supabase.functions.invoke("grant-beta-access", {
-        body: { email: earlyEmail.trim() }
+        body: { email: earlyEmail.trim() },
       });
       if (error) throw error;
       setEarlySent(true);
@@ -114,20 +153,20 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
-          {!loading && (
-          user ?
-          <Link to="/dashboard">
+          {!loading &&
+            (user ? (
+              <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="text-sm">
                   Dashboard
                 </Button>
-              </Link> :
-
-          <Link to="/auth">
+              </Link>
+            ) : (
+              <Link to="/auth">
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
-              </Link>)
-          }
+              </Link>
+            ))}
         </div>
       </header>
 
@@ -135,9 +174,17 @@ const Index = () => {
       <div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-1.5 px-6 text-center">
         <p className="text-sm text-foreground">
           <span className="font-medium">Early Access Phase</span> — We're limiting early access to ensure quality.{" "}
-          <a href="#early-access" onClick={(e) => {e.preventDefault();document.getElementById('early-access')?.scrollIntoView({ behavior: 'smooth' });}} className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium">
+          <a
+            href="#early-access"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium"
+          >
             Join our first 50 testers
-          </a>.
+          </a>
+          .
         </p>
       </div>
 
@@ -153,17 +200,19 @@ const Index = () => {
           <img src={heroLogo} alt="see here" className="h-28 md:h-38 w-auto mx-auto mb-4" />
           <h1 className="font-serif font-light leading-[1.05] text-foreground tracking-tight">
             <span className="block text-4xl md:text-5xl lg:text-6xl">A quiet space to talk</span>
-            <span className="block text-2xl md:text-3xl lg:text-4xl mt-2 opacity-85">with your AI listening companion</span>
+            <span className="block text-2xl md:text-3xl lg:text-4xl mt-2 opacity-85">
+              with your AI listening companion
+            </span>
           </h1>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-muted-foreground text-base md:text-lg">
             <span className="flex items-center gap-2">
               <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd" />
-
+                  clipRule="evenodd"
+                />
               </svg>
               Available 24/7
             </span>
@@ -172,8 +221,8 @@ const Index = () => {
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd" />
-
+                  clipRule="evenodd"
+                />
               </svg>
               Fully private & encrypted
             </span>
@@ -182,53 +231,58 @@ const Index = () => {
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd" />
-
+                  clipRule="evenodd"
+                />
               </svg>
               No subscriptions
             </span>
           </div>
-          {earlySent ?
-          <div className="pt-4">
+          {earlySent ? (
+            <div className="pt-4">
               <div className="rounded-lg border border-border/40 bg-background/60 p-6 space-y-2 max-w-md mx-auto">
-                {alreadyApproved ?
-              <>
+                {alreadyApproved ? (
+                  <>
                     <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
-                    <p className="text-sm text-muted-foreground">Please create your account using the Log in button at the top of the page.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Please create your account using the Log in button at the top of the page.
+                    </p>
                     <Link to="/auth">
-                      <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
-                        Create your account
-                      </Button>
+                      <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">Create your account</Button>
                     </Link>
-                  </> :
-
-              <>
+                  </>
+                ) : (
+                  <>
                     <p className="text-lg font-medium text-foreground">Request received!</p>
                     <p className="text-sm text-muted-foreground">Please check your emails (and junk folder).</p>
                   </>
-              }
+                )}
               </div>
-            </div> :
-
-          <form onSubmit={handleEarlySubmit} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 max-w-md mx-auto w-full">
+            </div>
+          ) : (
+            <form
+              onSubmit={handleEarlySubmit}
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 max-w-md mx-auto w-full"
+            >
               <Input
-              type="email"
-              placeholder="you@email.com"
-              value={earlyEmail}
-              onChange={(e) => setEarlyEmail(e.target.value)}
-              required
-              maxLength={255}
-              className="placeholder:text-muted-foreground/30 h-12 flex-1" />
+                type="email"
+                placeholder="you@email.com"
+                value={earlyEmail}
+                onChange={(e) => setEarlyEmail(e.target.value)}
+                required
+                maxLength={255}
+                className="placeholder:text-muted-foreground/30 h-12 flex-1"
+              />
 
               <Button
-              type="submit"
-              size="lg"
-              disabled={earlySending}
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-8 h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap">
+                type="submit"
+                size="lg"
+                disabled={earlySending}
+                className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-8 h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap"
+              >
                 {earlySending ? "Sending…" : "Request early access"}
               </Button>
             </form>
-          }
+          )}
         </div>
       </section>
 
@@ -248,8 +302,8 @@ const Index = () => {
                   Built by people who understand
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
-                  SeeHere was created by therapists who know how many people need space to think out loud — but don't think they are ready for, or can easily access traditional therapy.
-                
+                  SeeHere was created by therapists who know how many people need space to think out loud — but don't
+                  think they are ready for, or can easily access traditional therapy.
                 </p>
                 <p className="text-base text-muted-foreground leading-relaxed">
                   We combined evidence-based therapeutic principles with AI to create a companion that:
@@ -273,8 +327,9 @@ const Index = () => {
                 <div className="pt-6">
                   <Button
                     size="lg"
-                    onClick={() => document.getElementById('early-access')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+                    onClick={() => document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" })}
+                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
                     Request early access
                   </Button>
                 </div>
@@ -306,8 +361,8 @@ const Index = () => {
                 <img
                   src={talkBubble}
                   alt="I just feel like I need someone to talk to"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
-
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
+                />
               </div>
             </ScrollSection>
 
@@ -323,8 +378,8 @@ const Index = () => {
                 <img
                   src={replyBubble}
                   alt="I'm glad you reached out; I'm here and ready to listen"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
-
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
+                />
               </div>
             </ScrollSection>
 
@@ -340,8 +395,8 @@ const Index = () => {
                 <img
                   src={reflectBubble}
                   alt="Time to reflect"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
-
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
+                />
               </div>
             </ScrollSection>
           </div>
@@ -356,7 +411,7 @@ const Index = () => {
             <ScrollSection>
               <div className="max-w-lg space-y-6">
                 <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground leading-tight">
-                  What you will experience 
+                  What you will experience
                 </h2>
                 <p className="text-base text-muted-foreground leading-relaxed">
                   Warmth, understanding, and room to breathe. Grounded in person-centred principles.
@@ -368,9 +423,9 @@ const Index = () => {
                       <Heart className="w-4 h-4 text-[#4a7a4f]" />
                       Person-centred listening
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">Based on unconditional positive regard and empathic understanding. You are accepted fully, without judgment.
-
-
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Based on unconditional positive regard and empathic understanding. You are accepted fully, without
+                      judgment.
                     </p>
                   </div>
                   <div>
@@ -396,8 +451,9 @@ const Index = () => {
                 <div className="pt-6">
                   <Button
                     size="lg"
-                    onClick={() => document.getElementById('early-access')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+                    onClick={() => document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" })}
+                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
                     Request early access
                   </Button>
                 </div>
@@ -416,7 +472,11 @@ const Index = () => {
       <section className="relative py-24 px-6 bg-[#f8f6f3]">
         <ScrollSection>
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-            <img src={quoteCard1} alt="Reflective space quote" className="w-full h-auto object-cover rounded-xl shadow-lg" />
+            <img
+              src={quoteCard1}
+              alt="Reflective space quote"
+              className="w-full h-auto object-cover rounded-xl shadow-lg"
+            />
             <img src={quoteCard2} alt="Founder quote" className="w-full h-auto object-cover rounded-xl shadow-lg" />
             <img src={quoteCard3} alt="User quote" className="w-full h-auto object-cover rounded-xl shadow-lg" />
           </div>
@@ -439,9 +499,18 @@ const Index = () => {
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
                   <ul className="list-disc pl-5 space-y-3">
-                    <li>Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for productivity or problem-solving.</li>
-                    <li>Unlike traditional therapy, there's no waiting list, no scheduling, no pressure to commit to weekly sessions, and sessions cost a fraction of what you'd pay for professional therapy.</li>
-                    <li>Unlike many mental health apps that offer CBT exercises or mood tracking, SeeHere focuses purely on giving you space to think out loud with a companion that listens without judgment.</li>
+                    <li>
+                      Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for
+                      productivity or problem-solving.
+                    </li>
+                    <li>
+                      Unlike traditional therapy, there's no waiting list, no scheduling, no pressure to commit to
+                      weekly sessions, and sessions cost a fraction of what you'd pay for professional therapy.
+                    </li>
+                    <li>
+                      Unlike many mental health apps that offer CBT exercises or mood tracking, SeeHere focuses purely
+                      on giving you space to think out loud with a companion that listens without judgment.
+                    </li>
                   </ul>
                 </AccordionContent>
               </AccordionItem>
@@ -516,79 +585,72 @@ const Index = () => {
       <section id="early-access" className="relative py-24 px-6 md:px-12 bg-[#f8f6f3]">
         <ScrollSection>
           <div className="max-w-lg mx-auto text-center space-y-6">
-            <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground">
-              Join Early Access
-            </h2>
+            <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground">Join Early Access</h2>
             <p className="text-base text-muted-foreground leading-relaxed">
-              We're carefully onboarding our first users to ensure the best possible
-              experience. The first 50 testers receive 8 free sessions — enough to
-              truly explore what SeeHere can offer.
+              We're carefully onboarding our first users to ensure the best possible experience. The first 50 testers
+              receive 8 free sessions — enough to truly explore what SeeHere can offer.
             </p>
 
-            {earlySent ?
-            <div className="rounded-lg border border-border/40 bg-background/60 p-8 space-y-3">
-                {alreadyApproved ?
-              <>
+            {earlySent ? (
+              <div className="rounded-lg border border-border/40 bg-background/60 p-8 space-y-3">
+                {alreadyApproved ? (
+                  <>
                     <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
-                    <p className="text-sm text-muted-foreground">Please create your account using the Log in button at the top of the page.</p>
-                    <Link to="/auth">
-                      <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
-                        Create your account
-                      </Button>
-                    </Link>
-                  </> :
-
-              <>
-                    <p className="text-lg font-medium text-foreground">Request received!</p>
                     <p className="text-sm text-muted-foreground">
-                      Please check your emails (and junk folder).
+                      Please create your account using the Log in button at the top of the page.
                     </p>
+                    <Link to="/auth">
+                      <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">Create your account</Button>
+                    </Link>
                   </>
-              }
-              </div> :
-
-            <form onSubmit={handleEarlySubmit} className="space-y-4 text-left">
+                ) : (
+                  <>
+                    <p className="text-lg font-medium text-foreground">Request received!</p>
+                    <p className="text-sm text-muted-foreground">Please check your emails (and junk folder).</p>
+                  </>
+                )}
+              </div>
+            ) : (
+              <form onSubmit={handleEarlySubmit} className="space-y-4 text-left">
                 <div className="space-y-2">
                   <label htmlFor="early-email" className="text-sm font-medium text-foreground">
                     Email address
                   </label>
                   <Input
-                  id="early-email"
-                  type="email"
-                  placeholder="you@email.com"
-                  value={earlyEmail}
-                  onChange={(e) => setEarlyEmail(e.target.value)}
-                  required
-                  maxLength={255}
-                  className="placeholder:text-muted-foreground/30" />
-
+                    id="early-email"
+                    type="email"
+                    placeholder="you@email.com"
+                    value={earlyEmail}
+                    onChange={(e) => setEarlyEmail(e.target.value)}
+                    required
+                    maxLength={255}
+                    className="placeholder:text-muted-foreground/30"
+                  />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="early-reason" className="text-sm font-medium text-foreground">
                     Why would you like to try SeeHere? (Optional)
                   </label>
                   <Textarea
-                  id="early-reason"
-                  placeholder="Tell us a little about yourself..."
-                  value={earlyReason}
-                  onChange={(e) => setEarlyReason(e.target.value)}
-                  maxLength={1000}
-                  className="min-h-[100px] placeholder:text-muted-foreground/30" />
-
+                    id="early-reason"
+                    placeholder="Tell us a little about yourself..."
+                    value={earlyReason}
+                    onChange={(e) => setEarlyReason(e.target.value)}
+                    maxLength={1000}
+                    className="min-h-[100px] placeholder:text-muted-foreground/30"
+                  />
                 </div>
                 <Button
-                type="submit"
-                disabled={earlySending}
-                className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-3">
-
+                  type="submit"
+                  disabled={earlySending}
+                  className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-3"
+                >
                   {earlySending ? "Sending…" : "Request Early Access"}
                 </Button>
               </form>
-            }
+            )}
 
-            <p className="text-xs text-muted-foreground">
-              Access is granted instantly — check your inbox.
-            </p>
+            <p className="text-xs text-muted-foreground">Access is granted instantly — check your inbox.</p>
           </div>
         </ScrollSection>
       </section>
@@ -599,8 +661,8 @@ const Index = () => {
           In crisis? Contact{" "}
           <a
             href="tel:116123"
-            className="underline underline-offset-2 hover:text-foreground transition-colors font-medium">
-
+            className="underline underline-offset-2 hover:text-foreground transition-colors font-medium"
+          >
             Samaritans: 116 123
           </a>{" "}
           or text SHOUT to 85258
@@ -616,28 +678,29 @@ const Index = () => {
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
-
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
               Terms &amp; Conditions
             </a>
             <a
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
-
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
               Privacy Policy
             </a>
             <a
               href="/contact"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
               Contact Us
             </a>
           </div>
         </div>
       </footer>
-    </div>);
-
+    </div>
+  );
 };
 
 export default Index;
