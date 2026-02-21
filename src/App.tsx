@@ -20,6 +20,7 @@ import SessionHistory from "./pages/SessionHistory";
 import Contact from "./pages/Contact";
 import MentalClarity from "./pages/MentalClarity";
 import WorkStress from "./pages/WorkStress";
+import SupportAlternative from "./pages/SupportAlternative";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/mental-clarity" element={<MentalClarity />} />
             <Route path="/work-stress" element={<WorkStress />} />
+            <Route path="/support-alternative" element={<SupportAlternative />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
