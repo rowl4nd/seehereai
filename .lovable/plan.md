@@ -1,22 +1,20 @@
 
 
-# Generate Static `sitemap.xml`
+# Update sitemap.xml Domain
 
-Create a new file `public/sitemap.xml` listing all public routes for search engine crawlers.
+Replace all `https://seehereai.lovable.app` references in `public/sitemap.xml` with `https://seehere.ai`.
 
-## New file: `public/sitemap.xml`
+## File: `public/sitemap.xml`
 
-Include the following URLs with the published domain `https://seehereai.lovable.app`:
+Update the 7 `<loc>` entries to use the new domain:
 
-- `/` (homepage) -- highest priority (1.0), daily changefreq
-- `/mental-clarity` -- priority 0.7, monthly
-- `/work-stress` -- priority 0.7, monthly
-- `/support-alternative` -- priority 0.7, monthly
-- `/terms` -- priority 0.3, yearly
-- `/privacy` -- priority 0.3, yearly
-- `/contact` -- priority 0.5, monthly
+- `https://seehere.ai/`
+- `https://seehere.ai/mental-clarity`
+- `https://seehere.ai/work-stress`
+- `https://seehere.ai/support-alternative`
+- `https://seehere.ai/contact`
+- `https://seehere.ai/terms`
+- `https://seehere.ai/privacy`
 
-Auth-gated pages (dashboard, mirror, onboarding, etc.) will be excluded since they require login and aren't useful for crawlers.
-
-No other file changes needed -- Vite automatically serves files from the `public/` folder at the root path, so it will be accessible at `/sitemap.xml`.
+No other changes needed.
 
