@@ -9,6 +9,8 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Onboarding from "./pages/Onboarding";
 import Guidance from "./pages/Guidance";
+import GuestGuidance from "./pages/GuestGuidance";
+import GuestChat from "./pages/GuestChat";
 import Mirror from "./pages/Mirror";
 import Credits from "./pages/Credits";
 import Cooldown from "./pages/Cooldown";
@@ -38,6 +40,8 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/guidance" element={<Guidance />} />
+            <Route path="/try/guidance" element={<GuestGuidance />} />
+            <Route path="/try" element={<GuestChat />} />
             <Route path="/mirror" element={<Mirror />} />
             <Route path="/credits" element={<Credits />} />
             <Route path="/cooldown" element={<Cooldown />} />

@@ -237,6 +237,19 @@ const Index = () => {
               No subscriptions
             </span>
           </div>
+          {/* Try it free CTA */}
+          <div className="pt-2">
+            <Link to="/try/guidance">
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-10 py-6 text-base font-medium border-[#8775aa]/40 text-[#8775aa] hover:bg-[#8775aa]/10 hover:border-[#8775aa]/60 transition-all duration-300"
+              >
+                Try a free reflection
+              </Button>
+            </Link>
+          </div>
+
           {earlySent ? (
             <div className="pt-4">
               <div className="rounded-lg border border-border/40 bg-background/60 p-6 space-y-2 max-w-md mx-auto">
