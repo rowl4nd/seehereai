@@ -37,6 +37,7 @@ const GuestChat = () => {
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [sessionStartedAt, setSessionStartedAt] = useState<string | null>(null);
   const [sessionEnded, setSessionEnded] = useState(false);
+  const [showEndWarning, setShowEndWarning] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -107,6 +108,11 @@ const GuestChat = () => {
       const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
       setTimeRemaining(remaining);
 
+      // 5-minute warning
+      if (remaining <= 300 && remaining > 0 && !showEndWarning) {
+        setShowEndWarning(true);
+      }
+
       if (remaining <= 0 && !sessionEnded) {
         setSessionEnded(true);
         // Save final messages
@@ -130,7 +136,7 @@ const GuestChat = () => {
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
-  }, [authenticated, sessionStartedAt, sessionEnded, sessionId]);
+  }, [authenticated, sessionStartedAt, sessionEnded, sessionId, showEndWarning]);
 
   // After auth state changes (user signs up), migrate guest data
   useEffect(() => {
@@ -199,7 +205,74 @@ const GuestChat = () => {
 
   const handleSignUpSuccess = () => {
     // The auth state listener in useAuth will trigger the migration useEffect above
-    // Modal stays open briefly while auth state propagates
+  };
+
+  const handleEndSession = async () => {
+    if (sessionEnded) {
+      navigate("/cooldown");
+      return;
+    }
+
+    // If before 5-minute warning, send early end signal for AI wrap-up
+    if (!showEndWarning) {
+      const earlyEndMsg: Message = {
+        id: "user-earlyend-" + Date.now(),
+        role: "user",
+        content: "[EARLY_END]",
+      };
+      const withEarlyEnd = [...messagesRef.current, earlyEndMsg];
+      setMessages(withEarlyEnd);
+      setIsLoading(true);
+
+      try {
+        const response = await supabase.functions.invoke("chat", {
+          body: {
+            messages: withEarlyEnd.map((m) => ({ role: m.role, content: m.content })),
+            timeOfDay: getTimeOfDay(),
+          },
+        });
+
+        const wrapUp: Message = {
+          id: "assistant-wrapup-" + Date.now(),
+          role: "assistant",
+          content: response.data?.message || "Thank you for sharing. Take care of yourself.",
+        };
+        const finalMessages = [...withEarlyEnd, wrapUp];
+        setMessages(finalMessages);
+
+        if (conversationIdRef.current) {
+          await saveMessages(
+            conversationIdRef.current,
+            finalMessages.map((m) => ({ role: m.role, content: m.content, timestamp: m.id }))
+          );
+        }
+      } catch {
+        // Continue with ending even if wrap-up fails
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      // Past 5-minute warning, just save
+      if (conversationIdRef.current) {
+        await saveMessages(
+          conversationIdRef.current,
+          messagesRef.current.map((m) => ({ role: m.role, content: m.content, timestamp: m.id }))
+        );
+      }
+    }
+
+    // End session in DB
+    if (sessionId) {
+      const elapsed = sessionStartedAt
+        ? Math.floor((Date.now() - new Date(sessionStartedAt).getTime()) / 60000)
+        : 0;
+      await supabase
+        .from("sessions")
+        .update({ is_active: false, ended_at: new Date().toISOString(), duration_minutes: elapsed })
+        .eq("id", sessionId);
+    }
+
+    setSessionEnded(true);
   };
 
   const handleSend = async () => {
@@ -346,7 +419,7 @@ const GuestChat = () => {
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-border/30">
-        {/* Timer (authenticated only) */}
+        {/* Timer + End Session (authenticated only) */}
         {authenticated && timeRemaining !== null && (
           <div className="px-4 md:px-6 py-2 bg-card/30 border-b border-border/20">
             <div className="max-w-2xl mx-auto flex items-center gap-3">
@@ -357,6 +430,14 @@ const GuestChat = () => {
                 />
               </div>
               <span className="text-xs text-muted-foreground whitespace-nowrap">{formatTime(timeRemaining)}</span>
+              <Button
+                onClick={handleEndSession}
+                disabled={isLoading}
+                variant="ghost"
+                className="min-h-[44px] text-xs text-muted-foreground hover:text-foreground"
+              >
+                {sessionEnded ? "Return to Dashboard" : "End session"}
+              </Button>
             </div>
           </div>
         )}
@@ -370,7 +451,13 @@ const GuestChat = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={inputDisabled ? "Create an account to continue..." : "Share what's on your mind..."}
+                placeholder={
+                  sessionEnded
+                    ? "Session ended"
+                    : inputDisabled
+                      ? "Create an account to continue..."
+                      : "Share what's on your mind..."
+                }
                 className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50 text-base"
                 disabled={inputDisabled}
                 autoFocus

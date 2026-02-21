@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import Logo from "@/components/Logo";
 
 const guidanceCards = [
@@ -36,6 +38,8 @@ const GuestGuidance = () => {
   const navigate = useNavigate();
   const [currentCard, setCurrentCard] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
   const handleNext = () => {
     if (currentCard < guidanceCards.length - 1) {
@@ -53,6 +57,7 @@ const GuestGuidance = () => {
   };
 
   const isLastCard = currentCard === guidanceCards.length - 1;
+  const canBegin = termsAccepted && privacyAccepted;
   const card = guidanceCards[currentCard];
 
   return (
@@ -101,12 +106,47 @@ const GuestGuidance = () => {
           {/* Interaction Area */}
           <div className="pt-8 min-h-[140px] flex flex-col items-center justify-center">
             {isLastCard ? (
-              <Button
-                onClick={handleContinue}
-                className="bg-[#af9cd3] hover:bg-[#9d8bbd] text-white px-12 py-8 rounded-full text-lg font-light shadow-xl shadow-[#af9cd3]/10 transition-all duration-700 animate-fade-in border-none"
-              >
-                Begin your reflection
-              </Button>
+              <div className="space-y-8 animate-fade-in">
+                {/* T&C Acknowledgment */}
+                <div className="space-y-4 text-left max-w-sm mx-auto">
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="terms"
+                      checked={termsAccepted}
+                      onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+                      className="mt-0.5"
+                    />
+                    <Label htmlFor="terms" className="text-sm text-[#6b665f] font-light leading-relaxed cursor-pointer">
+                      I have read and agree to the{" "}
+                      <Link to="/terms" target="_blank" className="underline text-[#af9cd3] hover:text-[#9d8bbd] transition-colors">
+                        Terms &amp; Conditions
+                      </Link>
+                    </Label>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="privacy"
+                      checked={privacyAccepted}
+                      onCheckedChange={(checked) => setPrivacyAccepted(checked === true)}
+                      className="mt-0.5"
+                    />
+                    <Label htmlFor="privacy" className="text-sm text-[#6b665f] font-light leading-relaxed cursor-pointer">
+                      I have read and agree to the{" "}
+                      <Link to="/privacy" target="_blank" className="underline text-[#af9cd3] hover:text-[#9d8bbd] transition-colors">
+                        Privacy Policy
+                      </Link>
+                    </Label>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleContinue}
+                  disabled={!canBegin}
+                  className="bg-[#af9cd3] hover:bg-[#9d8bbd] text-white px-12 py-8 rounded-full text-lg font-light shadow-xl shadow-[#af9cd3]/10 transition-all duration-700 border-none disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Begin your reflection
+                </Button>
+              </div>
             ) : (
               <button
                 onClick={handleNext}
