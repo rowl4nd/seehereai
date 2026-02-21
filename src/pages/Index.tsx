@@ -673,7 +673,33 @@ const Index = () => {
       <footer className="relative py-12 px-6 text-center border-t border-border/30 bg-[#f8f6f3]">
         <div className="relative z-10 space-y-4">
           <p className="text-sm text-muted-foreground">A space for reflection</p>
-          <div className="flex justify-center gap-8">
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
+            <a
+              href="/mental-clarity"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
+              Mental Clarity
+            </a>
+            <a
+              href="/work-stress"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
+              Work Stress
+            </a>
+            <a
+              href="/support-alternative"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+            >
+              Confidential Support
+            </a>
+          </div>
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
             <a
               href="/terms"
               target="_blank"
