@@ -1,26 +1,22 @@
 
 
-# New "Mental Clarity" SEO Content Page
+# Generate Static `sitemap.xml`
 
-Create a new page at `/mental-clarity` that adapts the provided content into the same layout and styling used by the Terms and Privacy pages (sticky header with Logo + close button, centered content column, footer).
+Create a new file `public/sitemap.xml` listing all public routes for search engine crawlers.
 
-## New file: `src/pages/MentalClarity.tsx`
+## New file: `public/sitemap.xml`
 
-- **Header**: Same sticky header with `<Logo />` and `X` close button as Terms/Privacy
-- **Main content**: Wrapped in the same `max-w-2xl mx-auto` container with `animate-fade-in`
-- **Styling**: Uses existing Tailwind theme classes (`bg-background`, `text-foreground`, `font-serif`, etc.) instead of hardcoded hex values like `#FDFCFB` or `#1A1A1A`, keeping it consistent with the rest of the app
-- **SEO meta injection**: Uses a `useEffect` to inject `<title>` and `<meta name="description">` into `document.head` (same pattern as the Organization schema on Index), rather than adding `react-helmet` as a new dependency
-- **Content preserved**: All sections from the provided code -- hero heading, blockquote, "What is Reflective Dialogue", numbered steps, and CTA box -- will be included with styling adapted to match the app's design tokens
-- **CTA link**: The "Start a Reflective Session" button will link to `/` (homepage)
-- **Footer**: Same minimal footer as Terms/Privacy
+Include the following URLs with the published domain `https://seehereai.lovable.app`:
 
-## Updated file: `src/App.tsx`
+- `/` (homepage) -- highest priority (1.0), daily changefreq
+- `/mental-clarity` -- priority 0.7, monthly
+- `/work-stress` -- priority 0.7, monthly
+- `/support-alternative` -- priority 0.7, monthly
+- `/terms` -- priority 0.3, yearly
+- `/privacy` -- priority 0.3, yearly
+- `/contact` -- priority 0.5, monthly
 
-- Import the new `MentalClarity` component
-- Add route: `<Route path="/mental-clarity" element={<MentalClarity />} />`
-- No navigation link added anywhere (as requested)
+Auth-gated pages (dashboard, mirror, onboarding, etc.) will be excluded since they require login and aren't useful for crawlers.
 
-## No new dependencies
-
-Uses existing project patterns and Tailwind classes only.
+No other file changes needed -- Vite automatically serves files from the `public/` folder at the root path, so it will be accessible at `/sitemap.xml`.
 
