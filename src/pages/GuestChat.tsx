@@ -21,7 +21,7 @@ const MAX_GUEST_MESSAGES = 3;
 const GuestChat = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, updateProfile } = useProfile();
-  const { createConversation: createEncryptedConversation, saveMessages } = useEncryptedMessages();
+  const { createConversation: createEncryptedConversation, saveMessages, loadHistory } = useEncryptedMessages();
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -38,12 +38,43 @@ const GuestChat = () => {
   const [sessionStartedAt, setSessionStartedAt] = useState<string | null>(null);
   const [sessionEnded, setSessionEnded] = useState(false);
   const [showEndWarning, setShowEndWarning] = useState(false);
+  const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesRef = useRef<Message[]>([]);
   const conversationIdRef = useRef<string | null>(null);
+  const pendingSaveRef = useRef<Message[] | null>(null);
   const migrationDoneRef = useRef(false);
+
+  const getTimeOfDay = (): string => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour <= 11) return "morning";
+    if (hour >= 12 && hour <= 16) return "afternoon";
+    if (hour >= 17 && hour <= 20) return "evening";
+    return "night";
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // Centralised save helper with pending queue (mirrors Mirror.tsx)
+  const saveMessagesToDb = async (updatedMessages: Message[]) => {
+    const cId = conversationIdRef.current;
+    if (!cId) {
+      pendingSaveRef.current = updatedMessages;
+      return;
+    }
+    const conversationMessages = updatedMessages.map((m) => ({
+      role: m.role,
+      content: m.content,
+      timestamp: m.id,
+    }));
+    await saveMessages(cId, conversationMessages);
+  };
 
   // Check guest onboarding
   useEffect(() => {
@@ -53,7 +84,6 @@ const GuestChat = () => {
       return;
     }
 
-    // Load any existing guest messages from sessionStorage
     const saved = sessionStorage.getItem("guest_messages");
     if (saved) {
       try {
@@ -69,7 +99,6 @@ const GuestChat = () => {
       }
     }
 
-    // Add greeting if no messages
     if (!saved) {
       const greeting: Message = {
         id: "greeting",
@@ -86,8 +115,14 @@ const GuestChat = () => {
     messagesRef.current = messages;
   }, [messages]);
 
+  // Flush pending saves when conversationId becomes available
   useEffect(() => {
     conversationIdRef.current = conversationId;
+    if (conversationId && pendingSaveRef.current) {
+      const pending = pendingSaveRef.current;
+      pendingSaveRef.current = null;
+      saveMessagesToDb(pending);
+    }
   }, [conversationId]);
 
   // Scroll to bottom
@@ -95,11 +130,11 @@ const GuestChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Timer for authenticated session
+  // Timer for authenticated session (mirrors Mirror.tsx)
   useEffect(() => {
     if (!authenticated || !sessionStartedAt) return;
 
-    const sessionDuration = 25 * 60; // free session = 25 min
+    const sessionDuration = 25 * 60;
     const startTime = new Date(sessionStartedAt).getTime();
     const endTime = startTime + sessionDuration * 1000;
 
@@ -108,21 +143,24 @@ const GuestChat = () => {
       const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
       setTimeRemaining(remaining);
 
-      // 5-minute warning
+      // 5-minute warning with assistant message injection
       if (remaining <= 300 && remaining > 0 && !showEndWarning) {
         setShowEndWarning(true);
+        const warningMsg: Message = {
+          id: "warning-" + Date.now(),
+          role: "assistant",
+          content: "We have about 5 minutes left. Take your time to share anything else on your mind, or we can begin to wrap up.",
+        };
+        setMessages((prev) => {
+          const updated = [...prev, warningMsg];
+          saveMessagesToDb(updated);
+          return updated;
+        });
       }
 
       if (remaining <= 0 && !sessionEnded) {
         setSessionEnded(true);
-        // Save final messages
-        if (conversationIdRef.current) {
-          saveMessages(
-            conversationIdRef.current,
-            messagesRef.current.map((m) => ({ role: m.role, content: m.content, timestamp: m.id }))
-          );
-        }
-        // End session in DB
+        saveMessagesToDb(messagesRef.current);
         if (sessionId) {
           supabase
             .from("sessions")
@@ -145,7 +183,6 @@ const GuestChat = () => {
 
     const migrateGuestData = async () => {
       try {
-        // Update profile: mark onboarding complete
         await updateProfile({
           has_completed_onboarding: true,
           has_acknowledged_terms: true,
@@ -154,7 +191,6 @@ const GuestChat = () => {
           onboarding_completed_at: new Date().toISOString(),
         });
 
-        // Start a free session
         const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session", {
           _session_type: "free",
         });
@@ -171,10 +207,8 @@ const GuestChat = () => {
         setSessionId(newSessionId);
         setSessionStartedAt(startedAt);
 
-        // Increment free_sessions_used
         await updateProfile({ free_sessions_used: 1 });
 
-        // Create encrypted conversation with guest messages
         const guestMsgs = messagesRef.current.map((m) => ({
           role: m.role,
           content: m.content,
@@ -184,11 +218,14 @@ const GuestChat = () => {
         const newConvoId = await createEncryptedConversation(newSessionId, guestMsgs);
         if (newConvoId) setConversationId(newConvoId);
 
-        // Clear sessionStorage
+        // Load past conversations for AI context
+        const conversations = await loadHistory();
+        setPastConversations(conversations as Array<{ messages: Array<{ role: string; content: string }> }>);
+
         sessionStorage.removeItem("guest_messages");
         sessionStorage.removeItem("guest_onboarding_complete");
+        sessionStorage.removeItem("guest_email");
 
-        // Transition to authenticated mode
         setAuthenticated(true);
         setShowModal(false);
         setGuestLimitReached(false);
@@ -215,50 +252,42 @@ const GuestChat = () => {
 
     // If before 5-minute warning, send early end signal for AI wrap-up
     if (!showEndWarning) {
-      const earlyEndMsg: Message = {
-        id: "user-earlyend-" + Date.now(),
-        role: "user",
-        content: "[EARLY_END]",
-      };
-      const withEarlyEnd = [...messagesRef.current, earlyEndMsg];
-      setMessages(withEarlyEnd);
+      setSessionEnded(true);
       setIsLoading(true);
 
       try {
+        const messagesForAI = messagesRef.current.map((m) => ({ role: m.role, content: m.content }));
+        messagesForAI.push({
+          role: "user",
+          content: "[EARLY_END] The user has chosen to end the session early. Please provide a warm wrap-up.",
+        });
+
         const response = await supabase.functions.invoke("chat", {
           body: {
-            messages: withEarlyEnd.map((m) => ({ role: m.role, content: m.content })),
+            messages: messagesForAI,
+            pastConversations,
+            userName: profile?.display_name || undefined,
+            nameDeclined: profile?.name_declined || false,
             timeOfDay: getTimeOfDay(),
           },
         });
 
         const wrapUp: Message = {
-          id: "assistant-wrapup-" + Date.now(),
+          id: "wrapup-" + Date.now(),
           role: "assistant",
           content: response.data?.message || "Thank you for sharing. Take care of yourself.",
         };
-        const finalMessages = [...withEarlyEnd, wrapUp];
+        const finalMessages = [...messagesRef.current, wrapUp];
         setMessages(finalMessages);
-
-        if (conversationIdRef.current) {
-          await saveMessages(
-            conversationIdRef.current,
-            finalMessages.map((m) => ({ role: m.role, content: m.content, timestamp: m.id }))
-          );
-        }
+        await saveMessagesToDb(finalMessages);
       } catch {
         // Continue with ending even if wrap-up fails
       } finally {
         setIsLoading(false);
       }
     } else {
-      // Past 5-minute warning, just save
-      if (conversationIdRef.current) {
-        await saveMessages(
-          conversationIdRef.current,
-          messagesRef.current.map((m) => ({ role: m.role, content: m.content, timestamp: m.id }))
-        );
-      }
+      setSessionEnded(true);
+      await saveMessagesToDb(messagesRef.current);
     }
 
     // End session in DB
@@ -271,8 +300,6 @@ const GuestChat = () => {
         .update({ is_active: false, ended_at: new Date().toISOString(), duration_minutes: elapsed })
         .eq("id", sessionId);
     }
-
-    setSessionEnded(true);
   };
 
   const handleSend = async () => {
@@ -292,22 +319,40 @@ const GuestChat = () => {
     // Save to sessionStorage (guest) or DB (authenticated)
     if (!authenticated) {
       sessionStorage.setItem("guest_messages", JSON.stringify(updatedWithUser));
-    } else if (conversationIdRef.current) {
-      saveMessages(
-        conversationIdRef.current,
-        updatedWithUser.map((m) => ({ role: m.role, content: m.content, timestamp: m.id }))
-      );
+    } else {
+      saveMessagesToDb(updatedWithUser);
     }
 
     try {
       const messagesForAI = updatedWithUser.map((m) => ({ role: m.role, content: m.content }));
 
+      // Add wrap-up indicator if in final 5 minutes (mirrors Mirror.tsx)
+      if (authenticated && showEndWarning && messagesForAI.length > 0) {
+        const lastMsg = messagesForAI[messagesForAI.length - 1];
+        lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
+      }
+
       const response = await supabase.functions.invoke("chat", {
         body: {
           messages: messagesForAI,
+          ...(authenticated && {
+            pastConversations,
+            userName: profile?.display_name || undefined,
+            nameDeclined: profile?.name_declined || false,
+          }),
           timeOfDay: getTimeOfDay(),
         },
       });
+
+      // Handle name detection from AI (authenticated only, mirrors Mirror.tsx)
+      if (authenticated) {
+        if (response.data?.detectedName && !profile?.display_name) {
+          updateProfile({ display_name: response.data.detectedName, name_declined: false });
+        }
+        if (response.data?.nameDeclined && !profile?.name_declined) {
+          updateProfile({ name_declined: true });
+        }
+      }
 
       const assistantMessage: Message = {
         id: "assistant-" + Date.now(),
@@ -320,18 +365,23 @@ const GuestChat = () => {
 
       if (!authenticated) {
         sessionStorage.setItem("guest_messages", JSON.stringify(updatedWithAssistant));
-
-        // Check if guest limit reached
         const userCount = updatedWithAssistant.filter((m) => m.role === "user").length;
         if (userCount >= MAX_GUEST_MESSAGES) {
           setGuestLimitReached(true);
           setShowModal(true);
         }
-      } else if (conversationIdRef.current) {
-        saveMessages(
-          conversationIdRef.current,
-          updatedWithAssistant.map((m) => ({ role: m.role, content: m.content, timestamp: m.id }))
-        );
+      } else {
+        saveMessagesToDb(updatedWithAssistant);
+
+        // Handle END_SESSION flag (crisis detection, mirrors Mirror.tsx)
+        if (response.data?.endSession && sessionId) {
+          setSessionEnded(true);
+          await saveMessagesToDb(updatedWithAssistant);
+          await supabase
+            .from("sessions")
+            .update({ is_active: false, ended_at: new Date().toISOString() })
+            .eq("id", sessionId);
+        }
       }
     } catch (error) {
       console.error("Chat error:", error);
@@ -353,20 +403,6 @@ const GuestChat = () => {
       e.preventDefault();
       handleSend();
     }
-  };
-
-  const getTimeOfDay = (): string => {
-    const hour = new Date().getHours();
-    if (hour >= 5 && hour <= 11) return "morning";
-    if (hour >= 12 && hour <= 16) return "afternoon";
-    if (hour >= 17 && hour <= 20) return "evening";
-    return "night";
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const inputDisabled = isLoading || (guestLimitReached && !authenticated) || sessionEnded;
@@ -422,22 +458,26 @@ const GuestChat = () => {
         {/* Timer + End Session (authenticated only) */}
         {authenticated && timeRemaining !== null && (
           <div className="px-4 md:px-6 py-2 bg-card/30 border-b border-border/20">
-            <div className="max-w-2xl mx-auto flex items-center gap-3">
-              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary/60 transition-all duration-1000"
-                  style={{ width: `${(timeRemaining / (25 * 60)) * 100}%` }}
-                />
+            <div className="max-w-2xl mx-auto space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary/60 transition-all duration-1000"
+                    style={{ width: `${(timeRemaining / (25 * 60)) * 100}%` }}
+                  />
+                </div>
+                <span className="text-xs text-muted-foreground whitespace-nowrap">{formatTime(timeRemaining)}</span>
               </div>
-              <span className="text-xs text-muted-foreground whitespace-nowrap">{formatTime(timeRemaining)}</span>
-              <Button
-                onClick={handleEndSession}
-                disabled={isLoading}
-                variant="ghost"
-                className="min-h-[44px] text-xs text-muted-foreground hover:text-foreground"
-              >
-                {sessionEnded ? "Return to Dashboard" : "End session"}
-              </Button>
+              <div className="flex justify-end">
+                <Button
+                  variant="ghost"
+                  onClick={sessionEnded ? () => navigate("/cooldown") : handleEndSession}
+                  disabled={isLoading}
+                  className="text-sm text-muted-foreground min-h-[44px] px-4"
+                >
+                  {sessionEnded ? "Return to Dashboard" : "End session"}
+                </Button>
+              </div>
             </div>
           </div>
         )}
