@@ -75,7 +75,7 @@ const Auth = () => {
           {/* Title */}
           <div className="text-center -mt-4 space-y-3">
             <h1 className="text-6xl font-serif font-light text-foreground">
-              {mode === "forgot" ? "Reset your password" : "Welcome"}
+              {mode === "forgot" ? "Reset your password" : "Welcome Back"}
             </h1>
             {mode === "forgot" && (
               <p className="text-sm text-muted-foreground">
