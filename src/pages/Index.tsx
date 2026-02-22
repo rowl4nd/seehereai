@@ -112,6 +112,8 @@ const Index = () => {
     };
   }, []);
 
+
+
   const handleEarlySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!earlyEmail.trim()) {
@@ -120,23 +122,29 @@ const Index = () => {
     }
     setEarlySending(true);
     try {
-      // Check if email is already in allowed_testers
-      const { data: isAllowed } = await supabase.rpc("is_email_allowed", { _email: earlyEmail.trim() });
-      if (isAllowed) {
+      const { data: status } = await supabase.rpc("check_email_status", { _email: earlyEmail.trim() });
+      const result = status as { is_allowed: boolean; is_existing_user: boolean } | null;
+
+      if (result?.is_existing_user) {
+        // Existing user — invite them to log in
         setAlreadyApproved(true);
         setEarlySent(true);
-        toast.success(
-          "Great news — your access is already live! Please create your account using the Log in button at the top of the page.",
-        );
+        toast.success("You already have an account — please log in to continue.");
         return;
       }
 
-      const { error } = await supabase.functions.invoke("grant-beta-access", {
-        body: { email: earlyEmail.trim() },
-      });
-      if (error) throw error;
-      setEarlySent(true);
-      toast.success("Request received — please check your emails (and junk folder)");
+      if (!result?.is_allowed) {
+        // Not on allowlist yet — add them
+        const { error } = await supabase.functions.invoke("grant-beta-access", {
+          body: { email: earlyEmail.trim() },
+        });
+        if (error) throw error;
+      }
+
+      // Store email for pre-filling in SecureSessionModal
+      sessionStorage.setItem("guest_email", earlyEmail.trim());
+      // Navigate to guest guidance
+      window.location.href = "/try/guidance";
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong. Please try again.");
@@ -237,19 +245,6 @@ const Index = () => {
               No subscriptions
             </span>
           </div>
-          {/* Try it free CTA */}
-          <div className="pt-2">
-            <Link to="/try/guidance">
-              <Button
-                size="lg"
-                variant="outline"
-                className="px-10 py-6 text-base font-medium border-[#8775aa]/40 text-[#8775aa] hover:bg-[#8775aa]/10 hover:border-[#8775aa]/60 transition-all duration-300"
-              >
-                Try a free reflection
-              </Button>
-            </Link>
-          </div>
-
           {earlySent ? (
             <div className="pt-4">
               <div className="rounded-lg border border-border/40 bg-background/60 p-6 space-y-2 max-w-md mx-auto">
@@ -292,7 +287,7 @@ const Index = () => {
                 disabled={earlySending}
                 className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-8 h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap"
               >
-                {earlySending ? "Sending…" : "Request early access"}
+                {earlySending ? "Sending…" : "Request early access & try for free"}
               </Button>
             </form>
           )}

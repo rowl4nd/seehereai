@@ -14,7 +14,7 @@ interface SecureSessionModalProps {
 
 const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => sessionStorage.getItem("guest_email") || "");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
