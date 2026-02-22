@@ -98,7 +98,7 @@ const Guidance = () => {
 
           {/* THE MISTY SECTION */}
           <div
-            className={`relative p-10 md:p-16 rounded-[60px] transition-all duration-1000 transform ${
+            className={`relative p-10 md:p-16 rounded-[60px] min-h-[280px] flex items-center justify-center transition-all duration-1000 transform ${
               isTransitioning ? "opacity-0 blur-xl scale-[0.98]" : "opacity-100 blur-0 scale-100"
             }`}
           >
