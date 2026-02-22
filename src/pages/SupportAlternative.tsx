@@ -77,7 +77,7 @@ const SupportAlternative = () => {
                   <tr className="border-b border-border/50">
                     <td className="py-4 font-semibold text-foreground">Cost</td>
                     <td className="py-4 text-muted-foreground">£50–£150+ / hr</td>
-                    <td className="py-4 text-primary font-medium">Free Early Access</td>
+                    <td className="py-4 text-primary font-medium">Free to try</td>
                   </tr>
                 </tbody>
               </table>
