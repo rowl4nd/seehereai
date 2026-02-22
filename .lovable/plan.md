@@ -1,26 +1,27 @@
 
 
-# Update Welcome Email Content
+# Fix Guidance Card Size Consistency
 
-## Overview
+## Problem
+On both `Guidance.tsx` and `GuestGuidance.tsx`, the card container resizes as users navigate between cards because each card has different text lengths. This causes a jarring layout shift.
 
-Update the `send-welcome-email` edge function with the new email copy. The structure stays the same -- just replacing the body text and adding a hyperlink to the feedback form.
+## Solution
+Set a fixed `min-height` on the card content area so all cards occupy the same space regardless of text length. This keeps the layout stable while the text transitions.
 
-## Changes to `supabase/functions/send-welcome-email/index.ts`
+## Changes
 
-Replace the HTML email body with the new copy:
+### 1. `src/pages/Guidance.tsx`
+- Add a fixed `min-height` to the card wrapper div (the one with `rounded-[60px]` and transition classes)
+- Use `min-h-[280px]` (or similar) to accommodate the tallest card's content
+- Center the text content vertically within the fixed-height container using flexbox
 
-- **Greeting**: "Hi,"
-- **Opening**: "Welcome to SeeHere. We hope your first session felt steady, private, and helpful."
-- **Reflection paragraph**: "Sometimes the space between sessions is where insight begins to settle. We often recommend 6-8 sessions to truly see patterns emerge and for the mental noise to soften."
-- **Feedback section**: "Help us build the future of SeeHere" as a bold/styled heading, followed by the beta explanation. The words "Feedback Form" will be a hyperlink to `https://forms.gle/koT1ZR1bcUn8nnkX9` styled in the brand green color.
-- **Closing**: "There's no pressure. Come back when you're ready."
-- **Sign-off**: "Your space is here," on one line, then "The SeeHere Team" as the signature (replacing "-- See Here")
+### 2. `src/pages/GuestGuidance.tsx`
+- Apply the same fixed `min-height` and vertical centering to the equivalent card wrapper
 
 ## Technical Detail
-
-- Single file edit: `supabase/functions/send-welcome-email/index.ts`
-- Only the `htmlBody` template string changes -- no logic changes
-- The feedback form link uses the existing URL from the early access email: `https://forms.gle/koT1ZR1bcUn8nnkX9`
-- The edge function will auto-deploy after the edit
+On the card container div:
+```
+className="relative p-10 md:p-16 rounded-[60px] min-h-[280px] flex items-center justify-center ..."
+```
+And wrap the inner content div to center within that fixed space. This ensures all 6 cards render in identically-sized containers.
 
