@@ -14,14 +14,23 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user, signIn, resetPassword } = useAuth();
+  const { user, signIn, signOut, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
+      const createdAt = new Date(user.created_at);
+      const now = new Date();
+      const isNewAccount = (now.getTime() - createdAt.getTime()) < 60000;
+
+      if (isNewAccount) {
+        signOut();
+        toast.error("No account found. Please try SeeHere for free first to create your account.");
+        return;
+      }
       navigate("/dashboard");
     }
-  }, [user, navigate]);
+  }, [user, navigate, signOut]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
