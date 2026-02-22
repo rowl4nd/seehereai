@@ -1,15 +1,11 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 import heroLogo from "@/assets/see-here-logo.png";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
@@ -47,19 +43,7 @@ const ScrollSection = ({
 
 const Index = () => {
   const { user, loading } = useAuth();
-  const [earlyEmail, setEarlyEmail] = useState("");
-  const [earlyReason, setEarlyReason] = useState("");
-  const [earlySending, setEarlySending] = useState(false);
-  const [earlySent, setEarlySent] = useState(false);
-  const [alreadyApproved, setAlreadyApproved] = useState(false);
-
-  useEffect(() => {
-    if (window.location.hash === "#early-access") {
-      setTimeout(() => {
-        document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" });
-      }, 500);
-    }
-  }, []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -112,46 +96,14 @@ const Index = () => {
     };
   }, []);
 
-
-
-  const handleEarlySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!earlyEmail.trim()) {
-      toast.error("Please enter your email address.");
-      return;
-    }
-    setEarlySending(true);
-    try {
-      const { data: status } = await supabase.rpc("check_email_status", { _email: earlyEmail.trim() });
-      const result = status as { is_allowed: boolean; is_existing_user: boolean } | null;
-
-      if (result?.is_existing_user) {
-        // Existing user — invite them to log in
-        setAlreadyApproved(true);
-        setEarlySent(true);
-        toast.success("You already have an account — please log in to continue.");
-        return;
-      }
-
-      if (!result?.is_allowed) {
-        // Not on allowlist yet — add them
-        const { error } = await supabase.functions.invoke("grant-beta-access", {
-          body: { email: earlyEmail.trim() },
-        });
-        if (error) throw error;
-      }
-
-      // Store email for pre-filling in SecureSessionModal
-      sessionStorage.setItem("guest_email", earlyEmail.trim());
-      // Navigate to guest guidance
-      window.location.href = "/try/guidance";
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setEarlySending(false);
+  const handleTryForFree = () => {
+    if (user) {
+      navigate("/dashboard");
+    } else {
+      navigate("/try/guidance");
     }
   };
+
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
       {/* ── Header ── */}
@@ -178,21 +130,10 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Early Access Banner */}
+      {/* Beta Banner */}
       <div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-1.5 px-6 text-center">
         <p className="text-sm text-foreground">
-          <span className="font-medium">Early Access Phase</span> — We're limiting early access to ensure quality.{" "}
-          <a
-            href="#early-access"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium"
-          >
-            Join our first 50 testers
-          </a>
-          .
+          <span className="font-medium">Beta Testing Phase</span> — SeeHere is in beta. Your feedback helps us improve.
         </p>
       </div>
 
@@ -245,52 +186,16 @@ const Index = () => {
               No subscriptions
             </span>
           </div>
-          {earlySent ? (
-            <div className="pt-4">
-              <div className="rounded-lg border border-border/40 bg-background/60 p-6 space-y-2 max-w-md mx-auto">
-                {alreadyApproved ? (
-                  <>
-                    <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
-                    <p className="text-sm text-muted-foreground">
-                      Please create your account using the Log in button at the top of the page.
-                    </p>
-                    <Link to="/auth">
-                      <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">Create your account</Button>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-lg font-medium text-foreground">Request received!</p>
-                    <p className="text-sm text-muted-foreground">Please check your emails (and junk folder).</p>
-                  </>
-                )}
-              </div>
-            </div>
-          ) : (
-            <form
-              onSubmit={handleEarlySubmit}
-              className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 max-w-md mx-auto w-full"
-            >
-              <Input
-                type="email"
-                placeholder="you@email.com"
-                value={earlyEmail}
-                onChange={(e) => setEarlyEmail(e.target.value)}
-                required
-                maxLength={255}
-                className="placeholder:text-muted-foreground/30 h-12 flex-1"
-              />
 
-              <Button
-                type="submit"
-                size="lg"
-                disabled={earlySending}
-                className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-8 h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap"
-              >
-                {earlySending ? "Sending…" : "Request early access & try for free"}
-              </Button>
-            </form>
-          )}
+          <div className="pt-4">
+            <Button
+              size="lg"
+              onClick={handleTryForFree}
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Try for free
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -335,10 +240,10 @@ const Index = () => {
                 <div className="pt-6">
                   <Button
                     size="lg"
-                    onClick={() => document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" })}
+                    onClick={handleTryForFree}
                     className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    Request early access
+                    Try for free
                   </Button>
                 </div>
               </div>
@@ -459,10 +364,10 @@ const Index = () => {
                 <div className="pt-6">
                   <Button
                     size="lg"
-                    onClick={() => document.getElementById("early-access")?.scrollIntoView({ behavior: "smooth" })}
+                    onClick={handleTryForFree}
                     className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    Request early access
+                    Try for free
                   </Button>
                 </div>
               </div>
@@ -585,80 +490,6 @@ const Index = () => {
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-          </div>
-        </ScrollSection>
-      </section>
-
-      {/* ── Early Access Signup ── */}
-      <section id="early-access" className="relative py-24 px-6 md:px-12 bg-[#f8f6f3]">
-        <ScrollSection>
-          <div className="max-w-lg mx-auto text-center space-y-6">
-            <h2 className="text-4xl md:text-5xl font-serif font-light text-foreground">Join Early Access</h2>
-            <p className="text-base text-muted-foreground leading-relaxed">
-              We're carefully onboarding our first users to ensure the best possible experience. The first 50 testers
-              receive 8 free sessions — enough to truly explore what SeeHere can offer.
-            </p>
-
-            {earlySent ? (
-              <div className="rounded-lg border border-border/40 bg-background/60 p-8 space-y-3">
-                {alreadyApproved ? (
-                  <>
-                    <p className="text-lg font-medium text-foreground">Great news — your access is already live!</p>
-                    <p className="text-sm text-muted-foreground">
-                      Please create your account using the Log in button at the top of the page.
-                    </p>
-                    <Link to="/auth">
-                      <Button className="mt-3 bg-[#4a7a4f] hover:bg-[#3d6542] text-white">Create your account</Button>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-lg font-medium text-foreground">Request received!</p>
-                    <p className="text-sm text-muted-foreground">Please check your emails (and junk folder).</p>
-                  </>
-                )}
-              </div>
-            ) : (
-              <form onSubmit={handleEarlySubmit} className="space-y-4 text-left">
-                <div className="space-y-2">
-                  <label htmlFor="early-email" className="text-sm font-medium text-foreground">
-                    Email address
-                  </label>
-                  <Input
-                    id="early-email"
-                    type="email"
-                    placeholder="you@email.com"
-                    value={earlyEmail}
-                    onChange={(e) => setEarlyEmail(e.target.value)}
-                    required
-                    maxLength={255}
-                    className="placeholder:text-muted-foreground/30"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="early-reason" className="text-sm font-medium text-foreground">
-                    Why would you like to try SeeHere? (Optional)
-                  </label>
-                  <Textarea
-                    id="early-reason"
-                    placeholder="Tell us a little about yourself..."
-                    value={earlyReason}
-                    onChange={(e) => setEarlyReason(e.target.value)}
-                    maxLength={1000}
-                    className="min-h-[100px] placeholder:text-muted-foreground/30"
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  disabled={earlySending}
-                  className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-3"
-                >
-                  {earlySending ? "Sending…" : "Request Early Access"}
-                </Button>
-              </form>
-            )}
-
-            <p className="text-xs text-muted-foreground">Access is granted instantly — check your inbox.</p>
           </div>
         </ScrollSection>
       </section>

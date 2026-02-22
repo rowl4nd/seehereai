@@ -47,13 +47,6 @@ const Auth = () => {
           navigate("/dashboard");
         }
       } else {
-        // Check allowlist before sign-up
-        const { data: isAllowed } = await supabase.rpc('is_email_allowed', { _email: email });
-        if (!isAllowed) {
-          toast.error("Registration is currently invite-only. Please contact us for access.");
-          setIsSubmitting(false);
-          return;
-        }
         const { error } = await signUp(email, password);
         if (error) {
           toast.error(error.message);
@@ -98,13 +91,10 @@ const Auth = () => {
         <Logo />
       </header>
 
-      {/* Early Access Banner */}
+      {/* Beta Banner */}
       <div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-1.5 px-6 text-center">
         <p className="text-sm text-foreground">
-          <span className="font-medium">Early Access Phase</span> — We're limiting early access to ensure quality.{" "}
-          <a href="/#early-access" className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-medium">
-            Join our first 50 testers
-          </a>.
+          <span className="font-medium">Beta Testing Phase</span> — SeeHere is in beta. Your feedback helps us improve.
         </p>
       </div>
 

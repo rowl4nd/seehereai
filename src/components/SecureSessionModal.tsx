@@ -29,14 +29,6 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
     setIsSubmitting(true);
 
     try {
-      // Check allowlist
-      const { data: isAllowed } = await supabase.rpc("is_email_allowed", { _email: email });
-      if (!isAllowed) {
-        toast.error("Registration is currently invite-only. Please request early access first.");
-        setIsSubmitting(false);
-        return;
-      }
-
       const { error } = await supabase.auth.signUp({
         email,
         password,
