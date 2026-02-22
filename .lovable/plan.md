@@ -1,38 +1,26 @@
 
 
-# Auth Page: Remove Sign-Up Tab, Add "Try for Free" Button
+# Update Welcome Email Content
 
 ## Overview
 
-Simplify the auth page to be login-only. Remove the tab switcher and sign-up form. Add a lavender "New here? Try for free" button below the sign-in button that navigates to `/try/guidance`.
+Update the `send-welcome-email` edge function with the new email copy. The structure stays the same -- just replacing the body text and adding a hyperlink to the feedback form.
 
-## Changes to `src/pages/Auth.tsx`
+## Changes to `supabase/functions/send-welcome-email/index.ts`
 
-### 1. Remove sign-up mode
-- Lock `mode` to only `"login" | "forgot"` (remove `"signup"`)
-- Remove `tabValue` variable
-- Remove `signUp` from useAuth destructure
-- Remove the `else` branch in `handleSubmit` that handles sign-up
-- Remove `supabase` import (only used for welcome email on sign-up)
+Replace the HTML email body with the new copy:
 
-### 2. Remove the tab switcher
-- Remove the entire tab bar (lines 117-157) -- the sliding pill with "Nice to See you again" / "New Here?" buttons
-- The page just shows the sign-in form directly (or forgot-password form)
+- **Greeting**: "Hi,"
+- **Opening**: "Welcome to SeeHere. We hope your first session felt steady, private, and helpful."
+- **Reflection paragraph**: "Sometimes the space between sessions is where insight begins to settle. We often recommend 6-8 sessions to truly see patterns emerge and for the mental noise to soften."
+- **Feedback section**: "Help us build the future of SeeHere" as a bold/styled heading, followed by the beta explanation. The words "Feedback Form" will be a hyperlink to `https://forms.gle/koT1ZR1bcUn8nnkX9` styled in the brand green color.
+- **Closing**: "There's no pressure. Come back when you're ready."
+- **Sign-off**: "Your space is here," on one line, then "The SeeHere Team" as the signature (replacing "-- See Here")
 
-### 3. Add "New here? Try for free" button
-- After the sign-in button, add a lavender-colored button (`bg-[#b9a3e0] hover:bg-[#a48fd0]`) that says "New here? Try for free"
-- On click, navigate to `/try/guidance`
+## Technical Detail
 
-### 4. Simplify button label
-- Remove the signup branch from `buttonLabel` -- it's now just "Sign in" or "Send reset link"
+- Single file edit: `supabase/functions/send-welcome-email/index.ts`
+- Only the `htmlBody` template string changes -- no logic changes
+- The feedback form link uses the existing URL from the early access email: `https://forms.gle/koT1ZR1bcUn8nnkX9`
+- The edge function will auto-deploy after the edit
 
-### 5. Update subtitle text
-- Keep "Welcome" heading
-- Update subtitle to remove mention of account requirement since we're directing new users to try first
-
-## Result
-The auth page becomes a clean sign-in page with two buttons:
-1. **Sign in** (primary green) -- submits the login form
-2. **New here? Try for free** (lavender) -- navigates to `/try/guidance`
-
-Plus the "Forgot your password?" link and forgot-password flow remain unchanged.
