@@ -304,8 +304,8 @@ const Index = () => {
                 </div>
                 <h3 className="text-lg font-serif font-light text-foreground mb-3">Build your inner record</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  After your first few messages, create a private account to save your session. Your companion remembers
-                  your previous conversations, helping you spot patterns in your own thinking over time.
+                  Your companion remembers your previous conversations, helping you spot patterns in your own thinking
+                  over time.
                 </p>
                 <img
                   src={reflectBubble}
