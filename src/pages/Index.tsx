@@ -3,14 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
+import { MessageCircle, Heart, Shield, Clock, X, Check } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
 
 import heroLogo from "@/assets/see-here-logo.png";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
 import splitSupport from "@/assets/split-support.jpg";
-import chatPreview from "@/assets/chat-preview.png";
 import talkBubble from "@/assets/talk-bubble.png";
 import replyBubble from "@/assets/reply-bubble.png";
 import reflectBubble from "@/assets/reflect-bubble.png";
@@ -66,7 +65,15 @@ const Index = () => {
             name: "Why SeeHere?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles. It offers a quiet space to think out loud with a companion that listens without judgment, with no waiting lists or scheduling required.",
+              text: "SeeHere exists for the 'Missing Middle' of mental health. Traditional therapy is a big leap, and wellness apps often feel like homework. We offer a quiet, reflective space for when you aren't in crisis, but you're also not okay. No programmes, no progress tracking—just a space to think out loud.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "How much does it cost?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "You can start a session immediately for free. After 6 messages, we ask you to create a free account to continue and save your progress. Beyond your free credits, sessions are available in 'Presence Packs' starting from £5. No subscriptions, no auto-renewals. You only pay for the space you use.",
             },
           },
           {
@@ -148,53 +155,47 @@ const Index = () => {
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
           <img src={heroLogo} alt="see here" className="h-28 md:h-38 w-auto mx-auto mb-4" />
           <h1 className="font-serif font-light leading-[1.05] text-foreground tracking-tight">
-            <span className="block text-4xl md:text-5xl lg:text-6xl">A quiet space to talk</span>
-            <span className="block text-2xl md:text-3xl lg:text-4xl mt-2 opacity-85">
-              with your AI listening companion
+            <span className="block text-4xl md:text-5xl lg:text-6xl italic">A place to be heard.</span>
+            <span className="block text-xl md:text-2xl lg:text-3xl mt-4 opacity-85">
+              The AI listening companion for the "Middle Space."
             </span>
           </h1>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-muted-foreground text-base md:text-lg">
-            <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Available 24/7
-            </span>
-            <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Fully private & encrypted
-            </span>
-            <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              No subscriptions
-            </span>
+          <div className="grid grid-cols-2 md:flex md:flex-row items-center justify-center gap-x-8 gap-y-4 text-muted-foreground text-sm md:text-base border-y border-border/20 py-6 max-w-2xl mx-auto">
+            <div className="flex flex-col items-start md:items-end gap-2">
+              <span className="flex items-center gap-2 text-foreground font-medium">
+                <X className="w-4 h-4 text-red-400/80" /> Questionnaires
+              </span>
+              <span className="flex items-center gap-2 text-foreground font-medium">
+                <X className="w-4 h-4 text-red-400/80" /> Waitlists
+              </span>
+              <span className="flex items-center gap-2 text-foreground font-medium">
+                <X className="w-4 h-4 text-red-400/80" /> Subscriptions
+              </span>
+            </div>
+            <div className="hidden md:block w-px h-16 bg-border/40 mx-2" />
+            <div className="flex flex-col items-start gap-2">
+              <span className="flex items-center gap-2 text-[#4a7a4f] font-medium">
+                <Check className="w-4 h-4" /> Fully Confidential
+              </span>
+              <span className="flex items-center gap-2 text-[#4a7a4f] font-medium">
+                <Check className="w-4 h-4" /> Available 24/7
+              </span>
+              <span className="flex items-center gap-2 text-[#4a7a4f] font-medium">
+                <Check className="w-4 h-4" /> Person-Centred
+              </span>
+            </div>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-4 flex flex-col items-center">
             <Button
               size="lg"
               onClick={handleTryForFree}
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
             >
-              Try for free
+              Start your session
             </Button>
+            <p className="mt-3 text-xs text-muted-foreground italic">Try for free—no account needed to start.</p>
           </div>
         </div>
       </section>
@@ -243,7 +244,7 @@ const Index = () => {
                     onClick={handleTryForFree}
                     className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    Try for free
+                    Start your session
                   </Button>
                 </div>
               </div>
@@ -301,9 +302,10 @@ const Index = () => {
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 flex items-center justify-center mb-5 text-2xl font-serif text-primary group-hover:scale-105 transition-transform duration-300">
                   3
                 </div>
-                <h3 className="text-lg font-serif font-light text-foreground mb-3">Reflect and return</h3>
+                <h3 className="text-lg font-serif font-light text-foreground mb-3">Build your inner record</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Sessions are available 24/7. Come back to chat after a brief cooldown period.
+                  After your first few messages, create a private account to save your session. Your companion remembers
+                  your previous conversations, helping you spot patterns in your own thinking over time.
                 </p>
                 <img
                   src={reflectBubble}
@@ -367,7 +369,7 @@ const Index = () => {
                     onClick={handleTryForFree}
                     className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    Try for free
+                    Start your session
                   </Button>
                 </div>
               </div>
@@ -396,8 +398,22 @@ const Index = () => {
         </ScrollSection>
       </section>
 
+      {/* Safety notice (Moved above FAQ) */}
+      <div className="relative z-10 bg-[#f4eadf]/40 border-y border-border/30 py-3 px-6 text-center shadow-sm">
+        <p className="text-sm text-foreground">
+          In crisis? Contact{" "}
+          <a
+            href="tel:116123"
+            className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-semibold"
+          >
+            Samaritans: 116 123
+          </a>{" "}
+          or text SHOUT to 85258
+        </p>
+      </div>
+
       {/* ── FAQ ── */}
-      <section id="faq" className="relative py-24 px-6 md:px-12">
+      <section id="faq" className="relative py-20 px-6 md:px-12">
         <ScrollSection>
           <div className="relative z-10 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-serif font-light text-center text-foreground mb-6">
@@ -411,20 +427,21 @@ const Index = () => {
                   Why SeeHere?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  <ul className="list-disc pl-5 space-y-3">
-                    <li>
-                      Unlike generic AI, SeeHere is trained specifically in person-centred therapy principles — not for
-                      productivity or problem-solving.
-                    </li>
-                    <li>
-                      Unlike traditional therapy, there's no waiting list, no scheduling, no pressure to commit to
-                      weekly sessions, and sessions cost a fraction of what you'd pay for professional therapy.
-                    </li>
-                    <li>
-                      Unlike many mental health apps that offer CBT exercises or mood tracking, SeeHere focuses purely
-                      on giving you space to think out loud with a companion that listens without judgment.
-                    </li>
-                  </ul>
+                  SeeHere exists for the "Missing Middle" of mental health. Traditional therapy is a big leap, and
+                  wellness apps often feel like homework. We offer a quiet, reflective space for when{" "}
+                  <strong>you aren't in crisis, but you're also not okay.</strong> No programmes, no progress
+                  tracking—just a space to think out loud.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="cost" className="border-b border-border/40 pb-4">
+                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
+                  How much does it cost?
+                </AccordionTrigger>
+                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
+                  You can start a session immediately for free. After 6 messages, we ask you to create a free account to
+                  continue and save your progress. Beyond your free credits, sessions are available in "Presence Packs"
+                  starting from £5. No subscriptions, no auto-renewals. You only pay for the space you use.
                 </AccordionContent>
               </AccordionItem>
 
@@ -460,16 +477,6 @@ const Index = () => {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="cost" className="border-b border-border/40 pb-4">
-                <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
-                  How much does it cost?
-                </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2 pb-4">
-                  You get 2 free sessions to try SeeHere with no commitment. After that, sessions can be purchased in
-                  credit packs starting from £5. Credits never expire.
-                </AccordionContent>
-              </AccordionItem>
-
               <AccordionItem value="who" className="border-b border-border/40 pb-4">
                 <AccordionTrigger className="text-xl md:text-2xl font-serif font-light text-foreground hover:no-underline text-left py-4">
                   Who is this for?
@@ -494,56 +501,45 @@ const Index = () => {
         </ScrollSection>
       </section>
 
-      {/* Safety notice */}
-      <div className="relative z-10 bg-[#f4eadf]/20 border-t border-border/30 py-2 px-6 text-center">
-        <p className="text-xs text-muted-foreground">
-          In crisis? Contact{" "}
-          <a
-            href="tel:116123"
-            className="underline underline-offset-2 hover:text-foreground transition-colors font-medium"
-          >
-            Samaritans: 116 123
-          </a>{" "}
-          or text SHOUT to 85258
-        </p>
-      </div>
-
       {/* ── Footer ── */}
       <footer className="relative py-12 px-6 text-center border-t border-border/30 bg-[#f8f6f3]">
-        <div className="relative z-10 space-y-4">
-          <p className="text-sm text-muted-foreground">A space for reflection</p>
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
-            <a
-              href="/mental-clarity"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
-              Mental Clarity
-            </a>
-            <a
-              href="/work-stress"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
-              Work Stress
-            </a>
-            <a
-              href="/support-alternative"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
-              Confidential Support
-            </a>
+        <div className="relative z-10 space-y-6">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-foreground">Finding the right space for you:</p>
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
+              <a
+                href="/mental-clarity"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground/80 hover:text-foreground transition-colors duration-200"
+              >
+                Mental Clarity
+              </a>
+              <a
+                href="/work-stress"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground/80 hover:text-foreground transition-colors duration-200"
+              >
+                Work Stress
+              </a>
+              <a
+                href="/support-alternative"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground/80 hover:text-foreground transition-colors duration-200"
+              >
+                Therapy Alternatives
+              </a>
+            </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
+
+          <div className="pt-4 border-t border-border/20 max-w-2xl mx-auto flex flex-wrap justify-center gap-x-8 gap-y-2">
             <a
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
             >
               Terms &amp; Conditions
             </a>
@@ -551,13 +547,13 @@ const Index = () => {
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
             >
               Privacy Policy
             </a>
             <a
               href="/contact"
-              className="text-sm text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
             >
               Contact Us
             </a>
