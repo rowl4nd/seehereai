@@ -155,9 +155,9 @@ const Index = () => {
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
           <img src={heroLogo} alt="see here" className="h-28 md:h-38 w-auto mx-auto mb-4" />
           <h1 className="font-serif font-light leading-[1.05] text-foreground tracking-tight">
-            <span className="block text-4xl md:text-5xl lg:text-6xl italic">A place to be heard.</span>
+            <span className="block text-4xl md:text-5xl lg:text-6xl">A quiet place to be heard.</span>
             <span className="block text-xl md:text-2xl lg:text-3xl mt-4 opacity-85">
-              The AI listening companion for the "Middle Space."
+              SeeHere - Your AI listening companion
             </span>
           </h1>
 
