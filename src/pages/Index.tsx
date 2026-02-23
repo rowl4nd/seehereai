@@ -6,7 +6,6 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { MessageCircle, Sparkles, Compass, Heart, Shield, Clock } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
-import FernLeaves from "@/components/FernLeaves";
 
 import heroLogo from "@/assets/see-here-logo.png";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
@@ -144,7 +143,6 @@ const Index = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full bg-[#cbb7ef]/8 blur-[100px]" />
           <div className="absolute bottom-20 right-10 w-[350px] h-[350px] rounded-full bg-[#b1cfac]/8 blur-[100px]" />
-          <FernLeaves />
         </div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
