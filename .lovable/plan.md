@@ -1,54 +1,70 @@
 
 
-# UK GDPR & AI Transparency Compliance Updates
+# Add Session Deletion to Dashboard
 
 ## Overview
 
-Four targeted legal text updates across the Privacy Policy and Terms & Conditions to meet 2026 UK GDPR and AI transparency standards.
+Add trash icons to past sessions on the Dashboard so users can delete sessions. Deleted sessions (and their conversations) will be removed from the database, so the AI will no longer reference them.
 
 ---
 
 ## Changes
 
-### 1. Privacy Policy -- Section 10: AI Provider Transparency
+### 1. Database Migration: Add DELETE RLS Policies
 
-**File:** `src/pages/Privacy.tsx` (line 144)
+Both `sessions` and `conversations` tables currently lack DELETE policies. We need to add them so users can delete their own records.
 
-Replace the generic "AI language model" bullet with:
+```sql
+CREATE POLICY "Users can delete own sessions"
+  ON public.sessions FOR DELETE
+  USING (auth.uid() = user_id);
 
-> **Google Gemini (Google Cloud Platform):** Your conversation messages are processed via the Google Gemini API to generate responses. Under Google's enterprise API terms, your data is **not used to train Google's foundational models** and is not retained by Google beyond the duration of the API request.
+CREATE POLICY "Users can delete own conversations"
+  ON public.conversations FOR DELETE
+  USING (auth.uid() = user_id);
+```
+
+This ensures:
+- Users can only delete their own data
+- Deleting conversations removes the AI's ability to reference those sessions
+
+### 2. `src/hooks/useSessions.tsx` -- Add `deleteSession` Method
+
+Add a new function that:
+1. Deletes all conversations linked to the session (`session_id` match)
+2. Deletes the session record itself
+3. Removes the session from local state
+
+Returns `{ error: null }` on success or `{ error }` on failure.
+
+### 3. `src/pages/Dashboard.tsx` -- Add Trash Icons
+
+- Import `Trash2` from `lucide-react`
+- Add a `deletingSessionId` state to track which session is being deleted
+- For each past session row, add a trash icon button on the right side (next to the duration)
+- The button uses `e.preventDefault()` + `e.stopPropagation()` to avoid navigating to the session history page
+- On click, calls `deleteSession` and shows a success/error toast via `sonner`
+- While deleting, the icon shows a brief loading state (opacity change)
+
+The row layout changes from:
+
+```text
+[date]                    [duration]
+```
+
+to:
+
+```text
+[date]              [duration]  [trash icon]
+```
+
+The trash icon is styled subtly (`text-muted-foreground/50`, visible on hover via `opacity-0 group-hover:opacity-100`) to keep the soft aesthetic.
 
 ---
 
-### 2. Privacy Policy -- New Section 11: Data Transfers
+## Why This Fixes the AI Context Issue
 
-Insert a new section after Section 10 (Third-Party Services):
-
-> **11. Data Transfers**
->
-> Your personal data may be processed outside the United Kingdom by our infrastructure and service partners, including Google (United States), Stripe (United States), and our hosting provider (United States). Where data is transferred internationally, we ensure appropriate safeguards are in place, including reliance on the **UK Extension to the EU-US Data Privacy Framework** and, where applicable, **Standard Contractual Clauses (SCCs)** approved by the UK Information Commissioner's Office.
-
----
-
-### 3. Privacy Policy -- New Section 12: Automated Processing
-
-Insert a new section after the new Data Transfers section:
-
-> **12. Automated Processing**
->
-> See Here uses artificial intelligence to generate conversational responses based on your messages. This constitutes automated processing under the UK GDPR. However, the AI does **not engage in automated decision-making** that produces legal effects or similarly significant effects concerning you (as defined under Article 22 of the UK GDPR). All AI-generated responses are reflective in nature and do not determine access to services, creditworthiness, employment outcomes, or any other legally significant matter.
-
-Existing sections 11-13 (Children's Privacy, Changes to This Policy, Contact) will be renumbered to 13-15.
-
----
-
-### 4. Terms & Conditions -- Section 5: UK Consumer Law Waiver
-
-**File:** `src/pages/Terms.tsx` (after line 89)
-
-Add a new paragraph after the Stripe sentence:
-
-> By purchasing credits and initiating a session, you agree to the immediate delivery of digital content and acknowledge that you waive your statutory 14-day right to cancel under the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013, as permitted by UK consumer law.
+The AI's past session context comes from the `conversations` table (loaded via the `encrypt-messages` edge function's `load-history` action). By deleting conversations when a session is deleted, those conversations will no longer appear in the `loadHistory` query, so the AI won't reference them.
 
 ---
 
@@ -56,6 +72,7 @@ Add a new paragraph after the Stripe sentence:
 
 | File | Change |
 |------|--------|
-| `src/pages/Privacy.tsx` | Update Section 10 AI bullet; add Sections 11 (Data Transfers) and 12 (Automated Processing); renumber 11-13 to 13-15 |
-| `src/pages/Terms.tsx` | Add UK consumer law waiver paragraph to Section 5 |
+| Database migration | Add DELETE policies on `sessions` and `conversations` |
+| `src/hooks/useSessions.tsx` | Add `deleteSession` method |
+| `src/pages/Dashboard.tsx` | Add trash icon buttons, import Trash2 and toast |
 
