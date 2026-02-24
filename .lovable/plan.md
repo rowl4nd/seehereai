@@ -1,70 +1,52 @@
 
 
-# Add Session Deletion to Dashboard
+# Update Cooldown Page to Match Misty Sanctuary Aesthetic
 
 ## Overview
 
-Add trash icons to past sessions on the Dashboard so users can delete sessions. Deleted sessions (and their conversations) will be removed from the database, so the AI will no longer reference them.
+Restyle `src/pages/Cooldown.tsx` to match the meditative, glass-morphism aesthetic of `src/pages/Guidance.tsx`.
 
 ---
 
-## Changes
+## Changes (single file: `src/pages/Cooldown.tsx`)
 
-### 1. Database Migration: Add DELETE RLS Policies
+### 1. Background and Decorative Blobs
+- Change outer `div` from `bg-background` to `bg-[#f8f6f3]`
+- Add two decorative misty blobs (identical to Guidance):
+  - Top-left: `absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#af9cd3]/10 rounded-full blur-[120px]`
+  - Bottom-right: `absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#af9cd3]/10 rounded-full blur-[120px]`
 
-Both `sessions` and `conversations` tables currently lack DELETE policies. We need to add them so users can delete their own records.
+### 2. Header
+- Match Guidance header: `p-6 md:px-12 opacity-40 hover:opacity-100 transition-opacity z-20`
+- Remove the sticky header with border styling
 
-```sql
-CREATE POLICY "Users can delete own sessions"
-  ON public.sessions FOR DELETE
-  USING (auth.uid() = user_id);
+### 3. Glass-Morphism Card
+- Wrap the main content area in a glass card container using relative positioning:
+  - Outer: `relative p-10 md:p-16 rounded-[60px] min-h-[280px]`
+  - Glass background layer: `absolute inset-0 bg-white/40 backdrop-blur-md rounded-[60px] shadow-[0_4px_24px_-1px_rgba(0,0,0,0.02)] border border-white/60`
+  - Content sits on top with `relative` class
 
-CREATE POLICY "Users can delete own conversations"
-  ON public.conversations FOR DELETE
-  USING (auth.uid() = user_id);
-```
+### 4. Soften Language and Typography
+- Title: Change from "Time to reflect" to "The mirror is resting"
+- Body text: Replace with more poetic copy, using `text-[#5f5a53] font-light italic` styling
+- Countdown card: Replace "Your next session is available" / "Tomorrow" with "We can speak again in..." and the time value styled in `font-serif italic text-[#3d3a35]`
+- Journaling prompt: Style with `font-serif italic text-[#5f5a53]` to match Guidance cards
+- Use Guidance color tokens (`text-[#3d3a35]`, `text-[#5f5a53]`, `text-[#857f77]`) instead of theme variables
 
-This ensures:
-- Users can only delete their own data
-- Deleting conversations removes the AI's ability to reference those sessions
+### 5. Loading State
+- Match Guidance loading: `bg-[#f8f6f3]` background with `text-[#857f77] font-serif italic` loading text ("Entering the quiet...")
 
-### 2. `src/hooks/useSessions.tsx` -- Add `deleteSession` Method
+### 6. Footer / Dashboard Link
+- Remove the `Button` component entirely
+- Replace with a subtle footer link matching Guidance's style:
+  ```
+  text-xs uppercase tracking-[0.25em] text-[#857f77] hover:text-[#3d3a35] transition-colors
+  ```
+- Move to a `footer` element at the bottom of the page, outside `main`
+- Include the crisis service notice below the link (matching Guidance)
 
-Add a new function that:
-1. Deletes all conversations linked to the session (`session_id` match)
-2. Deletes the session record itself
-3. Removes the session from local state
-
-Returns `{ error: null }` on success or `{ error }` on failure.
-
-### 3. `src/pages/Dashboard.tsx` -- Add Trash Icons
-
-- Import `Trash2` from `lucide-react`
-- Add a `deletingSessionId` state to track which session is being deleted
-- For each past session row, add a trash icon button on the right side (next to the duration)
-- The button uses `e.preventDefault()` + `e.stopPropagation()` to avoid navigating to the session history page
-- On click, calls `deleteSession` and shows a success/error toast via `sonner`
-- While deleting, the icon shows a brief loading state (opacity change)
-
-The row layout changes from:
-
-```text
-[date]                    [duration]
-```
-
-to:
-
-```text
-[date]              [duration]  [trash icon]
-```
-
-The trash icon is styled subtly (`text-muted-foreground/50`, visible on hover via `opacity-0 group-hover:opacity-100`) to keep the soft aesthetic.
-
----
-
-## Why This Fixes the AI Context Issue
-
-The AI's past session context comes from the `conversations` table (loaded via the `encrypt-messages` edge function's `load-history` action). By deleting conversations when a session is deleted, those conversations will no longer appear in the `loadHistory` query, so the AI won't reference them.
+### 7. Pulsing Circle
+- Replace the current double-circle with a single softened animation using `bg-[#af9cd3]/20` tones to match the lavender palette
 
 ---
 
@@ -72,7 +54,5 @@ The AI's past session context comes from the `conversations` table (loaded via t
 
 | File | Change |
 |------|--------|
-| Database migration | Add DELETE policies on `sessions` and `conversations` |
-| `src/hooks/useSessions.tsx` | Add `deleteSession` method |
-| `src/pages/Dashboard.tsx` | Add trash icon buttons, import Trash2 and toast |
+| `src/pages/Cooldown.tsx` | Full restyle to match Guidance.tsx misty sanctuary aesthetic |
 
