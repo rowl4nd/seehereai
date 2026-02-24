@@ -20,24 +20,24 @@ import quoteCard3 from "@/assets/quote-card-3.png";
 const ScrollSection = ({
   children,
   className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) => {
+  delay = 0
+
+
+
+
+}: {children: React.ReactNode;className?: string;delay?: number;}) => {
   const { ref, isVisible } = useScrollAnimation();
   return (
     <div
       ref={ref}
       className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
       style={{
-        transitionDelay: `${delay}ms`,
-      }}
-    >
+        transitionDelay: `${delay}ms`
+      }}>
+
       {children}
-    </div>
-  );
+    </div>);
+
 };
 
 const Index = () => {
@@ -48,53 +48,53 @@ const Index = () => {
     const script = document.createElement("script");
     script.type = "application/ld+json";
     script.textContent = JSON.stringify([
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "SeeHere",
+      url: "https://seehere.ai",
+      logo: "https://seehere.ai/og-image.png",
+      sameAs: ["https://www.instagram.com/seehere.ai", "https://www.facebook.com/profile.php?id=61588016676425"]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
       {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        name: "SeeHere",
-        url: "https://seehere.ai",
-        logo: "https://seehere.ai/og-image.png",
-        sameAs: ["https://www.instagram.com/seehere.ai", "https://www.facebook.com/profile.php?id=61588016676425"],
+        "@type": "Question",
+        name: "Why SeeHere?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "SeeHere exists for the 'Missing Middle' of mental health. Traditional therapy is a big leap, and wellness apps often feel like homework. We offer a quiet, reflective space for when you aren't in crisis, but you're also not okay. No programmes, no progress tracking—just a space to think out loud."
+        }
       },
       {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: [
-          {
-            "@type": "Question",
-            name: "Why SeeHere?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "SeeHere exists for the 'Missing Middle' of mental health. Traditional therapy is a big leap, and wellness apps often feel like homework. We offer a quiet, reflective space for when you aren't in crisis, but you're also not okay. No programmes, no progress tracking—just a space to think out loud.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "How much does it cost?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "You can start a session immediately for free. After 6 messages, we ask you to create a free account to continue and save your progress. Beyond your free credits, sessions are available in 'Presence Packs' starting from £5. No subscriptions, no auto-renewals. You only pay for the space you use.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Is SeeHere.ai therapy?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "No. SeeHere is a reflective space grounded in person-centred principles, not a substitute for professional therapy. It offers empathic conversation to help you process thoughts, but does not provide clinical intervention or diagnoses.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Are my conversations confidential?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Yes. Your conversations are encrypted and private. We do not share your data with third parties, and sessions are designed to be a safe, confidential space for reflection.",
-            },
-          },
-        ],
+        "@type": "Question",
+        name: "How much does it cost?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "You can start a session immediately for free. After 6 messages, we ask you to create a free account to continue and save your progress. Beyond your free credits, sessions are available in 'Presence Packs' starting from £5. No subscriptions, no auto-renewals. You only pay for the space you use."
+        }
       },
-    ]);
+      {
+        "@type": "Question",
+        name: "Is SeeHere.ai therapy?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No. SeeHere is a reflective space grounded in person-centred principles, not a substitute for professional therapy. It offers empathic conversation to help you process thoughts, but does not provide clinical intervention or diagnoses."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "Are my conversations confidential?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Your conversations are encrypted and private. We do not share your data with third parties, and sessions are designed to be a safe, confidential space for reflection."
+        }
+      }]
+
+    }]
+    );
     document.head.appendChild(script);
     return () => {
       if (document.head.contains(script)) {
@@ -120,20 +120,20 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
-          {!loading &&
-            (user ? (
-              <Link to="/dashboard">
+          {!loading && (
+          user ?
+          <Link to="/dashboard">
                 <Button variant="ghost" size="sm" className="text-sm">
                   Dashboard
                 </Button>
-              </Link>
-            ) : (
-              <Link to="/auth">
+              </Link> :
+
+          <Link to="/auth">
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
-              </Link>
-            ))}
+              </Link>)
+          }
         </div>
       </header>
 
@@ -191,11 +191,11 @@ const Index = () => {
             <Button
               size="lg"
               onClick={handleTryForFree}
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
-            >
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto">
+
               Start your first free session
             </Button>
-            <p className="mt-3 text-xs text-muted-foreground italic">Try for free—no account needed to start.</p>
+            <p className="mt-3 text-xs text-muted-foreground italic">​Already signed up? Log in above.         </p>
           </div>
         </div>
       </section>
@@ -242,8 +242,8 @@ const Index = () => {
                   <Button
                     size="lg"
                     onClick={handleTryForFree}
-                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
+                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+
                     Start your first free session
                   </Button>
                 </div>
@@ -275,8 +275,8 @@ const Index = () => {
                 <img
                   src={talkBubble}
                   alt="I just feel like I need someone to talk to"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
-                />
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
+
               </div>
             </ScrollSection>
 
@@ -292,8 +292,8 @@ const Index = () => {
                 <img
                   src={replyBubble}
                   alt="I'm glad you reached out; I'm here and ready to listen"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
-                />
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
+
               </div>
             </ScrollSection>
 
@@ -310,8 +310,8 @@ const Index = () => {
                 <img
                   src={reflectBubble}
                   alt="Time to reflect"
-                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4"
-                />
+                  className="w-full h-auto max-h-[180px] object-contain rounded mt-4" />
+
               </div>
             </ScrollSection>
           </div>
@@ -367,8 +367,8 @@ const Index = () => {
                   <Button
                     size="lg"
                     onClick={handleTryForFree}
-                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
+                    className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300">
+
                     Start your first free session
                   </Button>
                 </div>
@@ -390,8 +390,8 @@ const Index = () => {
             <img
               src={quoteCard1}
               alt="Reflective space quote"
-              className="w-full h-auto object-cover rounded-xl shadow-lg"
-            />
+              className="w-full h-auto object-cover rounded-xl shadow-lg" />
+
             <img src={quoteCard2} alt="Founder quote" className="w-full h-auto object-cover rounded-xl shadow-lg" />
             <img src={quoteCard3} alt="User quote" className="w-full h-auto object-cover rounded-xl shadow-lg" />
           </div>
@@ -404,8 +404,8 @@ const Index = () => {
           In crisis? Contact{" "}
           <a
             href="tel:116123"
-            className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-semibold"
-          >
+            className="underline underline-offset-2 hover:text-[#4a7a4f] transition-colors font-semibold">
+
             Samaritans: 116 123
           </a>{" "}
           or text SHOUT to 85258
@@ -511,24 +511,24 @@ const Index = () => {
                 href="/mental-clarity"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-muted-foreground/80 hover:text-foreground transition-colors duration-200"
-              >
+                className="text-sm text-muted-foreground/80 hover:text-foreground transition-colors duration-200">
+
                 Mental Clarity
               </a>
               <a
                 href="/work-stress"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-muted-foreground/80 hover:text-foreground transition-colors duration-200"
-              >
+                className="text-sm text-muted-foreground/80 hover:text-foreground transition-colors duration-200">
+
                 Work Stress
               </a>
               <a
                 href="/support-alternative"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-muted-foreground/80 hover:text-foreground transition-colors duration-200"
-              >
+                className="text-sm text-muted-foreground/80 hover:text-foreground transition-colors duration-200">
+
                 Therapy Alternatives
               </a>
             </div>
@@ -539,29 +539,29 @@ const Index = () => {
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Terms &amp; Conditions
             </a>
             <a
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Privacy Policy
             </a>
             <a
               href="/contact"
-              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
-            >
+              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+
               Contact Us
             </a>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
