@@ -16,6 +16,8 @@ import reflectBubble from "@/assets/reflect-bubble.png";
 import quoteCard1 from "@/assets/quote-card-1.png";
 import quoteCard2 from "@/assets/quote-card-2.png";
 import quoteCard3 from "@/assets/quote-card-3.png";
+import heroBgRight from "@/assets/hero-bg-right.jpg";
+import heroBgLeft from "@/assets/hero-bg-left.jpg";
 
 const ScrollSection = ({
   children,
@@ -150,6 +152,18 @@ const Index = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full bg-[#cbb7ef]/8 blur-[100px]" />
           <div className="absolute bottom-20 right-10 w-[350px] h-[350px] rounded-full bg-[#b1cfac]/8 blur-[100px]" />
+        </div>
+
+        {/* Background accent images */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Right side - couch/vase image */}
+          <div className="absolute right-0 top-0 bottom-0 w-1/2">
+            <img src={heroBgRight} alt="" className="absolute right-0 top-0 h-full w-full object-cover opacity-[0.15]" style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 60%)', WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 60%)' }} />
+          </div>
+          {/* Left side - plant image */}
+          <div className="absolute left-0 top-0 bottom-0 w-1/2">
+            <img src={heroBgLeft} alt="" className="absolute left-0 top-0 h-full w-full object-cover opacity-[0.15]" style={{ maskImage: 'linear-gradient(to left, transparent 0%, black 60%)', WebkitMaskImage: 'linear-gradient(to left, transparent 0%, black 60%)' }} />
+          </div>
         </div>
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center space-y-6">
