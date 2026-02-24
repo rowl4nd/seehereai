@@ -558,6 +558,11 @@ const Index = () => {
               Contact Us
             </a>
           </div>
+
+          <p className="text-xs text-muted-foreground/80 max-w-md mx-auto leading-relaxed pt-2">
+            See Here is committed to digital accessibility (WCAG 2.1 AA). If you experience any barriers using our platform, please contact us at{" "}
+            <a href="mailto:hello@seehere.ai" className="underline hover:text-foreground transition-colors duration-200">hello@seehere.ai</a> so we can assist you.
+          </p>
         </div>
       </footer>
     </div>);
