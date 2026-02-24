@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 
 interface SecureSessionModalProps {
   open: boolean;
@@ -59,7 +59,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
   return (
     <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-hidden [&>button]:hidden" onPointerDownOutside={(e) => e.preventDefault()}>
-        <ScrollArea className="max-h-[80vh] pr-4">
+        <div className="overflow-y-auto max-h-[75vh] pr-1 space-y-4">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-2xl font-serif font-light text-center">Secure Your Session</DialogTitle>
           <DialogDescription className="text-center leading-relaxed">
@@ -166,7 +166,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
         >
           Not Now (Discard Session)
         </button>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
