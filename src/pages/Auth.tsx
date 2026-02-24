@@ -66,7 +66,7 @@ const Auth = () => {
       {/* Beta Banner */}
       <div className="relative z-10 bg-gradient-to-r from-[#cbb7ef]/20 to-[#b1cfac]/20 border-b border-border/30 py-1.5 px-6 text-center">
         <p className="text-sm text-foreground">
-          <span className="font-medium">Beta Testing Phase</span> — SeeHere is in beta. Your feedback helps us improve.
+          <span className="font-medium">Beta Testing Phase</span> — Your feedback helps us improve.
         </p>
       </div>
 
