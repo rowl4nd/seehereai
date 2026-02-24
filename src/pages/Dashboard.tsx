@@ -91,7 +91,7 @@ const Dashboard = () => {
   const totalAvailable = freeSessionsRemaining + paidSessions;
   if (authLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-fade-in text-muted-foreground">Loading...</div>
+        <div className="animate-fade-in text-muted-foreground" role="status" aria-live="polite">Loading...</div>
       </div>;
   }
   return <div className="min-h-screen flex flex-col bg-background">
@@ -166,7 +166,7 @@ const Dashboard = () => {
 
           {/* Purchase credits button */}
           <Link to="/credits" className="block">
-            <Button className="w-full text-background" style={{ backgroundColor: '#af9cd3' }}>
+            <Button className="w-full text-[#3d2b5a]" style={{ backgroundColor: '#af9cd3' }}>
               Purchase sessions
             </Button>
           </Link>

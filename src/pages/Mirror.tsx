@@ -660,7 +660,7 @@ const Mirror = () => {
           ))}
 
           {isLoading && (
-            <div className="flex justify-start animate-fade-in">
+            <div className="flex justify-start animate-fade-in" role="status" aria-live="polite" aria-label="Waiting for response">
               <div className="bg-card border border-border/50 px-4 py-3 rounded-2xl rounded-bl-md">
                 <div className="flex gap-1">
                   <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-pulse" />
@@ -682,7 +682,13 @@ const Mirror = () => {
           <div className="max-w-2xl mx-auto space-y-2">
             {timeRemaining !== null && (
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden"
+                  role="progressbar"
+                  aria-valuenow={timeRemaining}
+                  aria-valuemax={sessionDuration}
+                  aria-label={`${formatTime(timeRemaining)} remaining`}
+                >
                   <div
                     className="h-full bg-primary/60 transition-all duration-1000"
                     style={{ width: `${(timeRemaining / sessionDuration) * 100}%` }}

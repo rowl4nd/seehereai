@@ -79,7 +79,7 @@ const Cooldown = () => {
 
           {/* Journaling prompt */}
           <div className="space-y-3 pt-4">
-            <p className="text-sm text-muted-foreground/70">While you wait, you might consider:</p>
+            <p className="text-sm text-muted-foreground/80">While you wait, you might consider:</p>
             <p className="text-sm text-foreground italic">
               "What's one thing from our conversation that stayed with you?"
             </p>

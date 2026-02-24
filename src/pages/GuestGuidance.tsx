@@ -74,8 +74,18 @@ const GuestGuidance = () => {
       {/* Main content */}
       <main className="flex-1 flex items-center justify-center px-6 z-10">
         <div className="w-full max-w-xl text-center space-y-12">
-          {/* Progress dots */}
-          <div className="flex justify-center items-center gap-4 mb-4">
+          {/* Accessible page heading */}
+          <h1 className="sr-only">Session Guidance</h1>
+
+          {/* Progress dots with ARIA progressbar */}
+          <div
+            className="flex justify-center items-center gap-4 mb-4"
+            role="progressbar"
+            aria-valuenow={currentCard + 1}
+            aria-valuemin={1}
+            aria-valuemax={guidanceCards.length}
+            aria-label={`Step ${currentCard + 1} of ${guidanceCards.length}`}
+          >
             {guidanceCards.map((_, index) => (
               <div
                 key={index}
@@ -97,7 +107,7 @@ const GuestGuidance = () => {
             <div className="absolute inset-0 bg-white/40 backdrop-blur-md rounded-[60px] shadow-[0_4px_24px_-1px_rgba(0,0,0,0.02)] border border-white/60" />
             <div className="relative space-y-6">
               <h2 className="text-3xl md:text-4xl font-serif font-light tracking-tight text-[#3d3a35]">{card.title}</h2>
-              <p className="text-lg md:text-xl text-[#6b665f] leading-relaxed font-light italic opacity-90">
+              <p className="text-lg md:text-xl text-[#5f5a53] leading-relaxed font-light italic opacity-90">
                 {card.content}
               </p>
             </div>
@@ -116,7 +126,7 @@ const GuestGuidance = () => {
                       onCheckedChange={(checked) => setTermsAccepted(checked === true)}
                       className="mt-0.5"
                     />
-                    <Label htmlFor="terms" className="text-sm text-[#6b665f] font-light leading-relaxed cursor-pointer">
+                    <Label htmlFor="terms" className="text-sm text-[#5f5a53] font-light leading-relaxed cursor-pointer">
                       I have read and agree to the{" "}
                       <Link to="/terms" target="_blank" className="underline text-[#af9cd3] hover:text-[#9d8bbd] transition-colors">
                         Terms &amp; Conditions
@@ -130,7 +140,7 @@ const GuestGuidance = () => {
                       onCheckedChange={(checked) => setPrivacyAccepted(checked === true)}
                       className="mt-0.5"
                     />
-                    <Label htmlFor="privacy" className="text-sm text-[#6b665f] font-light leading-relaxed cursor-pointer">
+                    <Label htmlFor="privacy" className="text-sm text-[#5f5a53] font-light leading-relaxed cursor-pointer">
                       I have read and agree to the{" "}
                       <Link to="/privacy" target="_blank" className="underline text-[#af9cd3] hover:text-[#9d8bbd] transition-colors">
                         Privacy Policy
@@ -150,10 +160,10 @@ const GuestGuidance = () => {
             ) : (
               <button
                 onClick={handleNext}
-                className="group flex flex-col items-center space-y-4 outline-none transition-all"
+                className="group flex flex-col items-center space-y-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-md transition-all"
                 aria-label="Next guidance card"
               >
-                <span className="text-[10px] uppercase tracking-[0.5em] text-[#a39e96] group-hover:text-[#af9cd3] transition-colors duration-500">
+                <span className="text-[10px] uppercase tracking-[0.5em] text-[#857f77] group-hover:text-[#af9cd3] transition-colors duration-500">
                   Continue
                 </span>
                 <div className="w-[0.5px] h-12 bg-[#e0ddd7] group-hover:bg-[#af9cd3] group-hover:h-16 transition-all duration-700" />
@@ -167,11 +177,11 @@ const GuestGuidance = () => {
       <footer className="p-10 text-center flex flex-col gap-4 z-10">
         <Link
           to="/"
-          className="text-[10px] uppercase tracking-[0.25em] text-[#a39e96] hover:text-[#3d3a35] transition-colors"
+          className="text-xs uppercase tracking-[0.25em] text-[#857f77] hover:text-[#3d3a35] transition-colors px-4 py-2 inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-md"
         >
           Return to Homepage
         </Link>
-        <div className="text-[9px] text-[#c2beb8] uppercase tracking-[0.1em] max-w-xs mx-auto leading-loose opacity-60">
+        <div className="text-xs text-[#857f77] uppercase tracking-[0.1em] max-w-xs mx-auto leading-loose">
           Not a crisis service. In danger? Call 999 or 111.
         </div>
       </footer>
