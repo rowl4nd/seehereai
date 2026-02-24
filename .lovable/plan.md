@@ -1,64 +1,61 @@
 
 
-# WCAG 2.1 Accessibility Fixes
+# UK GDPR & AI Transparency Compliance Updates
 
 ## Overview
 
-Implementing accessibility improvements across 7 files, covering ARIA semantics, keyboard focus, and colour contrast -- all while preserving the soft, muted aesthetic.
+Four targeted legal text updates across the Privacy Policy and Terms & Conditions to meet 2026 UK GDPR and AI transparency standards.
 
 ---
 
-## Changes by File
+## Changes
 
-### 1. `src/pages/Guidance.tsx`
-- Add `<h1 className="sr-only">Session Guidance</h1>` before progress dots
-- Add `role="progressbar"`, `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, `aria-label` to the progress dots container
-- Replace `outline-none` on the Continue button with `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-md`
-- Darken `text-[#a39e96]` to `text-[#857f77]` (passes 4.5:1 on #f8f6f3, keeps warm taupe hue)
-- Crisis notice: remove `opacity-60`, change `text-[#c2beb8]` to `text-[#857f77]` and bump from `text-[9px]` to `text-xs`
-- Card body text: darken `text-[#6b665f]` to `text-[#5f5a53]` (passes 4.5:1 on the glass bg)
-- Footer link: increase from `text-[10px]` to `text-xs`, add `px-4 py-2 inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-md`
+### 1. Privacy Policy -- Section 10: AI Provider Transparency
 
-### 2. `src/pages/GuestGuidance.tsx`
-- Same heading, progress dots, Continue button, and contrast fixes as Guidance.tsx
-- Same crisis notice and footer link fixes
+**File:** `src/pages/Privacy.tsx` (line 144)
 
-### 3. `src/pages/Index.tsx`
-- Add `aria-hidden="true"` to all decorative icons: `Check` (x3), `X` (x3), `Heart` (x3), `Shield` (x2), `Clock` (x1), `MessageCircle` (x1)
-- Footer: change `text-muted-foreground/60` to `text-muted-foreground/80` on the Terms, Privacy, and Contact links (passes ~6:1)
+Replace the generic "AI language model" bullet with:
 
-### 4. `src/pages/Mirror.tsx`
-- Loading indicator (typing dots): add `role="status"` and `aria-live="polite"` and `aria-label="Waiting for response"` to the container div
-- Timer progress bar: add `role="progressbar"`, `aria-valuenow={timeRemaining}`, `aria-valuemax={sessionDuration}`, `aria-label` with formatted time remaining
-
-### 5. `src/pages/Dashboard.tsx`
-- Loading state: add `role="status"` and `aria-live="polite"` to the "Loading..." div
-- Purchase button (Finding 4E): change to dark purple text on original light purple background: `text-[#3d2b5a]` on `bg-[#af9cd3]` -- this gives ~7:1 contrast and avoids a heavy look
-
-### 6. `src/pages/Cooldown.tsx`
-- Change `text-muted-foreground/70` to `text-muted-foreground/80`
-
-### 7. `src/pages/Contact.tsx`
-- Add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md` to the Back button
+> **Google Gemini (Google Cloud Platform):** Your conversation messages are processed via the Google Gemini API to generate responses. Under Google's enterprise API terms, your data is **not used to train Google's foundational models** and is not retained by Google beyond the duration of the API request.
 
 ---
 
-## Technical Details
+### 2. Privacy Policy -- New Section 11: Data Transfers
 
-### Focus Visible Strategy
-All focus styles use `:focus-visible` (via Tailwind's `focus-visible:` prefix), which only activates on keyboard navigation and not on mouse/touch clicks. This keeps the UI clean for mouse users.
+Insert a new section after Section 10 (Third-Party Services):
 
-### Colour Contrast Values (calculated against respective backgrounds)
+> **11. Data Transfers**
+>
+> Your personal data may be processed outside the United Kingdom by our infrastructure and service partners, including Google (United States), Stripe (United States), and our hosting provider (United States). Where data is transferred internationally, we ensure appropriate safeguards are in place, including reliance on the **UK Extension to the EU-US Data Privacy Framework** and, where applicable, **Standard Contractual Clauses (SCCs)** approved by the UK Information Commissioner's Office.
 
-| Element | Before | After | Ratio |
-|---------|--------|-------|-------|
-| `#a39e96` on `#f8f6f3` | ~2.8:1 | `#857f77` ~4.5:1 | Pass AA |
-| `#6b665f` on glass (~#f5f2ee) | ~4.3:1 | `#5f5a53` ~5.0:1 | Pass AA |
-| Crisis `#c2beb8` @ 60% opacity | ~1.8:1 | `#857f77` solid ~4.5:1 | Pass AA |
-| `muted-foreground/60` | ~3.2:1 | `/80` ~6:1 | Pass AA |
-| Purchase btn white on `#af9cd3` | ~2.9:1 | `#3d2b5a` on `#af9cd3` ~7:1 | Pass AA |
-| `muted-foreground/70` (Cooldown) | ~3.8:1 | `/80` ~6:1 | Pass AA |
+---
 
-### Files Changed
-7 files total, all frontend pages. No backend or database changes required.
+### 3. Privacy Policy -- New Section 12: Automated Processing
+
+Insert a new section after the new Data Transfers section:
+
+> **12. Automated Processing**
+>
+> See Here uses artificial intelligence to generate conversational responses based on your messages. This constitutes automated processing under the UK GDPR. However, the AI does **not engage in automated decision-making** that produces legal effects or similarly significant effects concerning you (as defined under Article 22 of the UK GDPR). All AI-generated responses are reflective in nature and do not determine access to services, creditworthiness, employment outcomes, or any other legally significant matter.
+
+Existing sections 11-13 (Children's Privacy, Changes to This Policy, Contact) will be renumbered to 13-15.
+
+---
+
+### 4. Terms & Conditions -- Section 5: UK Consumer Law Waiver
+
+**File:** `src/pages/Terms.tsx` (after line 89)
+
+Add a new paragraph after the Stripe sentence:
+
+> By purchasing credits and initiating a session, you agree to the immediate delivery of digital content and acknowledge that you waive your statutory 14-day right to cancel under the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013, as permitted by UK consumer law.
+
+---
+
+## Files Changed
+
+| File | Change |
+|------|--------|
+| `src/pages/Privacy.tsx` | Update Section 10 AI bullet; add Sections 11 (Data Transfers) and 12 (Automated Processing); renumber 11-13 to 13-15 |
+| `src/pages/Terms.tsx` | Add UK consumer law waiver paragraph to Section 5 |
 
