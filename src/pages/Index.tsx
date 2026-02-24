@@ -152,50 +152,50 @@ const Index = () => {
           <div className="absolute bottom-20 right-10 w-[350px] h-[350px] rounded-full bg-[#b1cfac]/8 blur-[100px]" />
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
-          <img src={heroLogo} alt="see here" className="h-28 md:h-38 w-auto mx-auto mb-4" />
-          <h1 className="font-serif font-light leading-[1.05] text-foreground tracking-tight">
-            <span className="block text-4xl md:text-5xl lg:text-6xl">A quiet place to be heard.</span>
-            <span className="block text-xl md:text-2xl lg:text-3xl mt-4 opacity-85">
+        <div className="relative z-10 max-w-3xl mx-auto px-6 text-center space-y-6">
+          <img src={heroLogo} alt="see here" className="h-24 md:h-32 w-auto mx-auto mb-3" />
+          <h1 className="font-serif font-light leading-[1.08] text-foreground tracking-tight">
+            <span className="block text-3xl md:text-4xl lg:text-5xl">A quiet place to be heard.</span>
+            <span className="block text-lg md:text-xl lg:text-2xl mt-3 opacity-85">
               SeeHere - Your AI listening companion
             </span>
           </h1>
 
-          <div className="grid grid-cols-2 md:flex md:flex-row items-center justify-center gap-x-8 gap-y-4 text-muted-foreground text-sm md:text-base border-y border-border/20 py-6 max-w-2xl mx-auto">
-            <div className="flex flex-col items-start md:items-end gap-2">
+          <div className="grid grid-cols-2 md:flex md:flex-row items-center justify-center gap-x-6 gap-y-3 text-muted-foreground text-xs md:text-sm border-y border-border/20 py-5 max-w-xl mx-auto">
+            <div className="flex flex-col items-start md:items-end gap-1.5">
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <Check className="w-4 h-4 text-primary" aria-hidden="true" /> Fully Confidential
+                <Check className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> Fully Confidential
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <Check className="w-4 h-4 text-primary" aria-hidden="true" /> Available 24/7
+                <Check className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> Available 24/7
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <Check className="w-4 h-4 text-primary" aria-hidden="true" /> Person-Centred
+                <Check className="w-3.5 h-3.5 text-primary" aria-hidden="true" /> Person-Centred
               </span>
             </div>
-            <div className="hidden md:block w-px h-16 bg-border/40 mx-2" />
-            <div className="flex flex-col items-start gap-2">
+            <div className="hidden md:block w-px h-14 bg-border/40 mx-2" />
+            <div className="flex flex-col items-start gap-1.5">
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <X className="w-4 h-4 text-destructive" aria-hidden="true" /> Questionnaires
+                <X className="w-3.5 h-3.5 text-destructive" aria-hidden="true" /> Questionnaires
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <X className="w-4 h-4 text-destructive" aria-hidden="true" /> Waitlists
+                <X className="w-3.5 h-3.5 text-destructive" aria-hidden="true" /> Waitlists
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <X className="w-4 h-4 text-destructive" aria-hidden="true" /> Subscriptions
+                <X className="w-3.5 h-3.5 text-destructive" aria-hidden="true" /> Subscriptions
               </span>
             </div>
           </div>
 
-          <div className="pt-4 flex flex-col items-center">
+          <div className="pt-3 flex flex-col items-center">
             <Button
               size="lg"
               onClick={handleTryForFree}
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto">
+              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-10 py-5 text-sm font-medium shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto">
 
               Start your first free session
             </Button>
-            <p className="mt-3 text-xs text-muted-foreground italic">​Already signed up? Log in above.         </p>
+            <p className="mt-2 text-xs text-muted-foreground italic">​Already signed up? Log in above.         </p>
           </div>
         </div>
       </section>
