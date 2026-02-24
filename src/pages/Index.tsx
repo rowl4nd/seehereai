@@ -164,25 +164,25 @@ const Index = () => {
           <div className="grid grid-cols-2 md:flex md:flex-row items-center justify-center gap-x-8 gap-y-4 text-muted-foreground text-sm md:text-base border-y border-border/20 py-6 max-w-2xl mx-auto">
             <div className="flex flex-col items-start md:items-end gap-2">
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <X className="w-4 h-4 text-red-400/80" /> Questionnaires
+                <Check className="w-4 h-4 text-primary" /> Fully Confidential
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <X className="w-4 h-4 text-red-400/80" /> Waitlists
+                <Check className="w-4 h-4 text-primary" /> Available 24/7
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <X className="w-4 h-4 text-red-400/80" /> Subscriptions
+                <Check className="w-4 h-4 text-primary" /> Person-Centred
               </span>
             </div>
             <div className="hidden md:block w-px h-16 bg-border/40 mx-2" />
             <div className="flex flex-col items-start gap-2">
-              <span className="flex items-center gap-2 text-[#4a7a4f] font-medium">
-                <Check className="w-4 h-4" /> Fully Confidential
+              <span className="flex items-center gap-2 text-foreground font-medium">
+                <X className="w-4 h-4 text-destructive" /> Questionnaires
               </span>
-              <span className="flex items-center gap-2 text-[#4a7a4f] font-medium">
-                <Check className="w-4 h-4" /> Available 24/7
+              <span className="flex items-center gap-2 text-foreground font-medium">
+                <X className="w-4 h-4 text-destructive" /> Waitlists
               </span>
-              <span className="flex items-center gap-2 text-[#4a7a4f] font-medium">
-                <Check className="w-4 h-4" /> Person-Centred
+              <span className="flex items-center gap-2 text-foreground font-medium">
+                <X className="w-4 h-4 text-destructive" /> Subscriptions
               </span>
             </div>
           </div>
