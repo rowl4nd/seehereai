@@ -156,10 +156,6 @@ const Index = () => {
 
         {/* Background accent images */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Right side - couch/vase image */}
-          <div className="absolute right-0 top-0 bottom-0 w-1/2">
-            <img src={heroBgRight} alt="" className="absolute right-0 top-0 h-full w-full object-cover opacity-[0.15]" style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 60%)', WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 60%)' }} />
-          </div>
           {/* Left side - plant image */}
           <div className="absolute left-0 top-0 bottom-0 w-1/2">
             <img src={heroBgLeft} alt="" className="absolute left-0 top-0 h-full w-full object-cover opacity-[0.15]" style={{ maskImage: 'linear-gradient(to left, transparent 0%, black 60%)', WebkitMaskImage: 'linear-gradient(to left, transparent 0%, black 60%)' }} />
