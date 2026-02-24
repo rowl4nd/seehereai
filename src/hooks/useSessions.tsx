@@ -151,6 +151,37 @@ export function useSessions() {
     return { error: null };
   };
 
+  const deleteSession = async (sessionId: string) => {
+    if (!user) return { error: new Error("Not authenticated") };
+
+    // Delete conversations first
+    const { error: convError } = await supabase
+      .from("conversations")
+      .delete()
+      .eq("session_id", sessionId)
+      .eq("user_id", user.id);
+
+    if (convError) {
+      console.error("Error deleting conversations:", convError);
+      return { error: convError };
+    }
+
+    // Delete the session
+    const { error } = await supabase
+      .from("sessions")
+      .delete()
+      .eq("id", sessionId)
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error("Error deleting session:", error);
+      return { error };
+    }
+
+    setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+    return { error: null };
+  };
+
   return {
     sessions,
     activeSession,
@@ -160,5 +191,6 @@ export function useSessions() {
     startSession,
     endSession,
     addSessionToState,
+    deleteSession,
   };
 }
