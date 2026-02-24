@@ -9,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { Link as RouterLink } from "react-router-dom";
+import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import Logo from "@/components/Logo";
 
 const Dashboard = () => {
@@ -31,9 +33,11 @@ const Dashboard = () => {
     canStartSession,
     nextSessionTime,
     loading: sessionsLoading,
-    endSession
+    endSession,
+    deleteSession,
   } = useSessions();
   const navigate = useNavigate();
+  const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -203,9 +207,29 @@ const Dashboard = () => {
                         <span className="text-sm text-foreground group-hover:text-primary transition-colors">
                           {formatDistanceToNow(new Date(s.ended_at!), { addSuffix: true })}
                         </span>
-                        <span className="text-xs text-muted-foreground">
-                          {s.duration_minutes ? `${s.duration_minutes} min` : "—"}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">
+                            {s.duration_minutes ? `${s.duration_minutes} min` : "—"}
+                          </span>
+                          <button
+                            onClick={async (e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setDeletingSessionId(s.id);
+                              const { error } = await deleteSession(s.id);
+                              setDeletingSessionId(null);
+                              if (error) {
+                                toast.error("Failed to delete session");
+                              } else {
+                                toast.success("Session deleted");
+                              }
+                            }}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10"
+                            aria-label="Delete session"
+                          >
+                            <Trash2 className={`h-3.5 w-3.5 text-muted-foreground/50 hover:text-destructive transition-colors ${deletingSessionId === s.id ? 'animate-pulse' : ''}`} />
+                          </button>
+                        </div>
                       </RouterLink>
                     ))}
                   </div>
