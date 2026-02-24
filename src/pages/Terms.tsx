@@ -87,6 +87,9 @@ const Terms = () => {
               <p>
                 All payments are processed securely through Stripe. By purchasing credits, you agree to Stripe's terms of service.
               </p>
+              <p>
+                By purchasing credits and initiating a session, you agree to the immediate delivery of digital content and acknowledge that you waive your statutory 14-day right to cancel under the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013, as permitted by UK consumer law.
+              </p>
             </section>
 
             <section className="space-y-2">
