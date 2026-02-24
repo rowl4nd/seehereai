@@ -75,11 +75,11 @@ const Cooldown = () => {
               {/* Title */}
               <div className="space-y-4">
                 <h1 className="text-3xl md:text-4xl font-serif font-light tracking-tight text-[#3d3a35]">
-                  Give time for your thoughts to settle
+                  Time for your thoughts to settle
                 </h1>
                 <p className="text-lg text-[#5f5a53] leading-relaxed font-light italic opacity-90">
-                  Give yourself space to sit with what surfaced. The most meaningful reflections often arrive in
-                  stillness.
+                  Give yourself space to sit with what surfaced. The most meaningful reflections often arrive in the
+                  moments after.
                 </p>
               </div>
 
