@@ -193,7 +193,7 @@ const Index = () => {
               onClick={handleTryForFree}
               className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
             >
-              Start your session
+              Start your first free session
             </Button>
             <p className="mt-3 text-xs text-muted-foreground italic">Try for free—no account needed to start.</p>
           </div>
@@ -244,7 +244,7 @@ const Index = () => {
                     onClick={handleTryForFree}
                     className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    Start your session
+                    Start your first free session
                   </Button>
                 </div>
               </div>
@@ -369,7 +369,7 @@ const Index = () => {
                     onClick={handleTryForFree}
                     className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-12 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    Start your session
+                    Start your first free session
                   </Button>
                 </div>
               </div>
