@@ -164,25 +164,25 @@ const Index = () => {
           <div className="grid grid-cols-2 md:flex md:flex-row items-center justify-center gap-x-8 gap-y-4 text-muted-foreground text-sm md:text-base border-y border-border/20 py-6 max-w-2xl mx-auto">
             <div className="flex flex-col items-start md:items-end gap-2">
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <Check className="w-4 h-4 text-primary" /> Fully Confidential
+                <Check className="w-4 h-4 text-primary" aria-hidden="true" /> Fully Confidential
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <Check className="w-4 h-4 text-primary" /> Available 24/7
+                <Check className="w-4 h-4 text-primary" aria-hidden="true" /> Available 24/7
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <Check className="w-4 h-4 text-primary" /> Person-Centred
+                <Check className="w-4 h-4 text-primary" aria-hidden="true" /> Person-Centred
               </span>
             </div>
             <div className="hidden md:block w-px h-16 bg-border/40 mx-2" />
             <div className="flex flex-col items-start gap-2">
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <X className="w-4 h-4 text-destructive" /> Questionnaires
+                <X className="w-4 h-4 text-destructive" aria-hidden="true" /> Questionnaires
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <X className="w-4 h-4 text-destructive" /> Waitlists
+                <X className="w-4 h-4 text-destructive" aria-hidden="true" /> Waitlists
               </span>
               <span className="flex items-center gap-2 text-foreground font-medium">
-                <X className="w-4 h-4 text-destructive" /> Subscriptions
+                <X className="w-4 h-4 text-destructive" aria-hidden="true" /> Subscriptions
               </span>
             </div>
           </div>
@@ -226,15 +226,15 @@ const Index = () => {
                 <div className="space-y-4 pt-2 items-end">
                   <div className="flex items-center gap-3 justify-end">
                     <p className="text-base text-foreground font-medium">Listens with empathy</p>
-                    <Heart className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
+                    <Heart className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" aria-hidden="true" />
                   </div>
                   <div className="flex items-center gap-3 justify-end">
                     <p className="text-base text-foreground font-medium">Asks thoughtful questions</p>
-                    <MessageCircle className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
+                    <MessageCircle className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" aria-hidden="true" />
                   </div>
                   <div className="flex items-center gap-3 justify-end">
                     <p className="text-base text-foreground font-medium">Never judges</p>
-                    <Shield className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" />
+                    <Shield className="w-5 h-5 text-[#4a7a4f] flex-shrink-0" aria-hidden="true" />
                   </div>
                 </div>
 
@@ -335,7 +335,7 @@ const Index = () => {
                 <div className="space-y-5 pt-4">
                   <div>
                     <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                      <Heart className="w-4 h-4 text-[#4a7a4f]" />
+                      <Heart className="w-4 h-4 text-[#4a7a4f]" aria-hidden="true" />
                       Person-centred listening
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
@@ -345,7 +345,7 @@ const Index = () => {
                   </div>
                   <div>
                     <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-[#4a7a4f]" />
+                      <Shield className="w-4 h-4 text-[#4a7a4f]" aria-hidden="true" />
                       Gentle, practical support
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
@@ -354,7 +354,7 @@ const Index = () => {
                   </div>
                   <div>
                     <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[#4a7a4f]" />
+                      <Clock className="w-4 h-4 text-[#4a7a4f]" aria-hidden="true" />
                       Your pace, your space
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
@@ -539,7 +539,7 @@ const Index = () => {
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+              className="text-xs text-muted-foreground/80 hover:text-foreground transition-colors duration-200">
 
               Terms &amp; Conditions
             </a>
@@ -547,13 +547,13 @@ const Index = () => {
               href="/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+              className="text-xs text-muted-foreground/80 hover:text-foreground transition-colors duration-200">
 
               Privacy Policy
             </a>
             <a
               href="/contact"
-              className="text-xs text-muted-foreground/60 hover:text-foreground transition-colors duration-200">
+              className="text-xs text-muted-foreground/80 hover:text-foreground transition-colors duration-200">
 
               Contact Us
             </a>
