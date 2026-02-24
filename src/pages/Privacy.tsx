@@ -141,26 +141,40 @@ const Privacy = () => {
                     stripe.com/privacy
                   </a>
                 </li>
-                <li><strong>AI language model:</strong> Your conversation messages are sent to an AI model to generate responses. These messages are not used to train the AI model and are not retained by the AI provider beyond the duration of the request</li>
+                <li><strong>Google Gemini (Google Cloud Platform):</strong> Your conversation messages are processed via the Google Gemini API to generate responses. Under Google's enterprise API terms, your data is <strong>not used to train Google's foundational models</strong> and is not retained by Google beyond the duration of the API request</li>
               </ul>
             </section>
 
             <section className="space-y-2">
-              <h2 className="text-xl font-serif text-foreground">11. Children's Privacy</h2>
+              <h2 className="text-xl font-serif text-foreground">11. Data Transfers</h2>
+              <p>
+                Your personal data may be processed outside the United Kingdom by our infrastructure and service partners, including Google (United States), Stripe (United States), and our hosting provider (United States). Where data is transferred internationally, we ensure appropriate safeguards are in place, including reliance on the <strong>UK Extension to the EU-US Data Privacy Framework</strong> and, where applicable, <strong>Standard Contractual Clauses (SCCs)</strong> approved by the UK Information Commissioner's Office.
+              </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-xl font-serif text-foreground">12. Automated Processing</h2>
+              <p>
+                See Here uses artificial intelligence to generate conversational responses based on your messages. This constitutes automated processing under the UK GDPR. However, the AI does <strong>not engage in automated decision-making</strong> that produces legal effects or similarly significant effects concerning you (as defined under Article 22 of the UK GDPR). All AI-generated responses are reflective in nature and do not determine access to services, creditworthiness, employment outcomes, or any other legally significant matter.
+              </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-xl font-serif text-foreground">13. Children's Privacy</h2>
               <p>
                 See Here is intended for users aged 18 and over. We do not knowingly collect personal data from anyone under the age of 18. If we become aware that we have collected data from a minor, we will delete it promptly.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h2 className="text-xl font-serif text-foreground">12. Changes to This Policy</h2>
+              <h2 className="text-xl font-serif text-foreground">14. Changes to This Policy</h2>
               <p>
                 We may update this privacy policy from time to time. Continued use of See Here after changes constitutes acceptance of the updated policy. We will notify users of significant changes where possible.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h2 className="text-xl font-serif text-foreground">13. Contact</h2>
+              <h2 className="text-xl font-serif text-foreground">15. Contact</h2>
               <p>
                 If you have questions about this privacy policy or wish to exercise your data rights, please contact us at{" "}
                 <a
