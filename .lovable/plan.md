@@ -1,18 +1,20 @@
 
 
-# Make Secure Session Modal Scrollable
+# Fix Mobile Scrolling in Secure Session Modal
 
 ## Problem
-The Google and Apple sign-up buttons are present in the modal code but are hidden because the modal content is taller than the viewport. The dialog is centered with `fixed` positioning and has no scroll capability, so the bottom buttons (Google, Apple, "Not Now") are clipped off-screen.
+The Radix `ScrollArea` component doesn't reliably support touch-based scrolling on mobile devices. Users can only see content down to the "or" divider -- the Google, Apple, and "Not Now" buttons are cut off with no way to scroll.
 
 ## Solution
-Wrap the `DialogContent` inner content in a `ScrollArea` component so users can scroll to see all options. Also add a `max-h-[85vh]` constraint to the `DialogContent` to ensure it stays within the viewport and triggers the scroll when needed.
+Replace the Radix `ScrollArea` with a plain `div` using native CSS `overflow-y: auto`. Native overflow scrolling works reliably on all mobile browsers and supports touch/swipe gestures out of the box.
 
 ## Changes
 
 ### `src/components/SecureSessionModal.tsx`
-- Import `ScrollArea` from `@/components/ui/scroll-area`
-- Add `max-h-[85vh] overflow-hidden` to the `DialogContent` className
-- Wrap all content inside `DialogContent` (header, form, OAuth buttons, discard button) in a `ScrollArea` with `className="max-h-[80vh] pr-4"` so it scrolls naturally when the content overflows
-- This ensures the modal stays within the viewport and all buttons are accessible via scrolling on any screen size
+- Remove the `ScrollArea` import (no longer needed)
+- Replace `<ScrollArea className="max-h-[80vh] pr-4">` with `<div className="overflow-y-auto max-h-[75vh] pr-1 space-y-4">`
+- Replace closing `</ScrollArea>` with `</div>`
+- Add `space-y-4` to the wrapper div to maintain the vertical spacing between elements (since the content is no longer relying on the dialog's `gap-4`)
+
+This approach uses the browser's native scrolling which handles touch events properly on mobile, unlike the Radix ScrollArea which relies on custom scroll behavior that can fail on touch devices.
 
