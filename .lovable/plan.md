@@ -1,17 +1,30 @@
 
 
-# Add Meta Pixel to All Pages
+# Fix Meta Pixel Build Error
 
-## Overview
-Add the Meta (Facebook) Pixel tracking code to the `<head>` of the site so it loads on every page.
+## Problem
+Vite's HTML parser (parse5) disallows `<img>` elements inside `<noscript>` when it's in the `<head>`. This causes the build to fail.
 
-## Approach
-Since this is a single-page app (SPA), the pixel only needs to be added once in `index.html`. Every route will automatically include it.
-
-## Changes (1 file)
+## Solution (1 file)
 
 ### `index.html`
-- Insert the Meta Pixel `<script>` and `<noscript>` snippet into the `<head>` section, right before the closing `</head>` tag.
-- Pixel ID: `850083951412164`
-- This covers all pages since the entire app is served from this single HTML file.
+- **Keep** the Meta Pixel `<script>` in the `<head>` (lines 35-47) -- no change needed there.
+- **Move** the `<noscript>` block (lines 48-50) from `<head>` into the `<body>`, right after the opening `<body>` tag.
+- Remove the closing comment from `<head>` and add it after the `<noscript>` in `<body>`.
+
+Result:
+```text
+  </head>
+
+  <body>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=850083951412164&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+    <div id="root"></div>
+    ...
+  </body>
+```
+
+This is the standard workaround for Vite/SPA projects and doesn't affect pixel functionality.
 
