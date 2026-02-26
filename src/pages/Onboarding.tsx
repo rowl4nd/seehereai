@@ -25,7 +25,7 @@ const Onboarding = () => {
 
   useEffect(() => {
     if (profile?.has_completed_onboarding) {
-      navigate("/guidance");
+      navigate("/mirror");
     }
   }, [profile, navigate]);
 
@@ -47,7 +47,7 @@ const Onboarding = () => {
     if (error) {
       toast.error("Something went wrong. Please try again.");
     } else {
-      navigate("/guidance");
+      navigate("/mirror");
     }
     setIsSubmitting(false);
   };

@@ -188,7 +188,7 @@ const Auth = () => {
 
                 <Button
                   type="button"
-                  onClick={() => navigate("/try/guidance")}
+                  onClick={() => navigate("/try")}
                   className="w-full h-8 text-xs text-white bg-[#b9a3e0] hover:bg-[#a48fd0]"
                 >
                   New here? Try for free
