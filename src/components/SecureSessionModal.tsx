@@ -124,7 +124,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
           type="button"
           onClick={async () => {
             const { error } = await lovable.auth.signInWithOAuth("google", {
-              redirect_uri: window.location.origin,
+              redirect_uri: window.location.origin + "/try",
             });
             if (error) toast.error(error.message);
             else onSuccess();
@@ -145,7 +145,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
           type="button"
           onClick={async () => {
             const { error } = await lovable.auth.signInWithOAuth("apple", {
-              redirect_uri: window.location.origin,
+              redirect_uri: window.location.origin + "/try",
             });
             if (error) toast.error(error.message);
             else onSuccess();
