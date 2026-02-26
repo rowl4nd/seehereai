@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
 import { useVoiceMode } from "@/hooks/useVoiceMode";
-import GreetingMessage from "@/components/GreetingMessage";
+import WelcomeBackMessage from "@/components/WelcomeBackMessage";
 import { Mic, MicOff, Loader2 } from "lucide-react";
 
 interface Message {
@@ -640,7 +640,7 @@ const Mirror = () => {
                 }
               >
                 {message.id === "greeting" ? (
-                  <GreetingMessage userName={profile?.display_name} />
+                  <WelcomeBackMessage userName={profile?.display_name} />
                 ) : (
                   <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
                 )}
