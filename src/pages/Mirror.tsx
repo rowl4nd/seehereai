@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
 import { useVoiceMode } from "@/hooks/useVoiceMode";
+import GreetingMessage from "@/components/GreetingMessage";
 import { Mic, MicOff, Loader2 } from "lucide-react";
 
 interface Message {
@@ -59,22 +60,9 @@ const Mirror = () => {
     return "night";
   };
 
-  // Build personalised greeting based on profile state and time of day
+  // Build greeting placeholder — actual rendering is via GreetingMessage component
   const getGreeting = () => {
-    const timeOfDay = getTimeOfDay();
-    const salutation =
-      timeOfDay === "morning" ? "Good morning" :
-      timeOfDay === "afternoon" ? "Good afternoon" :
-      timeOfDay === "evening" ? "Good evening" : "Hi there";
-    const closing = timeOfDay === "evening" || timeOfDay === "night" ? "tonight" : "today";
-
-    if (profile?.display_name) {
-      return `${salutation}, ${profile.display_name}. I'm here to listen. Take your time — there's no rush. What's on your mind ${closing}?`;
-    }
-    if (profile?.name_declined) {
-      return `${salutation}. I'm here to listen. Take your time — there's no rush. What's on your mind ${closing}?`;
-    }
-    return `${salutation}. I'm here to listen. Take your time — there's no rush. What's on your mind ${closing}?`;
+    return "greeting_placeholder";
   };
 
   // Use localSession as the source of truth, falling back to activeSession from hook
@@ -89,12 +77,9 @@ const Mirror = () => {
     }
   }, [user, authLoading, navigate]);
 
-  // Guard: redirect to onboarding if not completed
-  useEffect(() => {
-    if (profile && !profile.has_completed_onboarding) {
-      navigate("/onboarding");
-    }
-  }, [profile, navigate]);
+  // Guard: redirect to onboarding if not completed (skip guidance)
+  // Onboarding is still required for terms acknowledgement
+  // but guidance page is no longer needed
 
   // Fetch past conversations on mount
   useEffect(() => {
@@ -654,7 +639,11 @@ const Mirror = () => {
                     : { backgroundColor: '#9a86be', color: '#ffffff' }
                 }
               >
-                <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                {message.id === "greeting" ? (
+                  <GreetingMessage userName={profile?.display_name} />
+                ) : (
+                  <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                )}
               </div>
             </div>
           ))}

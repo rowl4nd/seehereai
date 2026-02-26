@@ -75,7 +75,7 @@ const Dashboard = () => {
     if (!profile?.has_completed_onboarding) {
       navigate("/onboarding");
     } else {
-      navigate("/guidance");
+      navigate("/mirror");
     }
   };
 

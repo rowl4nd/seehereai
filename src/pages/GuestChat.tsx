@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 import SecureSessionModal from "@/components/SecureSessionModal";
+import GreetingMessage from "@/components/GreetingMessage";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
 
 interface Message {
@@ -76,14 +77,8 @@ const GuestChat = () => {
     await saveMessages(cId, conversationMessages);
   };
 
-  // Check guest onboarding
+  // Load guest messages or show greeting
   useEffect(() => {
-    const onboardingDone = sessionStorage.getItem("guest_onboarding_complete");
-    if (!onboardingDone) {
-      navigate("/try/guidance");
-      return;
-    }
-
     const saved = sessionStorage.getItem("guest_messages");
     if (saved) {
       try {
@@ -103,12 +98,12 @@ const GuestChat = () => {
       const greeting: Message = {
         id: "greeting",
         role: "assistant",
-        content: "Hello. I'm here to listen. Take your time — there's no rush. What's on your mind?",
+        content: "greeting_placeholder",
       };
       setMessages([greeting]);
       sessionStorage.setItem("guest_messages", JSON.stringify([greeting]));
     }
-  }, [navigate]);
+  }, []);
 
   // Keep refs in sync
   useEffect(() => {
@@ -432,7 +427,11 @@ const GuestChat = () => {
                     : { backgroundColor: "#9a86be", color: "#ffffff" }
                 }
               >
-                <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                {message.id === "greeting" ? (
+                  <GreetingMessage />
+                ) : (
+                  <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                )}
               </div>
             </div>
           ))}
