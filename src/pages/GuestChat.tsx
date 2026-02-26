@@ -221,6 +221,11 @@ const GuestChat = () => {
         sessionStorage.removeItem("guest_onboarding_complete");
         sessionStorage.removeItem("guest_email");
 
+        // Fire-and-forget welcome email
+        if (user.email) {
+          supabase.functions.invoke("send-welcome-email", { body: { email: user.email } }).catch(() => {});
+        }
+
         setAuthenticated(true);
         setShowModal(false);
         setGuestLimitReached(false);

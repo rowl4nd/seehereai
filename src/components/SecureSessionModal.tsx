@@ -45,9 +45,6 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
 
       toast.success("Welcome to See Here");
 
-      // Fire-and-forget welcome email
-      supabase.functions.invoke("send-welcome-email", { body: { email } }).catch(() => {});
-
       onSuccess();
     } catch {
       toast.error("Something went wrong. Please try again.");
