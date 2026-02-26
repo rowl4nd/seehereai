@@ -510,19 +510,35 @@ const GuestChat = () => {
               </Button>
             </div>
 
-            {/* Consent text (guest only) */}
+            {/* Consent text + End session (guest only) */}
             {!authenticated && (
-              <p className="text-[11px] text-muted-foreground/60 text-center">
-                By sending a message, you agree to our{" "}
-                <Link to="/terms" className="underline hover:text-foreground transition-colors">
-                  Terms
-                </Link>{" "}
-                and{" "}
-                <Link to="/privacy" className="underline hover:text-foreground transition-colors">
-                  Privacy Policy
-                </Link>
-                .
-              </p>
+              <div className="space-y-1">
+                <p className="text-[11px] text-muted-foreground/60 text-center">
+                  By sending a message, you agree to our{" "}
+                  <Link to="/terms" className="underline hover:text-foreground transition-colors">
+                    Terms
+                  </Link>{" "}
+                  and{" "}
+                  <Link to="/privacy" className="underline hover:text-foreground transition-colors">
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
+                <div className="flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sessionStorage.removeItem("guest_messages");
+                      sessionStorage.removeItem("guest_onboarding_complete");
+                      sessionStorage.removeItem("guest_email");
+                      navigate("/");
+                    }}
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors py-1 min-h-[44px] flex items-center"
+                  >
+                    End session
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>
