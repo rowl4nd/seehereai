@@ -205,7 +205,7 @@ const Index = () => {
 
               Start your first free session
             </Button>
-            <p className="mt-2 text-xs text-muted-foreground italic">​Already signed up? Log in above.         </p>
+            <p className="mt-2 text-xs text-muted-foreground italic">Have an account? <a href="/auth" className="underline hover:text-foreground transition-colors">Log in</a></p>
           </div>
         </div>
       </section>
