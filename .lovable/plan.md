@@ -1,27 +1,35 @@
 
 
-# Fix Guest Chat: End Session Button + OAuth Redirect
+# Fix: Send Welcome Email for All Signup Methods
 
-## Overview
-Two bugs to fix: (1) no way for guests to leave the chat gracefully, and (2) Google/Apple OAuth signup redirects to the homepage instead of back into the chat.
+## Problem
+The welcome email is only triggered during email/password signup in the SecureSessionModal. Google and Apple OAuth signups skip it because the OAuth flow redirects the user away, and when they return, the migration logic runs but never sends the email.
+
+## Solution
+Move the welcome email trigger into the **migration logic** in `GuestChat.tsx`, which runs for all signup paths (email/password, Google, Apple). Remove the duplicate call from the modal.
 
 ## Changes
 
-### 1. SecureSessionModal.tsx -- Fix OAuth redirect URL
-- Change `redirect_uri` from `window.location.origin` to `window.location.origin + "/try"` for both Google and Apple OAuth buttons
-- This ensures that after OAuth completes, the user lands back on `/try` where the auth state change triggers the migration logic and continues the session
+### 1. GuestChat.tsx -- Add welcome email to migration logic
+- Inside the `migrateGuestData` function (around line 224, after migration completes successfully), add a fire-and-forget call to send the welcome email using `user.email`
+- This ensures every new user gets the email regardless of how they signed up
 
-### 2. GuestChat.tsx -- Add guest "End Session" / exit option
-- Add a visible "End session" button in the footer area that shows for guests (when `!authenticated`)
-- Clicking it will discard guest data from sessionStorage and navigate to the homepage
-- This gives guests a clear, graceful way to leave the chat
-- The button will sit below the input area, styled consistently with the authenticated end-session button
+### 2. SecureSessionModal.tsx -- Remove duplicate welcome email call
+- Remove the `send-welcome-email` invocation from the email/password signup handler (line 49), since it will now be handled by the migration logic in GuestChat
 
 ## Technical Details
 
-**SecureSessionModal.tsx (lines 126-127 and 147-148):**
-Change `redirect_uri: window.location.origin` to `redirect_uri: window.location.origin + "/try"` in both OAuth handlers.
+**GuestChat.tsx (inside migrateGuestData, after line 224):**
+```typescript
+// Fire-and-forget welcome email
+if (user.email) {
+  supabase.functions.invoke("send-welcome-email", { body: { email: user.email } }).catch(() => {});
+}
+```
 
-**GuestChat.tsx (footer area, around line 456):**
-Add a guest exit button before the authenticated timer/end-session block. When not authenticated, show a subtle "End session" link that clears sessionStorage and navigates home.
-
+**SecureSessionModal.tsx (line 48-49):**
+Remove:
+```typescript
+// Fire-and-forget welcome email
+supabase.functions.invoke("send-welcome-email", { body: { email } }).catch(() => {});
+```
