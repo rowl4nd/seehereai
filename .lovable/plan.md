@@ -1,115 +1,47 @@
 
 
-# Convert SeeHere to a Progressive Web App (PWA)
+# Fix: Wire Up the Install Prompt Trigger
 
-## Overview
-Transform SeeHere into an installable PWA that feels like a native app when launched from the home screen -- no browser chrome, calm offline states, and safe-area-aware layouts.
+## Problem
+The install prompt component is mounted in `App.tsx` and the `useInstallPrompt` hook exposes a `triggerPrompt()` function, but nothing in the app ever calls it. So the prompt never appears.
 
-## Phase 1: Core PWA Infrastructure
+## Solution
+Per the original plan, the prompt should appear after a user completes their first session. The simplest approach: call `triggerPrompt()` when a session ends (in both `Mirror.tsx` and `GuestChat.tsx`), or show it automatically on the homepage/dashboard after the user has at least one completed session.
 
-### 1.1 Install vite-plugin-pwa and configure
-- Add `vite-plugin-pwa` dependency
-- Configure in `vite.config.ts` with:
-  - Manifest: name "SeeHere", short_name "SeeHere", display "standalone", orientation "portrait", background_color "#f8f6f3", theme_color "#4a7a4f"
-  - Icon references: `/icons/icon-192.png` and `/icons/icon-512.png` (with `any maskable` purpose)
-  - Workbox runtime caching: network-first for API/edge-function calls, cache-first for static assets
-  - `navigateFallbackDenylist: [/^\/~oauth/]` so OAuth redirects are never cached
-  - Offline fallback page
+Since `InstallPrompt` is a standalone component mounted at the App level, the cleanest fix is to **remove the `triggerPrompt` gating** and instead have the component self-trigger on mount — showing itself automatically once the user has completed at least one session (checked via a `localStorage` flag like `has-completed-session`).
 
-### 1.2 Create PWA icon assets
-- Generate `public/icons/icon-192.png` and `public/icons/icon-512.png` from the existing SeeHere logo
-- These will be used for home screen icons and splash screens
+### Changes
 
-### 1.3 Update index.html
-- Add `<link rel="manifest" href="/manifest.webmanifest">`
-- Add iOS-specific meta tags:
-  ```
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="SeeHere">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  ```
-- Update viewport: `width=device-width, initial-scale=1, viewport-fit=cover`
-- Add `<meta name="theme-color" content="#4a7a4f">`
+**1. Mirror.tsx and GuestChat.tsx — Set a "session completed" flag**
+- When the user ends a session (clicks "End session" or the session completes), set `localStorage.setItem("has-completed-session", "true")`.
 
-## Phase 2: Offline Experience
+**2. useInstallPrompt.ts — Auto-show after first session**
+- Remove the need for an external `triggerPrompt()` call.
+- On mount, check if `localStorage.getItem("has-completed-session")` is truthy, the user hasn't dismissed it previously, and the app isn't already in standalone mode.
+- If all conditions pass, set `showPrompt` to `true` automatically.
+- On iOS, show even without the `beforeinstallprompt` event (since iOS doesn't fire it).
 
-### 2.1 Offline fallback page
-- Create a minimal offline fallback component that shows:
-  - SeeHere logo centred on `#f8f6f3` background
-  - Calm message: "It looks like you've lost connection. Your words are safe. Reconnect when you're ready."
-  - No red error states or alarming language
-
-### 2.2 Offline detection in the app
-- Add a lightweight `useOnlineStatus` hook using `navigator.onLine` + event listeners
-- Show a subtle top banner on the home/dashboard: "You're offline. Connect to start a session."
-- Disable the chat input gracefully when offline (greyed out, not broken)
-- Past session history remains browsable if cached
-
-## Phase 3: Native-Feel UX Improvements
-
-### 3.1 Safe area handling (index.css)
-- Add `padding-top: env(safe-area-inset-top)` and `padding-bottom: env(safe-area-inset-bottom)` to the app shell
-- Ensure chat input and nav sit above the iPhone home indicator
-
-### 3.2 Remove browser feel (index.css)
-- `user-select: none` on buttons, nav, labels (not chat content)
-- `touch-action: manipulation` on interactive elements (removes 300ms tap delay)
-- `overscroll-behavior: none` on chat containers to prevent pull-to-refresh
-- `-webkit-touch-callout: none` on images/buttons to prevent long-press context menus
-- `-webkit-overflow-scrolling: touch` on scrollable containers
-
-### 3.3 Input and keyboard behaviour
-- Ensure all input/textarea fields have `font-size: 16px` minimum (prevents iOS auto-zoom)
-- Chat scroll adjusts when keyboard opens (existing `scrollIntoView` logic should handle this, will verify)
-
-## Phase 4: Custom Install Prompt
-
-### 4.1 Install prompt component
-- Create an `InstallPrompt` component as a bottom-sheet style card (not a blocking modal)
-- Copy: "Add SeeHere to your home screen for a quieter, more private experience."
-- Sage green "Add to home screen" button + "Maybe later" text link
-- On iOS (where `beforeinstallprompt` is unavailable), show instructional text: "Tap the share icon below, then 'Add to Home Screen'"
-
-### 4.2 Trigger logic
-- Listen for the `beforeinstallprompt` event and store it
-- Show the prompt after the user completes their first session (on session end)
-- Store "maybe later" in `localStorage` so it doesn't repeat
-- Never show on first visit or mid-session
-
-## Phase 5: Performance
-
-### 5.1 Font loading
-- Add `font-display: swap` to Google Fonts link (already uses `display=swap` -- confirmed)
-
-### 5.2 Image lazy loading
-- Add `loading="lazy"` to below-the-fold images on the landing page
-- Above-the-fold hero images keep eager loading
-
-## Deferred (Not in this implementation)
-
-### Push Notifications
-- The notification system (service worker push, backend scheduling, account settings toggle) is a significant feature that should be implemented separately
-- This plan focuses on the installable PWA foundation first
-
----
+**3. No changes needed to InstallPrompt.tsx or App.tsx** — the component already renders based on `showPrompt`.
 
 ## Technical Details
 
-### Files to create:
-- `public/icons/icon-192.png` -- PWA icon (generated from existing logo)
-- `public/icons/icon-512.png` -- PWA icon (generated from existing logo)
-- `src/hooks/useOnlineStatus.ts` -- online/offline detection hook
-- `src/components/OfflineBanner.tsx` -- subtle offline notification banner
-- `src/components/InstallPrompt.tsx` -- custom install prompt component
-- `src/hooks/useInstallPrompt.ts` -- beforeinstallprompt event handler
+### useInstallPrompt.ts
+Add to the existing `useEffect`:
+```typescript
+// After detecting standalone mode
+const hasSession = localStorage.getItem("has-completed-session");
+const dismissed = localStorage.getItem("pwa-install-dismissed");
+if (hasSession && !dismissed && !standalone) {
+  setShowPrompt(true);
+}
+```
+Remove or keep `triggerPrompt` for manual use, but the prompt will now self-trigger.
 
-### Files to modify:
-- `package.json` -- add `vite-plugin-pwa` dependency
-- `vite.config.ts` -- configure PWA plugin with manifest, workbox, and offline fallback
-- `index.html` -- add iOS meta tags, viewport-fit=cover, theme-color, apple-touch-icon
-- `src/index.css` -- safe area padding, user-select, touch-action, overscroll-behavior
-- `src/App.tsx` -- integrate OfflineBanner and InstallPrompt components
-- `src/pages/Mirror.tsx` -- disable input when offline, add overscroll-behavior to chat container
-- `src/pages/GuestChat.tsx` -- disable input when offline, add overscroll-behavior to chat container
+### Mirror.tsx (end session handler)
+Add before navigation:
+```typescript
+localStorage.setItem("has-completed-session", "true");
+```
 
+### GuestChat.tsx (end session handler)
+Same addition in the guest end-session logic.
