@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import OfflineBanner from "@/components/OfflineBanner";
-import InstallPrompt from "@/components/InstallPrompt";
+
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -55,7 +55,7 @@ const App = () => (
             <Route path="/support-alternative" element={<SupportAlternative />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <InstallPrompt />
+          
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

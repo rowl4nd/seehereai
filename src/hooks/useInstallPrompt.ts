@@ -12,8 +12,10 @@ export function useInstallPrompt() {
   const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
-    // Detect iOS
-    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    // Detect iOS / iPadOS (modern iPads report as MacIntel with touch)
+    const ios =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
     setIsIOS(ios);
 
     // Detect if already installed
@@ -22,10 +24,9 @@ export function useInstallPrompt() {
       (navigator as any).standalone === true;
     setIsStandalone(standalone);
 
-    // Auto-show after first completed session
-    const hasSession = localStorage.getItem("has-completed-session");
+    // Show by default unless dismissed or already installed
     const dismissed = localStorage.getItem("pwa-install-dismissed");
-    if (hasSession && !dismissed && !standalone) {
+    if (!dismissed && !standalone) {
       setShowPrompt(true);
     }
 
@@ -37,13 +38,6 @@ export function useInstallPrompt() {
     window.addEventListener("beforeinstallprompt", handler);
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
-
-  const triggerPrompt = useCallback(() => {
-    if (isStandalone) return;
-    const dismissed = localStorage.getItem("pwa-install-dismissed");
-    if (dismissed) return;
-    setShowPrompt(true);
-  }, [isStandalone]);
 
   const installApp = useCallback(async () => {
     if (deferredPrompt) {
@@ -66,7 +60,6 @@ export function useInstallPrompt() {
     isIOS,
     isStandalone,
     canInstall: !!deferredPrompt || isIOS,
-    triggerPrompt,
     installApp,
     dismissPrompt,
   };
