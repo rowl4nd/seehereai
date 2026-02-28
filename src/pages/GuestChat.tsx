@@ -415,7 +415,7 @@ const GuestChat = () => {
       </header>
 
       {/* Messages */}
-      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-6 flex flex-col">
+      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-6 flex flex-col overscroll-none scrolling-touch">
         <div className="max-w-2xl mx-auto space-y-6 mt-auto w-full">
           {messages.map((message) => (
             <div
