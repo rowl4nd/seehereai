@@ -22,6 +22,13 @@ export function useInstallPrompt() {
       (navigator as any).standalone === true;
     setIsStandalone(standalone);
 
+    // Auto-show after first completed session
+    const hasSession = localStorage.getItem("has-completed-session");
+    const dismissed = localStorage.getItem("pwa-install-dismissed");
+    if (hasSession && !dismissed && !standalone) {
+      setShowPrompt(true);
+    }
+
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
