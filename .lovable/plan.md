@@ -1,47 +1,33 @@
 
 
-# Fix: Wire Up the Install Prompt Trigger
+# Simplify Install Prompt: Dashboard Button
 
-## Problem
-The install prompt component is mounted in `App.tsx` and the `useInstallPrompt` hook exposes a `triggerPrompt()` function, but nothing in the app ever calls it. So the prompt never appears.
+## Approach
+Remove the auto-triggering install prompt overlay and replace it with a clear, on-brand "Add to Home Screen" card on the Dashboard. This is simpler, more reliable, and gives the user control.
 
-## Solution
-Per the original plan, the prompt should appear after a user completes their first session. The simplest approach: call `triggerPrompt()` when a session ends (in both `Mirror.tsx` and `GuestChat.tsx`), or show it automatically on the homepage/dashboard after the user has at least one completed session.
+## Changes
 
-Since `InstallPrompt` is a standalone component mounted at the App level, the cleanest fix is to **remove the `triggerPrompt` gating** and instead have the component self-trigger on mount — showing itself automatically once the user has completed at least one session (checked via a `localStorage` flag like `has-completed-session`).
+### 1. Dashboard.tsx -- Add install card
+- Import `useInstallPrompt` hook
+- Add a card below the "Purchase sessions" button (and above "Past Sessions") that shows only when the app is installable and not already in standalone mode
+- On Android/desktop (where `beforeinstallprompt` fires): show a sage green "Add to home screen" button that triggers the native install
+- On iOS/iPad: show gentle instructions ("Tap the share icon, then 'Add to Home Screen'")
+- Include a small dismiss "x" or "Not now" link that hides it via localStorage
+- Card styling matches the existing Dashboard aesthetic -- subtle, not pushy
 
-### Changes
+### 2. useInstallPrompt.ts -- Fix iPad detection, remove auto-show
+- Fix iPad detection: add `(navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)` check
+- Remove the auto-show-on-mount logic (no more localStorage session flag checks)
+- Keep `showPrompt` but default it to `true` when installable and not dismissed -- let the Dashboard card handle visibility
+- Keep `dismissPrompt` to store the "don't show again" preference
 
-**1. Mirror.tsx and GuestChat.tsx — Set a "session completed" flag**
-- When the user ends a session (clicks "End session" or the session completes), set `localStorage.setItem("has-completed-session", "true")`.
+### 3. App.tsx -- Remove the floating InstallPrompt component
+- Remove `<InstallPrompt />` from the app shell since the prompt now lives on the Dashboard
 
-**2. useInstallPrompt.ts — Auto-show after first session**
-- Remove the need for an external `triggerPrompt()` call.
-- On mount, check if `localStorage.getItem("has-completed-session")` is truthy, the user hasn't dismissed it previously, and the app isn't already in standalone mode.
-- If all conditions pass, set `showPrompt` to `true` automatically.
-- On iOS, show even without the `beforeinstallprompt` event (since iOS doesn't fire it).
+### 4. Cleanup
+- Delete `src/components/InstallPrompt.tsx` (no longer needed as a floating overlay)
+- Remove `has-completed-session` localStorage calls from Mirror.tsx and GuestChat.tsx (no longer needed for triggering)
 
-**3. No changes needed to InstallPrompt.tsx or App.tsx** — the component already renders based on `showPrompt`.
+## Result
+Users see a calm, optional "Add to home screen" card on their Dashboard. One tap to install, or dismiss it. No timing bugs, no missed triggers, no floating overlays.
 
-## Technical Details
-
-### useInstallPrompt.ts
-Add to the existing `useEffect`:
-```typescript
-// After detecting standalone mode
-const hasSession = localStorage.getItem("has-completed-session");
-const dismissed = localStorage.getItem("pwa-install-dismissed");
-if (hasSession && !dismissed && !standalone) {
-  setShowPrompt(true);
-}
-```
-Remove or keep `triggerPrompt` for manual use, but the prompt will now self-trigger.
-
-### Mirror.tsx (end session handler)
-Add before navigation:
-```typescript
-localStorage.setItem("has-completed-session", "true");
-```
-
-### GuestChat.tsx (end session handler)
-Same addition in the guest end-session logic.
