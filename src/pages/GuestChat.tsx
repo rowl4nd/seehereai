@@ -245,7 +245,6 @@ const GuestChat = () => {
   };
 
   const handleEndSession = async () => {
-    localStorage.setItem("has-completed-session", "true");
     if (sessionEnded) {
       navigate("/cooldown");
       return;

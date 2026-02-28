@@ -9,9 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { Link as RouterLink } from "react-router-dom";
-import { Trash2 } from "lucide-react";
+import { Trash2, Share, X, Download } from "lucide-react";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
+import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 
 const Dashboard = () => {
   const {
@@ -36,6 +37,7 @@ const Dashboard = () => {
     endSession,
     deleteSession,
   } = useSessions();
+  const { showPrompt: showInstall, isIOS, canInstall, isStandalone, installApp, dismissPrompt: dismissInstall } = useInstallPrompt();
   const navigate = useNavigate();
   const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null);
 
@@ -174,6 +176,56 @@ const Dashboard = () => {
               Purchase sessions
             </Button>
           </Link>
+
+          {/* Install app card */}
+          {showInstall && canInstall && !isStandalone && (
+            <Card className="bg-card/50 border-border/50 relative">
+              <button
+                onClick={dismissInstall}
+                className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Dismiss"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <CardHeader className="text-center pb-3">
+                <CardTitle className="font-serif font-light text-lg flex items-center justify-center gap-2">
+                  <Download className="h-4 w-4" />
+                  Add to Home Screen
+                </CardTitle>
+                <CardDescription>
+                  For a quieter, more private experience
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0">
+                {isIOS ? (
+                  <div className="text-sm text-muted-foreground space-y-3 text-center">
+                    <p className="flex items-center justify-center gap-2">
+                      <Share className="h-4 w-4 shrink-0" />
+                      Tap the share icon, then "Add to Home Screen"
+                    </p>
+                    <button
+                      onClick={dismissInstall}
+                      className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors"
+                    >
+                      Got it
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-3">
+                    <Button onClick={installApp} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                      Add to home screen
+                    </Button>
+                    <button
+                      onClick={dismissInstall}
+                      className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors"
+                    >
+                      Not now
+                    </button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Past Sessions */}
           <Card className="bg-card/50 border-border/50">
