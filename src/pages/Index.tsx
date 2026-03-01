@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { MessageCircle, Heart, Shield, Clock, X, Check } from "lucide-react";
+import { MessageCircle, Heart, Shield, Clock, X, Check, Send } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
 
@@ -45,6 +45,7 @@ const ScrollSection = ({
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [heroInput, setHeroInput] = useState("");
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -197,15 +198,44 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="pt-3 flex flex-col items-center">
-            <Button
-              size="lg"
-              onClick={handleTryForFree}
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-10 py-5 text-sm font-medium shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto">
-
-              Start your first free session
-            </Button>
-            <p className="mt-2 text-xs text-muted-foreground italic">Have an account? <a href="/auth" className="underline hover:text-foreground transition-colors">Log in</a></p>
+          <div className="pt-3 w-full max-w-xl mx-auto">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const val = heroInput.trim();
+                if (!val) return;
+                if (user) {
+                  navigate("/dashboard");
+                } else {
+                  navigate("/try", { state: { initialMessage: val } });
+                }
+              }}
+              className="relative group"
+            >
+              <textarea
+                value={heroInput}
+                onChange={(e) => setHeroInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    e.currentTarget.form?.requestSubmit();
+                  }
+                }}
+                placeholder="What's on your mind? Start typing..."
+                rows={3}
+                className="w-full resize-none rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm px-5 py-4 pr-14 text-base text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 shadow-lg transition-all duration-300 group-hover:shadow-xl"
+              />
+              <button
+                type="submit"
+                className="absolute right-3 bottom-3 p-2.5 rounded-xl bg-[#4a7a4f] hover:bg-[#3d6542] text-white shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-40"
+                disabled={!heroInput.trim()}
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
+            <p className="mt-3 text-xs text-muted-foreground italic text-center">
+              Free to start · No account needed · <a href="/auth" className="underline hover:text-foreground transition-colors">Have an account? Log in</a>
+            </p>
           </div>
         </div>
       </section>

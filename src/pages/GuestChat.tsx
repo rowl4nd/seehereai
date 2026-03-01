@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ const GuestChat = () => {
   const { profile, updateProfile } = useProfile();
   const { createConversation: createEncryptedConversation, saveMessages, loadHistory } = useEncryptedMessages();
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialMessageSent = useRef(false);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -302,13 +304,24 @@ const GuestChat = () => {
     }
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading || (guestLimitReached && !authenticated) || sessionEnded) return;
+  // Auto-send initial message from homepage chat input
+  useEffect(() => {
+    const initialMessage = (location.state as any)?.initialMessage;
+    if (initialMessage && !initialMessageSent.current && !authLoading) {
+      initialMessageSent.current = true;
+      window.history.replaceState({}, document.title);
+      setTimeout(() => handleSend(initialMessage), 300);
+    }
+  }, [authLoading, location.state]);
+
+  const handleSend = async (overrideMessage?: string) => {
+    const text = overrideMessage || input.trim();
+    if (!text || isLoading || (guestLimitReached && !authenticated) || sessionEnded) return;
 
     const userMessage: Message = {
       id: "user-" + Date.now(),
       role: "user",
-      content: input.trim(),
+      content: text,
     };
 
     const updatedWithUser = [...messagesRef.current, userMessage];
@@ -507,7 +520,7 @@ const GuestChat = () => {
                 autoFocus
               />
               <Button
-                onClick={handleSend}
+                onClick={() => handleSend()}
                 disabled={!input.trim() || inputDisabled}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground"
               >
