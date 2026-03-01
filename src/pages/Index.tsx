@@ -1,12 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { MessageCircle, Heart, Shield, Clock, Check, X, Send, Loader2 } from "lucide-react";
+import { MessageCircle, Heart, Shield, Clock, Check, X, Send } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
-import { supabase } from "@/integrations/supabase/client";
 
 import heroLogo from "@/assets/see-here-logo.png";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
@@ -19,15 +18,6 @@ import quoteCard2 from "@/assets/quote-card-2.png";
 import quoteCard3 from "@/assets/quote-card-3.png";
 import heroBgLeft from "@/assets/hero-bg-left.jpg";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
-}
-
-const MAX_HERO_MESSAGES = 6; // messages before nudging to sign up
-
-// ─── Scroll animation wrapper ────────────────────────────────────────────────
 const ScrollSection = ({
   children,
   className = "",
@@ -51,189 +41,10 @@ const ScrollSection = ({
   );
 };
 
-// ─── Hero chat component ─────────────────────────────────────────────────────
-const HeroChat = ({ onSignupNudge }: { onSignupNudge: () => void }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [started, setStarted] = useState(false);
-  const [nudged, setNudged] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
-
-  const userMessages = messages.filter((m) => m.role === "user").length;
-
-  const sendMessage = async () => {
-    const val = input.trim();
-    if (!val || loading) return;
-
-    // If authenticated, send to proper chat
-    if (user) {
-      navigate("/dashboard");
-      return;
-    }
-
-    // If they've hit the limit, nudge to sign up
-    if (userMessages >= MAX_HERO_MESSAGES) {
-      if (!nudged) {
-        setNudged(true);
-        onSignupNudge();
-      }
-      return;
-    }
-
-    setStarted(true);
-    const newMessages: ChatMessage[] = [...messages, { role: "user", content: val }];
-    setMessages(newMessages);
-    setInput("");
-    setLoading(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke("chat", {
-        body: {
-          messages: newMessages,
-          userName: null,
-          nameDeclined: true,
-        },
-      });
-
-      if (error) throw error;
-
-      const assistantContent =
-        data?.message?.content
-          ?.replace(/\[END_SESSION\]/g, "")
-          ?.replace(/\[NAME:.*?\]/g, "")
-          ?.replace(/\[NAME_DECLINED\]/g, "")
-          ?.trim() ?? "I'm here. Take your time.";
-
-      setMessages([...newMessages, { role: "assistant", content: assistantContent }]);
-
-      // After limit, show nudge
-      if (userMessages + 1 >= MAX_HERO_MESSAGES && !nudged) {
-        setTimeout(() => {
-          setNudged(true);
-          onSignupNudge();
-        }, 800);
-      }
-    } catch {
-      setMessages([
-        ...newMessages,
-        {
-          role: "assistant",
-          content: "I'm having a moment of trouble connecting. Please try again.",
-        },
-      ]);
-    } finally {
-      setLoading(false);
-      setTimeout(() => textareaRef.current?.focus(), 0);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
-  return (
-    <div className="w-full max-w-2xl mx-auto">
-      {/* Chat history — only visible once started */}
-      {started && (
-        <div className="mb-4 space-y-3 max-h-[320px] overflow-y-auto px-1 scroll-smooth">
-          {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in`}>
-              <div
-                className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
-                  msg.role === "user"
-                    ? "bg-[#4a7a4f] text-white rounded-br-md"
-                    : "bg-white/80 backdrop-blur text-[#3d3a35] rounded-bl-md shadow-sm border border-white/60"
-                }`}
-              >
-                {msg.content}
-              </div>
-            </div>
-          ))}
-          {loading && (
-            <div className="flex justify-start">
-              <div className="bg-white/80 backdrop-blur px-4 py-3 rounded-2xl rounded-bl-md shadow-sm border border-white/60">
-                <Loader2 className="w-4 h-4 animate-spin text-[#4a7a4f]" />
-              </div>
-            </div>
-          )}
-          <div ref={bottomRef} />
-        </div>
-      )}
-
-      {/* Input */}
-      <div className="relative group">
-        <textarea
-          ref={textareaRef}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={started ? "Keep going…" : "What's on your mind? Start typing…"}
-          rows={started ? 2 : 3}
-          disabled={loading}
-          className="w-full resize-none rounded-2xl border border-white/60 bg-white/70 backdrop-blur-sm px-5 py-4 pr-14 text-base text-[#3d3a35] placeholder:text-[#3d3a35]/40 focus:outline-none focus:ring-2 focus:ring-[#4a7a4f]/30 focus:border-[#4a7a4f]/40 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white/80"
-        />
-        <button
-          onClick={sendMessage}
-          disabled={!input.trim() || loading}
-          className="absolute right-3 bottom-3 p-2.5 rounded-xl bg-[#4a7a4f] hover:bg-[#3d6542] text-white shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-        </button>
-      </div>
-
-      <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
-        Free to start · No account needed ·{" "}
-        <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors">
-          Have an account? Log in
-        </Link>
-      </p>
-    </div>
-  );
-};
-
-// ─── Signup nudge modal ───────────────────────────────────────────────────────
-const SignupNudge = ({ onDismiss }: { onDismiss: () => void }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/30 backdrop-blur-sm animate-fade-in">
-    <div className="bg-[#f8f6f3] rounded-3xl shadow-2xl max-w-md w-full p-10 text-center space-y-6 border border-white/60">
-      <img src={heroLogo} alt="SeeHere" className="h-16 w-auto mx-auto" />
-      <h2 className="text-2xl font-serif font-light text-[#3d3a35] leading-snug">This space is yours to keep.</h2>
-      <p className="text-[#5f5a53] leading-relaxed text-sm">
-        Create a free account to save your conversation, continue your session, and carry this space with you.
-      </p>
-      <div className="space-y-3 pt-2">
-        <Link to="/auth" className="block w-full">
-          <Button className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-6 rounded-2xl text-base font-medium shadow-lg">
-            Create free account
-          </Button>
-        </Link>
-        <button
-          onClick={onDismiss}
-          className="text-xs text-[#3d3a35]/50 hover:text-[#3d3a35]/80 transition-colors underline"
-        >
-          Continue without saving
-        </button>
-      </div>
-      <p className="text-xs text-[#3d3a35]/40 pt-2">No credit card. No subscription. Just your space.</p>
-    </div>
-  </div>
-);
-
-// ─── Main page ────────────────────────────────────────────────────────────────
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [showNudge, setShowNudge] = useState(false);
+  const [heroInput, setHeroInput] = useState("");
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -256,7 +67,7 @@ const Index = () => {
             name: "Why SeeHere?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "SeeHere exists for the 'Missing Middle' of mental health. Traditional therapy is a big leap, and wellness apps often feel like homework. We offer a quiet, reflective space for when you aren't in crisis, but you're also not okay. No programmes, no progress tracking—just a space to think out loud.",
+              text: "SeeHere exists for the 'Missing Middle' of mental health. Traditional therapy is a big leap, and wellness apps often feel like homework. We offer a quiet, reflective space for when you aren't in crisis, but you're also not okay.",
             },
           },
           {
@@ -264,7 +75,7 @@ const Index = () => {
             name: "How much does it cost?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "You can start a session immediately for free. After 6 messages, we ask you to create a free account to continue and save your progress. Beyond your free credits, sessions are available in 'Presence Packs' starting from £5. No subscriptions, no auto-renewals.",
+              text: "You can start a session immediately for free. After 6 messages, we ask you to create a free account to continue. Beyond your free credits, sessions are available in 'Presence Packs' starting from £5. No subscriptions, no auto-renewals.",
             },
           },
           {
@@ -297,11 +108,19 @@ const Index = () => {
     else navigate("/try");
   };
 
+  const handleHeroSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const val = heroInput.trim();
+    if (!val) return;
+    if (user) {
+      navigate("/dashboard");
+    } else {
+      navigate("/try", { state: { initialMessage: val } });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
-      {/* ── Signup nudge overlay ── */}
-      {showNudge && <SignupNudge onDismiss={() => setShowNudge(false)} />}
-
       {/* ── Header ── */}
       <header className="sticky top-0 z-40 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">
         <Logo />
@@ -328,14 +147,12 @@ const Index = () => {
 
       {/* ── Hero ── */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#cbb7ef]/20 via-[#f4eadf]/30 to-[#b1cfac]/20">
-        {/* Atmospheric background blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full bg-[#cbb7ef]/10 blur-[140px]" />
           <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[#b1cfac]/12 blur-[120px]" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-[#f4eadf]/30 blur-[100px]" />
         </div>
 
-        {/* Left background image */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute left-0 top-0 bottom-0 w-1/3">
             <img
@@ -351,7 +168,6 @@ const Index = () => {
         </div>
 
         <div className="relative z-10 w-full max-w-2xl mx-auto px-6 py-16 flex flex-col items-center space-y-8">
-          {/* Logo & headline */}
           <div className="text-center space-y-4">
             <img src={heroLogo} alt="SeeHere" className="h-20 md:h-28 w-auto mx-auto" />
             <h1 className="font-serif font-light text-[#3d3a35] leading-[1.1] tracking-tight">
@@ -362,7 +178,6 @@ const Index = () => {
             </h1>
           </div>
 
-          {/* Trust signals — minimal, inline */}
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[#5f5a53]">
             <span className="flex items-center gap-1.5">
               <Check className="w-3 h-3 text-[#4a7a4f]" /> Fully confidential
@@ -381,7 +196,6 @@ const Index = () => {
             </span>
           </div>
 
-          {/* ── THE CHAT ── */}
           {user ? (
             <div className="w-full text-center space-y-4">
               <p className="text-[#5f5a53]">Welcome back. Your space is waiting.</p>
@@ -393,18 +207,46 @@ const Index = () => {
               </Button>
             </div>
           ) : (
-            <HeroChat onSignupNudge={() => setShowNudge(true)} />
+            <div className="w-full max-w-2xl mx-auto">
+              <form onSubmit={handleHeroSubmit} className="relative group">
+                <textarea
+                  value={heroInput}
+                  onChange={(e) => setHeroInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      e.currentTarget.form?.requestSubmit();
+                    }
+                  }}
+                  placeholder="What's on your mind? Start typing…"
+                  rows={3}
+                  className="w-full resize-none rounded-2xl border border-white/60 bg-white/70 backdrop-blur-sm px-5 py-4 pr-14 text-base text-[#3d3a35] placeholder:text-[#3d3a35]/40 focus:outline-none focus:ring-2 focus:ring-[#4a7a4f]/30 focus:border-[#4a7a4f]/40 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white/80"
+                />
+                <button
+                  type="submit"
+                  disabled={!heroInput.trim()}
+                  className="absolute right-3 bottom-3 p-2.5 rounded-xl bg-[#4a7a4f] hover:bg-[#3d6542] text-white shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </form>
+              <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
+                Free to start · No account needed ·{" "}
+                <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors">
+                  Have an account? Log in
+                </Link>
+              </p>
+            </div>
           )}
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#3d3a35]">Discover more</span>
           <div className="w-px h-10 bg-[#3d3a35]/30" />
         </div>
       </section>
 
-      {/* ── "Not in crisis but not okay" positioning ── */}
+      {/* ── Missing middle ── */}
       <section className="py-20 px-6 bg-[#f4eadf]/30 text-center">
         <ScrollSection>
           <div className="max-w-2xl mx-auto space-y-6">
@@ -443,7 +285,7 @@ const Index = () => {
                   We combined evidence-based person-centred principles with AI to create a companion that listens
                   without judgment, reflects without fixing, and knows its limits.
                 </p>
-                <div className="space-y-3 pt-2 items-end">
+                <div className="space-y-3 pt-2">
                   <div className="flex items-center gap-3 justify-end">
                     <p className="text-sm text-[#3d3a35] font-medium">Listens with empathy</p>
                     <Heart className="w-4 h-4 text-[#4a7a4f] flex-shrink-0" />
@@ -481,7 +323,6 @@ const Index = () => {
               <h2 className="text-3xl md:text-4xl font-serif font-light text-[#3d3a35]">How it works</h2>
             </div>
           </ScrollSection>
-
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
             {[
               {
@@ -644,7 +485,7 @@ const Index = () => {
         </ScrollSection>
       </section>
 
-      {/* ── Pricing callout ── */}
+      {/* ── Pricing ── */}
       <section className="py-20 px-6 bg-gradient-to-br from-[#cbb7ef]/15 via-[#f4eadf]/20 to-[#b1cfac]/15 text-center">
         <ScrollSection>
           <div className="max-w-lg mx-auto space-y-6">
@@ -698,7 +539,6 @@ const Index = () => {
               <p className="text-xs uppercase tracking-[0.4em] text-[#4a7a4f] font-medium">Questions</p>
               <h2 className="text-3xl md:text-4xl font-serif font-light text-[#3d3a35]">Common questions</h2>
             </div>
-
             <Accordion type="single" collapsible className="space-y-2">
               {[
                 {
@@ -772,7 +612,6 @@ const Index = () => {
               ))}
             </div>
           </div>
-
           <div className="pt-4 border-t border-border/20 max-w-2xl mx-auto flex flex-wrap justify-center gap-x-8 gap-y-2">
             {[
               { href: "/terms", label: "Terms & Conditions" },
@@ -788,7 +627,6 @@ const Index = () => {
               </a>
             ))}
           </div>
-
           <p className="text-xs text-[#5f5a53]/60 max-w-md mx-auto leading-relaxed pt-2">
             See Here is committed to digital accessibility (WCAG 2.1 AA). If you experience any barriers, contact{" "}
             <a href="mailto:hello@seehere.ai" className="underline hover:text-[#3d3a35] transition-colors">
