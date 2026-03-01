@@ -198,7 +198,7 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="pt-3 w-full max-w-xl mx-auto">
+          <div className="pt-3 w-full max-w-2xl mx-auto">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
