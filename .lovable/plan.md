@@ -1,35 +1,23 @@
 
 
-# Fix: Send Welcome Email for All Signup Methods
+# Remove Disclosure Greeting from Guest Chat
 
-## Problem
-The welcome email is only triggered during email/password signup in the SecureSessionModal. Google and Apple OAuth signups skip it because the OAuth flow redirects the user away, and when they return, the migration logic runs but never sends the email.
-
-## Solution
-Move the welcome email trigger into the **migration logic** in `GuestChat.tsx`, which runs for all signup paths (email/password, Google, Apple). Remove the duplicate call from the modal.
+## What's changing
+Since the homepage now shows a disclosure modal (T&Cs, privacy, AI disclaimer) before the user can even type, the guest chat no longer needs to repeat all that legal text as its first message. We'll replace the four-paragraph disclosure greeting with a short, warm opening line.
 
 ## Changes
 
-### 1. GuestChat.tsx -- Add welcome email to migration logic
-- Inside the `migrateGuestData` function (around line 224, after migration completes successfully), add a fire-and-forget call to send the welcome email using `user.email`
-- This ensures every new user gets the email regardless of how they signed up
+### 1. GreetingMessage.tsx -- Simplify to a warm opener
+Replace the current multi-paragraph legal disclosure with a simple, inviting message like:
+> "Welcome to See Here. I'm here to listen -- share whatever's on your mind."
 
-### 2. SecureSessionModal.tsx -- Remove duplicate welcome email call
-- Remove the `send-welcome-email` invocation from the email/password signup handler (line 49), since it will now be handled by the migration logic in GuestChat
+Remove the Terms/Privacy links and emergency contact info (already covered by the homepage modal). Remove the unused `Link` import.
 
-## Technical Details
+### 2. GuestChat.tsx -- Remove greeting from sessionStorage seeding
+Currently, when no saved messages exist, the code seeds a `greeting` placeholder message. This still makes sense (to show the welcome), but we should also ensure that if the user arrives with an `initialMessage` from the homepage, the greeting appears before their message rather than being skipped. No structural change needed here -- the existing logic already handles this correctly since the greeting is added on mount and the initial message is sent after a 300ms delay.
 
-**GuestChat.tsx (inside migrateGuestData, after line 224):**
-```typescript
-// Fire-and-forget welcome email
-if (user.email) {
-  supabase.functions.invoke("send-welcome-email", { body: { email: user.email } }).catch(() => {});
-}
-```
+## Summary
+- One file changed: `GreetingMessage.tsx`
+- The greeting becomes a brief, warm welcome (no legal text)
+- All legal acknowledgment is handled by the homepage disclosure modal before the user reaches the chat
 
-**SecureSessionModal.tsx (line 48-49):**
-Remove:
-```typescript
-// Fire-and-forget welcome email
-supabase.functions.invoke("send-welcome-email", { body: { email } }).catch(() => {});
-```
