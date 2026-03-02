@@ -86,9 +86,6 @@ const DisclosureModal = ({ onAccept }: { onAccept: () => void }) => (
           </a>
           .
         </p>
-        <p className="text-base leading-relaxed text-[#5f5a53] italic">
-          Take a breath. When you're ready, what's been on your mind?
-        </p>
       </div>
       <Button
         onClick={onAccept}
@@ -305,7 +302,7 @@ const Index = () => {
                       e.currentTarget.form?.requestSubmit();
                     }
                   }}
-                  placeholder="What's on your mind? Start typing…"
+                  placeholder="When you're ready, what's been on your mind?…"
                   rows={3}
                   className="w-full resize-none rounded-2xl border border-white/60 bg-white/70 backdrop-blur-sm px-5 py-4 pr-14 text-base text-[#3d3a35] placeholder:text-[#3d3a35]/40 focus:outline-none focus:ring-2 focus:ring-[#4a7a4f]/30 focus:border-[#4a7a4f]/40 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white/80"
                 />
