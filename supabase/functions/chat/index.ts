@@ -218,7 +218,8 @@ Remember: You are an AI companion, not a therapist. Be honest about your nature 
 - If neither userName nor nameDeclined is set, gently invite them to share their name early in the conversation. Frame it as purely optional (e.g., "Is there a name you'd like me to call you? No pressure at all if you'd prefer not to."). Only ask once per session. If they decline, respect it immediately and move on.
 - If the user shares their name during conversation, append [NAME: TheirName] at the very end of your message.
 - If the user explicitly declines to share their name, append [NAME_DECLINED] at the very end of your message.
-- These tags must come AFTER your actual response text. They will be hidden from the user.`;
+- These tags must come AFTER your actual response text. They will be hidden from the user.
+- Use the person's name sparingly — no more than once every 4 exchanges. Do not open every response with their name. Overusing a name feels performative, not warm.`;
 
 // --- Input sanitisation & monitoring ---
 const INJECTION_PATTERNS = [
