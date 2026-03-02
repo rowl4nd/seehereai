@@ -1,18 +1,17 @@
 
-# Reset T&C Acknowledgment on Guest Session End
+# Prevent Mobile Keyboard When Disclosure Modal Opens
 
-## What's changing
-When a guest clicks "End session" in the chat, the disclosure acknowledgment (`sh_disclosure_accepted` in sessionStorage) needs to be cleared so they must re-acknowledge T&Cs if they start again from the homepage.
+## Problem
+On mobile, tapping the chat textarea triggers two things simultaneously: the disclosure modal opens AND the keyboard appears (because the textarea gets focus). The keyboard obscures the modal, making it hard for users to read and accept the T&Cs.
 
-## Change
+## Solution
+Make the textarea `readOnly` until the disclosure has been accepted. This prevents the keyboard from appearing on tap while still allowing the focus event to fire and trigger the modal. Once the user clicks "I understand", the `readOnly` attribute is removed and the textarea is focused programmatically (which is already handled in `handleDisclosureAccept`).
 
-### GuestChat.tsx -- Add `sh_disclosure_accepted` to the session cleanup
-In the "End session" button's `onClick` handler (around line 310), add one line to also remove the disclosure flag:
+## Technical Detail
 
-```typescript
-sessionStorage.removeItem("sh_disclosure_accepted");
-```
+### Index.tsx -- Add `readOnly` to the textarea
 
-This sits alongside the existing `removeItem` calls for `guest_messages`, `guest_onboarding_complete`, and `guest_email`.
-
-One file, one line.
+Add `readOnly={!disclosureAccepted}` to the textarea element (around line 294). This way:
+- First tap: focus fires, modal opens, but no keyboard (because readOnly)
+- User taps "I understand": `disclosureAccepted` becomes true, textarea gets focused via the existing `setTimeout(() => textareaRef.current?.focus(), 50)`, keyboard opens normally
+- All subsequent visits (sessionStorage flag set): textarea is editable immediately
