@@ -1,17 +1,55 @@
 
-# Prevent Mobile Keyboard When Disclosure Modal Opens
+# Show Disclosure Modal on All "Try for Free" Buttons
 
 ## Problem
-On mobile, tapping the chat textarea triggers two things simultaneously: the disclosure modal opens AND the keyboard appears (because the textarea gets focus). The keyboard obscures the modal, making it hard for users to read and accept the T&Cs.
+The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
 
 ## Solution
-Make the textarea `readOnly` until the disclosure has been accepted. This prevents the keyboard from appearing on tap while still allowing the focus event to fire and trigger the modal. Once the user clicks "I understand", the `readOnly` attribute is removed and the textarea is focused programmatically (which is already handled in `handleDisclosureAccept`).
+Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
 
 ## Technical Detail
 
-### Index.tsx -- Add `readOnly` to the textarea
+### Index.tsx -- Update `handleTryForFree`
 
-Add `readOnly={!disclosureAccepted}` to the textarea element (around line 294). This way:
-- First tap: focus fires, modal opens, but no keyboard (because readOnly)
-- User taps "I understand": `disclosureAccepted` becomes true, textarea gets focused via the existing `setTimeout(() => textareaRef.current?.focus(), 50)`, keyboard opens normally
-- All subsequent visits (sessionStorage flag set): textarea is editable immediately
+Change the function (around line 172) from:
+```typescript
+const handleTryForFree = () => {
+  if (user) navigate("/dashboard");
+  else navigate("/try");
+};
+```
+
+To:
+```typescript
+const handleTryForFree = () => {
+  if (user) {
+    navigate("/dashboard");
+  } else if (!disclosureAccepted) {
+    setShowDisclosure(true);
+  } else {
+    navigate("/try");
+  }
+};
+```
+
+### Index.tsx -- Update `handleDisclosureAccept`
+
+Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
+
+```typescript
+const handleDisclosureAccept = () => {
+  sessionStorage.setItem("sh_disclosure_accepted", "true");
+  setDisclosureAccepted(true);
+  setShowDisclosure(false);
+
+  // If the user was typing in the hero input, focus it
+  // Otherwise (clicked a Try for Free button), navigate to /try
+  if (document.activeElement === textareaRef.current || heroInput.trim()) {
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  } else {
+    navigate("/try");
+  }
+};
+```
+
+This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
