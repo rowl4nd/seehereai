@@ -48,7 +48,7 @@ const DisclosureModal = ({ onAccept }: { onAccept: () => void }) => (
     <div className="bg-[#f8f6f3] rounded-3xl shadow-2xl max-w-md w-full p-10 space-y-6 border border-white/60">
       <div className="space-y-4 text-[#3d3a35]">
         <p className="text-base leading-relaxed">
-          Welcome to See Here. I'm a warm, AI-powered space for you to share whatever is on your mind.
+          Welcome to SeeHere. I'm a warm, AI-powered space for you to share whatever is on your mind.
         </p>
         <p className="text-base leading-relaxed">
           Before we begin, please know that I am a <strong>listening companion, not a therapist</strong>, and I don't
@@ -170,13 +170,8 @@ const Index = () => {
   }, []);
 
   const handleTryForFree = () => {
-    if (user) {
-      navigate("/dashboard");
-    } else if (!disclosureAccepted) {
-      setShowDisclosure(true);
-    } else {
-      navigate("/try");
-    }
+    if (user) navigate("/dashboard");
+    else navigate("/try");
   };
 
   const handleTextareaFocus = () => {
@@ -189,12 +184,7 @@ const Index = () => {
     sessionStorage.setItem("sh_disclosure_accepted", "true");
     setDisclosureAccepted(true);
     setShowDisclosure(false);
-
-    if (document.activeElement === textareaRef.current || heroInput.trim()) {
-      setTimeout(() => textareaRef.current?.focus(), 50);
-    } else {
-      navigate("/try");
-    }
+    setTimeout(() => textareaRef.current?.focus(), 50);
   };
 
   const handleHeroSubmit = (e: React.FormEvent) => {
@@ -265,7 +255,7 @@ const Index = () => {
             <h1 className="font-serif font-light text-[#3d3a35] leading-[1.1] tracking-tight">
               <span className="block text-3xl md:text-5xl">A quiet place to be heard.</span>
               <span className="block text-base md:text-xl mt-2 text-[#5f5a53] font-light">
-                Not crisis support. Not therapy. Just a space to think out loud.
+                Not therapy. Just a space to think out loud.
               </span>
             </h1>
           </div>
@@ -284,7 +274,7 @@ const Index = () => {
             </span>
             <span className="w-px h-3 bg-[#3d3a35]/20 hidden sm:block" />
             <span className="flex items-center gap-1.5">
-              <Check className="w-3 h-3 text-[#4a7a4f]" /> Built by therapists
+              <Check className="w-3 h-3 text-[#4a7a4f]" /> No subscriptions
             </span>
           </div>
 
