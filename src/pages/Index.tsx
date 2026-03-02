@@ -18,6 +18,37 @@ import quoteCard2 from "@/assets/quote-card-2.png";
 import quoteCard3 from "@/assets/quote-card-3.png";
 import heroBgLeft from "@/assets/hero-bg-left.jpg";
 
+// ─── Wave divider — sits at the bottom of a section, bleeds into the next ────
+// `flip` reverses it so the wave faces upward (for bottom of dark sections etc.)
+const WaveDivider = ({
+  fromColor,
+  toColor,
+  flip = false,
+  className = "",
+}: {
+  fromColor: string;
+  toColor: string;
+  flip?: boolean;
+  className?: string;
+}) => (
+  <div
+    className={`relative w-full overflow-hidden leading-none ${className}`}
+    style={{ height: 80, marginTop: -1, marginBottom: -1 }}
+    aria-hidden
+  >
+    <svg
+      viewBox="0 0 1440 80"
+      preserveAspectRatio="none"
+      className="absolute inset-0 w-full h-full"
+      style={{ transform: flip ? "scaleY(-1)" : undefined }}
+    >
+      <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill={toColor} />
+    </svg>
+    {/* The "from" background sits behind */}
+    <div className="absolute inset-0 -z-10" style={{ background: fromColor }} />
+  </div>
+);
+
 // ─── Scroll animation wrapper ─────────────────────────────────────────────────
 const ScrollSection = ({
   children,
@@ -109,7 +140,6 @@ const Index = () => {
   const [disclosureAccepted, setDisclosureAccepted] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Check if already accepted this session
   useEffect(() => {
     const accepted = sessionStorage.getItem("sh_disclosure_accepted");
     if (accepted) setDisclosureAccepted(true);
@@ -134,34 +164,25 @@ const Index = () => {
           {
             "@type": "Question",
             name: "Why SeeHere?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "SeeHere exists for the 'Missing Middle' of mental health. Traditional therapy is a big leap, and wellness apps often feel like homework. We offer a quiet, reflective space for when you aren't in crisis, but you're also not okay.",
-            },
+            acceptedAnswer: { "@type": "Answer", text: "SeeHere exists for the 'Missing Middle' of mental health." },
           },
           {
             "@type": "Question",
             name: "How much does it cost?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "You can start a session immediately for free. After 6 messages, we ask you to create a free account to continue. Beyond your free credits, sessions are available in 'Presence Packs' starting from £5. No subscriptions, no auto-renewals.",
-            },
+            acceptedAnswer: { "@type": "Answer", text: "Start free. Presence Packs from £5. No subscriptions." },
           },
           {
             "@type": "Question",
             name: "Is SeeHere.ai therapy?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "No. SeeHere is a reflective space grounded in person-centred principles, not a substitute for professional therapy.",
+              text: "No. SeeHere is a reflective space, not a substitute for professional therapy.",
             },
           },
           {
             "@type": "Question",
             name: "Are my conversations confidential?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Yes. Your conversations are encrypted and private. We do not share your data with third parties.",
-            },
+            acceptedAnswer: { "@type": "Answer", text: "Yes. Encrypted and private. We do not share your data." },
           },
         ],
       },
@@ -178,9 +199,7 @@ const Index = () => {
   };
 
   const handleTextareaFocus = () => {
-    if (!disclosureAccepted && !user) {
-      setShowDisclosure(true);
-    }
+    if (!disclosureAccepted && !user) setShowDisclosure(true);
   };
 
   const handleDisclosureAccept = () => {
@@ -194,23 +213,34 @@ const Index = () => {
     e.preventDefault();
     const val = heroInput.trim();
     if (!val) return;
-    if (user) {
-      navigate("/dashboard");
-    } else {
-      navigate("/try", { state: { initialMessage: val } });
-    }
+    if (user) navigate("/dashboard");
+    else navigate("/try", { state: { initialMessage: val } });
+  };
+
+  // Solid hex equivalents for SVG fills (SVG doesn't support Tailwind/CSS vars)
+  // Hero bg ≈ #f5ede8 blended warm cream, missing middle ≈ #f7ede3, dark ≈ #3d3a35
+  const C = {
+    heroBg: "#f5ede8", // warm cream (hero gradient midpoint)
+    missingMiddle: "#f7ede3", // slightly warmer cream
+    splitLight: "#f2ece2", // therapist split bg
+    howItWorks: "#f5ece0", // how it works bg
+    dark: "#3d3a35", // dark "what we are" section
+    experienceBg: "#efe8f5", // experience split (lavender tint)
+    quotesBg: "#f8f6f3", // quotes section
+    pricingBg: "#f3ecf8", // pricing (lavender tint)
+    safetyBg: "#f7ede3", // safety notice
+    faqBg: "#f8f6f3", // faq / page bg
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
-      {/* ── Disclosure modal ── */}
+    <div className="min-h-screen flex flex-col bg-[#f8f6f3] overflow-x-clip">
       {showDisclosure && <DisclosureModal onAccept={handleDisclosureAccept} />}
 
       {/* ── Header ── */}
-      <header className="sticky top-0 z-40 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">
+      <header className="sticky top-0 z-40 flex justify-between items-center px-4 py-2 md:px-8 bg-[#f8f6f3]/95 backdrop-blur-sm border-b border-[#3d3a35]/8">
         <Logo />
         <div className="flex items-center gap-4">
-          <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
+          <a href="#faq" className="text-sm text-[#5f5a53] hover:text-[#3d3a35] transition-colors duration-200">
             FAQs
           </a>
           {!loading &&
@@ -230,12 +260,17 @@ const Index = () => {
         </div>
       </header>
 
-      {/* ── Hero ── */}
+      {/* ═══════════════════════════════════════════════════
+          HERO
+      ═══════════════════════════════════════════════════ */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#cbb7ef]/20 via-[#f4eadf]/30 to-[#b1cfac]/20">
+        {/* Atmospheric blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full bg-[#cbb7ef]/10 blur-[140px]" />
           <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[#b1cfac]/12 blur-[120px]" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-[#f4eadf]/30 blur-[100px]" />
+          {/* Blob that bleeds down into the next section */}
+          <div className="absolute bottom-[-80px] left-1/4 w-[500px] h-[300px] rounded-full bg-[#f4d9c6]/20 blur-[90px]" />
         </div>
 
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -318,7 +353,7 @@ const Index = () => {
                 </button>
               </form>
               <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
-                Try 2 sessions free ·{" "}
+                Free to start · No account needed ·{" "}
                 <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors">
                   Have an account? Log in
                 </Link>
@@ -327,15 +362,38 @@ const Index = () => {
           )}
         </div>
 
+        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#3d3a35]">Discover more</span>
           <div className="w-px h-10 bg-[#3d3a35]/30" />
         </div>
+
+        {/* Wave out of hero → missing middle */}
+        <div
+          className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none pointer-events-none"
+          style={{ height: 70 }}
+          aria-hidden
+        >
+          <svg viewBox="0 0 1440 70" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+            <path
+              d="M0,35 C360,70 720,0 1080,35 C1260,52 1380,28 1440,35 L1440,70 L0,70 Z"
+              fill={C.missingMiddle}
+              fillOpacity="0.85"
+            />
+          </svg>
+        </div>
       </section>
 
-      {/* ── Missing middle ── */}
-      <section className="py-20 px-6 bg-[#f4eadf]/30 text-center">
-        <ScrollSection>
+      {/* ═══════════════════════════════════════════════════
+          MISSING MIDDLE
+      ═══════════════════════════════════════════════════ */}
+      <section className="relative pt-6 pb-16 px-6 text-center" style={{ background: C.missingMiddle }}>
+        {/* Floating blobs for depth */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-1/4 w-[400px] h-[300px] rounded-full bg-[#cbb7ef]/08 blur-[100px]" />
+          <div className="absolute bottom-0 left-1/4 w-[350px] h-[250px] rounded-full bg-[#b1cfac]/10 blur-[80px]" />
+        </div>
+        <ScrollSection className="relative z-10">
           <div className="max-w-2xl mx-auto space-y-6">
             <p className="text-xs uppercase tracking-[0.4em] text-[#4a7a4f] font-medium">The missing middle</p>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-[#3d3a35] leading-snug">
@@ -349,15 +407,31 @@ const Index = () => {
             </p>
           </div>
         </ScrollSection>
+
+        {/* Wave into therapist split — gentle organic curve */}
+        <div
+          className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none pointer-events-none"
+          style={{ height: 60 }}
+          aria-hidden
+        >
+          <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+            <path d="M0,20 C480,60 960,0 1440,30 L1440,60 L0,60 Z" fill={C.splitLight} fillOpacity="0.9" />
+          </svg>
+        </div>
       </section>
 
-      {/* ── Split: Built by therapists ── */}
-      <section className="relative">
+      {/* ═══════════════════════════════════════════════════
+          SPLIT: BUILT BY THERAPISTS
+      ═══════════════════════════════════════════════════ */}
+      <section className="relative" style={{ background: C.splitLight }}>
         <div className="grid md:grid-cols-2">
           <div className="aspect-square md:aspect-auto md:min-h-[560px] overflow-hidden">
             <img src={splitSafeSpace} alt="Safe space for reflection" className="w-full h-full object-cover" />
           </div>
-          <div className="bg-gradient-to-br from-[#f4eadf]/30 to-[#b1cfac]/20 flex items-center justify-end px-8 md:px-16 py-16 md:py-20">
+          <div
+            className="flex items-center justify-end px-8 md:px-16 py-16 md:py-20"
+            style={{ background: `linear-gradient(135deg, ${C.splitLight} 0%, #e8f0e5 100%)` }}
+          >
             <ScrollSection>
               <div className="max-w-lg space-y-6 text-right ml-auto">
                 <p className="text-xs uppercase tracking-[0.4em] text-[#4a7a4f] font-medium">Our foundation</p>
@@ -373,18 +447,16 @@ const Index = () => {
                   without judgment, reflects without fixing, and knows its limits.
                 </p>
                 <div className="space-y-3 pt-2">
-                  <div className="flex items-center gap-3 justify-end">
-                    <p className="text-sm text-[#3d3a35] font-medium">Listens with empathy</p>
-                    <Heart className="w-4 h-4 text-[#4a7a4f] flex-shrink-0" />
-                  </div>
-                  <div className="flex items-center gap-3 justify-end">
-                    <p className="text-sm text-[#3d3a35] font-medium">Asks thoughtful questions</p>
-                    <MessageCircle className="w-4 h-4 text-[#4a7a4f] flex-shrink-0" />
-                  </div>
-                  <div className="flex items-center gap-3 justify-end">
-                    <p className="text-sm text-[#3d3a35] font-medium">Honest about what it is and isn't</p>
-                    <Shield className="w-4 h-4 text-[#4a7a4f] flex-shrink-0" />
-                  </div>
+                  {[
+                    { label: "Listens with empathy", Icon: Heart },
+                    { label: "Asks thoughtful questions", Icon: MessageCircle },
+                    { label: "Honest about what it is and isn't", Icon: Shield },
+                  ].map(({ label, Icon }) => (
+                    <div key={label} className="flex items-center gap-3 justify-end">
+                      <p className="text-sm text-[#3d3a35] font-medium">{label}</p>
+                      <Icon className="w-4 h-4 text-[#4a7a4f] flex-shrink-0" />
+                    </div>
+                  ))}
                 </div>
                 <div className="pt-4">
                   <Button
@@ -399,11 +471,32 @@ const Index = () => {
             </ScrollSection>
           </div>
         </div>
+
+        {/* Wave into How It Works */}
+        <div
+          className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none pointer-events-none"
+          style={{ height: 65 }}
+          aria-hidden
+        >
+          <svg viewBox="0 0 1440 65" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+            <path
+              d="M0,0 C320,65 720,10 1080,50 C1260,65 1380,30 1440,40 L1440,65 L0,65 Z"
+              fill={C.howItWorks}
+              fillOpacity="0.95"
+            />
+          </svg>
+        </div>
       </section>
 
-      {/* ── How it works ── */}
-      <section className="relative py-24 px-6 md:px-12 bg-[#f4eadf]/20">
-        <div className="max-w-5xl mx-auto">
+      {/* ═══════════════════════════════════════════════════
+          HOW IT WORKS
+      ═══════════════════════════════════════════════════ */}
+      <section className="relative pt-16 pb-24 px-6 md:px-12" style={{ background: C.howItWorks }}>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-10 right-0 w-[400px] h-[400px] rounded-full bg-[#b1cfac]/08 blur-[120px]" />
+          <div className="absolute bottom-0 left-0 w-[350px] h-[350px] rounded-full bg-[#cbb7ef]/08 blur-[100px]" />
+        </div>
+        <div className="max-w-5xl mx-auto relative z-10">
           <ScrollSection>
             <div className="text-center mb-16 space-y-3">
               <p className="text-xs uppercase tracking-[0.4em] text-[#4a7a4f] font-medium">The process</p>
@@ -454,14 +547,32 @@ const Index = () => {
             ))}
           </div>
         </div>
+
+        {/* Wave into dark section — deeper curve */}
+        <div
+          className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none pointer-events-none"
+          style={{ height: 80 }}
+          aria-hidden
+        >
+          <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+            <path d="M0,60 C200,20 400,80 720,40 C1040,0 1240,70 1440,50 L1440,80 L0,80 Z" fill={C.dark} />
+          </svg>
+        </div>
       </section>
 
-      {/* ── What / not what ── */}
-      <section className="py-20 px-6 bg-[#3d3a35] text-[#f8f6f3]">
-        <ScrollSection>
+      {/* ═══════════════════════════════════════════════════
+          WHAT WE ARE / NOT (DARK)
+      ═══════════════════════════════════════════════════ */}
+      <section className="relative pt-8 pb-16 px-6" style={{ background: C.dark }}>
+        {/* Subtle dark blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/3 w-[500px] h-[400px] rounded-full bg-white/[0.02] blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full bg-[#4a7a4f]/10 blur-[100px]" />
+        </div>
+        <ScrollSection className="relative z-10 py-12">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12 space-y-3">
-              <h2 className="text-3xl md:text-4xl font-serif font-light">Clear about what we are</h2>
+              <h2 className="text-3xl md:text-4xl font-serif font-light text-[#f8f6f3]">Clear about what we are</h2>
               <p className="text-[#f8f6f3]/60 text-sm">And what we're not.</p>
             </div>
             <div className="grid md:grid-cols-2 gap-8">
@@ -498,12 +609,28 @@ const Index = () => {
             </div>
           </div>
         </ScrollSection>
+
+        {/* Wave out of dark → experience split */}
+        <div
+          className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none pointer-events-none"
+          style={{ height: 75 }}
+          aria-hidden
+        >
+          <svg viewBox="0 0 1440 75" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+            <path d="M0,75 C360,20 720,75 1080,30 C1260,10 1380,55 1440,45 L1440,75 L0,75 Z" fill={C.experienceBg} />
+          </svg>
+        </div>
       </section>
 
-      {/* ── Split: What you'll experience ── */}
-      <section className="relative">
+      {/* ═══════════════════════════════════════════════════
+          SPLIT: WHAT YOU'LL EXPERIENCE
+      ═══════════════════════════════════════════════════ */}
+      <section className="relative" style={{ background: C.experienceBg }}>
         <div className="grid md:grid-cols-2">
-          <div className="bg-gradient-to-br from-[#cbb7ef]/15 to-[#f4eadf]/20 flex items-center px-8 md:px-16 py-16 md:py-20 order-2 md:order-1">
+          <div
+            className="flex items-center px-8 md:px-16 py-20 md:py-24 order-2 md:order-1"
+            style={{ background: `linear-gradient(135deg, ${C.experienceBg} 0%, #ebe0f5 100%)` }}
+          >
             <ScrollSection>
               <div className="max-w-lg space-y-6">
                 <p className="text-xs uppercase tracking-[0.4em] text-[#4a7a4f] font-medium">The experience</p>
@@ -514,30 +641,30 @@ const Index = () => {
                   Warmth, understanding, and room to breathe. Grounded in person-centred principles.
                 </p>
                 <div className="space-y-5 pt-2">
-                  <div>
-                    <h3 className="text-sm font-medium text-[#3d3a35] mb-1.5 flex items-center gap-2">
-                      <Heart className="w-4 h-4 text-[#4a7a4f]" /> Person-centred listening
-                    </h3>
-                    <p className="text-sm text-[#5f5a53] leading-relaxed">
-                      Based on unconditional positive regard. You are accepted fully, without judgment.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-[#3d3a35] mb-1.5 flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-[#4a7a4f]" /> Gentle, practical support
-                    </h3>
-                    <p className="text-sm text-[#5f5a53] leading-relaxed">
-                      Psychologically informed techniques offered as invitations, never prescriptions.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-[#3d3a35] mb-1.5 flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[#4a7a4f]" /> Your pace, your space
-                    </h3>
-                    <p className="text-sm text-[#5f5a53] leading-relaxed">
-                      No pressure. No rush. You decide when and how to engage.
-                    </p>
-                  </div>
+                  {[
+                    {
+                      Icon: Heart,
+                      title: "Person-centred listening",
+                      body: "Based on unconditional positive regard. You are accepted fully, without judgment.",
+                    },
+                    {
+                      Icon: Shield,
+                      title: "Gentle, practical support",
+                      body: "Psychologically informed techniques offered as invitations, never prescriptions.",
+                    },
+                    {
+                      Icon: Clock,
+                      title: "Your pace, your space",
+                      body: "No pressure. No rush. You decide when and how to engage.",
+                    },
+                  ].map(({ Icon, title, body }) => (
+                    <div key={title}>
+                      <h3 className="text-sm font-medium text-[#3d3a35] mb-1.5 flex items-center gap-2">
+                        <Icon className="w-4 h-4 text-[#4a7a4f]" /> {title}
+                      </h3>
+                      <p className="text-sm text-[#5f5a53] leading-relaxed">{body}</p>
+                    </div>
+                  ))}
                 </div>
                 <div className="pt-4">
                   <Button
@@ -555,11 +682,28 @@ const Index = () => {
             <img src={splitSupport} alt="Calm and supportive environment" className="w-full h-full object-cover" />
           </div>
         </div>
+
+        {/* Wave into quotes */}
+        <div
+          className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none pointer-events-none"
+          style={{ height: 60 }}
+          aria-hidden
+        >
+          <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+            <path d="M0,30 C480,60 960,0 1440,40 L1440,60 L0,60 Z" fill={C.quotesBg} />
+          </svg>
+        </div>
       </section>
 
-      {/* ── Quote cards ── */}
-      <section className="relative py-20 px-6 bg-[#f8f6f3]">
-        <ScrollSection>
+      {/* ═══════════════════════════════════════════════════
+          QUOTE CARDS
+      ═══════════════════════════════════════════════════ */}
+      <section className="relative pt-10 pb-20 px-6" style={{ background: C.quotesBg }}>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-[#cbb7ef]/06 blur-[100px]" />
+          <div className="absolute bottom-0 right-0 w-[400px] h-[300px] rounded-full bg-[#b1cfac]/08 blur-[100px]" />
+        </div>
+        <ScrollSection className="relative z-10">
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             <img
               src={quoteCard1}
@@ -570,11 +714,27 @@ const Index = () => {
             <img src={quoteCard3} alt="User quote" className="w-full h-auto object-cover rounded-2xl shadow-md" />
           </div>
         </ScrollSection>
+
+        {/* Wave into pricing */}
+        <div
+          className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none pointer-events-none"
+          style={{ height: 65 }}
+          aria-hidden
+        >
+          <svg viewBox="0 0 1440 65" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+            <path d="M0,20 C300,65 600,0 900,40 C1100,65 1280,15 1440,35 L1440,65 L0,65 Z" fill={C.pricingBg} />
+          </svg>
+        </div>
       </section>
 
-      {/* ── Pricing ── */}
-      <section className="py-20 px-6 bg-gradient-to-br from-[#cbb7ef]/15 via-[#f4eadf]/20 to-[#b1cfac]/15 text-center">
-        <ScrollSection>
+      {/* ═══════════════════════════════════════════════════
+          PRICING
+      ═══════════════════════════════════════════════════ */}
+      <section className="relative pt-12 pb-20 px-6 text-center" style={{ background: C.pricingBg }}>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-[#cbb7ef]/10 blur-[120px]" />
+        </div>
+        <ScrollSection className="relative z-10">
           <div className="max-w-lg mx-auto space-y-6">
             <p className="text-xs uppercase tracking-[0.4em] text-[#4a7a4f] font-medium">Pricing</p>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-[#3d3a35]">
@@ -602,10 +762,23 @@ const Index = () => {
             </Button>
           </div>
         </ScrollSection>
+
+        {/* Wave into safety notice */}
+        <div
+          className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none pointer-events-none"
+          style={{ height: 50 }}
+          aria-hidden
+        >
+          <svg viewBox="0 0 1440 50" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+            <path d="M0,25 C360,50 720,0 1080,25 C1260,38 1380,15 1440,20 L1440,50 L0,50 Z" fill={C.safetyBg} />
+          </svg>
+        </div>
       </section>
 
-      {/* ── Safety notice ── */}
-      <div className="bg-[#f4eadf]/50 border-y border-border/30 py-3 px-6 text-center">
+      {/* ═══════════════════════════════════════════════════
+          SAFETY NOTICE
+      ═══════════════════════════════════════════════════ */}
+      <div className="relative py-4 px-6 text-center" style={{ background: C.safetyBg }}>
         <p className="text-sm text-[#3d3a35]">
           In crisis? Contact{" "}
           <a
@@ -618,9 +791,14 @@ const Index = () => {
         </p>
       </div>
 
-      {/* ── FAQ ── */}
-      <section id="faq" className="relative py-20 px-6 md:px-12">
-        <ScrollSection>
+      {/* ═══════════════════════════════════════════════════
+          FAQ
+      ═══════════════════════════════════════════════════ */}
+      <section id="faq" className="relative py-20 px-6 md:px-12" style={{ background: C.faqBg }}>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-[350px] h-[350px] rounded-full bg-[#cbb7ef]/06 blur-[100px]" />
+        </div>
+        <ScrollSection className="relative z-10">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-12 space-y-3">
               <p className="text-xs uppercase tracking-[0.4em] text-[#4a7a4f] font-medium">Questions</p>
@@ -664,7 +842,7 @@ const Index = () => {
                   a: `SeeHere is not a crisis service. If you are in immediate danger or experiencing a mental health crisis, please contact the Samaritans on 116 123 (24/7), text SHOUT to 85258, or call 999.`,
                 },
               ].map(({ value, q, a }) => (
-                <AccordionItem key={value} value={value} className="border-b border-border/30 pb-2">
+                <AccordionItem key={value} value={value} className="border-b border-[#3d3a35]/10 pb-2">
                   <AccordionTrigger className="text-lg md:text-xl font-serif font-light text-[#3d3a35] hover:no-underline text-left py-4">
                     {q}
                   </AccordionTrigger>
@@ -676,8 +854,12 @@ const Index = () => {
         </ScrollSection>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="relative py-12 px-6 text-center border-t border-border/30 bg-[#f8f6f3]">
+      {/* ═══════════════════════════════════════════════════
+          FOOTER
+      ═══════════════════════════════════════════════════ */}
+      <footer className="relative py-12 px-6 text-center" style={{ background: C.faqBg }}>
+        {/* Soft top blur instead of hard border */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#3d3a35]/10 to-transparent" />
         <div className="relative z-10 space-y-6">
           <div className="space-y-2">
             <p className="text-xs font-medium text-[#3d3a35]/60 uppercase tracking-widest">Find your space</p>
@@ -699,7 +881,9 @@ const Index = () => {
               ))}
             </div>
           </div>
-          <div className="pt-4 border-t border-border/20 max-w-2xl mx-auto flex flex-wrap justify-center gap-x-8 gap-y-2">
+          <div className="pt-4 max-w-2xl mx-auto flex flex-wrap justify-center gap-x-8 gap-y-2">
+            {/* Gradient separator instead of border */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-[#3d3a35]/10 to-transparent mb-2" />
             {[
               { href: "/terms", label: "Terms & Conditions" },
               { href: "/privacy", label: "Privacy Policy" },
