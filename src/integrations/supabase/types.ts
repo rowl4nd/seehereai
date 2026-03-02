@@ -14,24 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      allowed_testers: {
-        Row: {
-          added_at: string | null
-          email: string
-          id: string
-        }
-        Insert: {
-          added_at?: string | null
-          email: string
-          id?: string
-        }
-        Update: {
-          added_at?: string | null
-          email?: string
-          id?: string
-        }
-        Relationships: []
-      }
       conversations: {
         Row: {
           created_at: string
@@ -194,10 +176,8 @@ export type Database = {
     }
     Functions: {
       auto_end_expired_sessions: { Args: never; Returns: undefined }
-      check_email_status: { Args: { _email: string }; Returns: Json }
       get_next_session_time: { Args: { _user_id: string }; Returns: string }
       has_cooldown_passed: { Args: { _user_id: string }; Returns: boolean }
-      is_email_allowed: { Args: { _email: string }; Returns: boolean }
       start_paid_session: {
         Args: { _session_type: string }
         Returns: {
