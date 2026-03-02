@@ -549,6 +549,7 @@ const GuestChat = () => {
                       sessionStorage.removeItem("guest_messages");
                       sessionStorage.removeItem("guest_onboarding_complete");
                       sessionStorage.removeItem("guest_email");
+                      sessionStorage.removeItem("sh_disclosure_accepted");
                       navigate("/");
                     }}
                     className="text-xs text-muted-foreground hover:text-foreground transition-colors py-1 min-h-[44px] flex items-center"
