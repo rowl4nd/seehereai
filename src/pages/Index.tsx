@@ -170,8 +170,13 @@ const Index = () => {
   }, []);
 
   const handleTryForFree = () => {
-    if (user) navigate("/dashboard");
-    else navigate("/try");
+    if (user) {
+      navigate("/dashboard");
+    } else if (!disclosureAccepted) {
+      setShowDisclosure(true);
+    } else {
+      navigate("/try");
+    }
   };
 
   const handleTextareaFocus = () => {
@@ -184,7 +189,12 @@ const Index = () => {
     sessionStorage.setItem("sh_disclosure_accepted", "true");
     setDisclosureAccepted(true);
     setShowDisclosure(false);
-    setTimeout(() => textareaRef.current?.focus(), 50);
+
+    if (document.activeElement === textareaRef.current || heroInput.trim()) {
+      setTimeout(() => textareaRef.current?.focus(), 50);
+    } else {
+      navigate("/try");
+    }
   };
 
   const handleHeroSubmit = (e: React.FormEvent) => {
