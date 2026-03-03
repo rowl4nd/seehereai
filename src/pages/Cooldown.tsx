@@ -125,7 +125,7 @@ const Cooldown = () => {
                   <p className="text-sm text-[#857f77] font-light leading-relaxed">
                     You've completed your free sessions.
                     <br />
-                    If you'd like to continue, sessions start from <span className="text-[#3d3a35]">£5</span>.
+                    If you'd like to continue, sessions start from <span className="text-[#3d3a35]">£2</span>.
                   </p>
                   <Link
                     to="/credits"
