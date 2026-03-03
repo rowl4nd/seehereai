@@ -2,14 +2,23 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSessions } from "@/hooks/useSessions";
+import { useProfile } from "@/hooks/useProfile";
 import { formatDistanceToNow } from "date-fns";
 import Logo from "@/components/Logo";
 
 const Cooldown = () => {
   const { user, loading: authLoading } = useAuth();
   const { nextSessionTime } = useSessions();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const [timeUntilNext, setTimeUntilNext] = useState<string>("");
+
+  // Determine which session just ended
+  // free_sessions_used is incremented before redirect, so:
+  // 1 = just finished session 1, 2 = just finished session 2
+  const freeSessions = profile?.free_sessions_used ?? 0;
+  const isPostSession1 = freeSessions === 1;
+  const isPostSession2 = freeSessions >= 2;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -83,8 +92,8 @@ const Cooldown = () => {
                 </p>
               </div>
 
-              {/* Time remaining */}
-              {timeUntilNext && (
+              {/* Time remaining — only show if they have a free session left OR have credits */}
+              {timeUntilNext && isPostSession1 && (
                 <div className="space-y-2 pt-2">
                   <p className="text-sm text-[#857f77] italic">We can speak again in...</p>
                   <p className="text-2xl font-serif italic text-[#3d3a35]">{timeUntilNext}</p>
@@ -98,6 +107,34 @@ const Cooldown = () => {
                   "What's one thing from our conversation that stayed with you?"
                 </p>
               </div>
+
+              {/* ── Context-aware nudge ── */}
+
+              {/* Post session 1: quiet reminder of second free session */}
+              {isPostSession1 && (
+                <div className="pt-2 border-t border-[#af9cd3]/20">
+                  <p className="text-sm text-[#857f77] font-light italic">
+                    Your second free session will be here when you're ready.
+                  </p>
+                </div>
+              )}
+
+              {/* Post session 2: soft transition to paid */}
+              {isPostSession2 && (
+                <div className="pt-4 border-t border-[#af9cd3]/20 space-y-3">
+                  <p className="text-sm text-[#857f77] font-light leading-relaxed">
+                    You've completed your free sessions.
+                    <br />
+                    If you'd like to continue, sessions start from <span className="text-[#3d3a35]">£5</span>.
+                  </p>
+                  <Link
+                    to="/credits"
+                    className="inline-block text-xs uppercase tracking-[0.2em] text-[#af9cd3] hover:text-[#3d3a35] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-sm"
+                  >
+                    → See session options
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
