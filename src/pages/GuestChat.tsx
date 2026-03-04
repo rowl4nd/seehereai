@@ -41,7 +41,9 @@ const GuestChat = () => {
   const [sessionStartedAt, setSessionStartedAt] = useState<string | null>(null);
   const [sessionEnded, setSessionEnded] = useState(false);
   const [showEndWarning, setShowEndWarning] = useState(false);
-  const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
+  const [pastConversations, setPastConversations] = useState<
+    Array<{ messages: Array<{ role: string; content: string }> }>
+  >([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -146,7 +148,8 @@ const GuestChat = () => {
         const warningMsg: Message = {
           id: "warning-" + Date.now(),
           role: "assistant",
-          content: "We have about 5 minutes left. Take your time to share anything else on your mind, or we can begin to wrap up.",
+          content:
+            "We have about 5 minutes left. Take your time to share anything else on your mind, or we can begin to wrap up.",
         };
         setMessages((prev) => {
           const updated = [...prev, warningMsg];
@@ -294,9 +297,7 @@ const GuestChat = () => {
 
     // End session in DB
     if (sessionId) {
-      const elapsed = sessionStartedAt
-        ? Math.floor((Date.now() - new Date(sessionStartedAt).getTime()) / 60000)
-        : 0;
+      const elapsed = sessionStartedAt ? Math.floor((Date.now() - new Date(sessionStartedAt).getTime()) / 60000) : 0;
       await supabase
         .from("sessions")
         .update({ is_active: false, ended_at: new Date().toISOString(), duration_minutes: elapsed })
@@ -421,34 +422,46 @@ const GuestChat = () => {
   const inputDisabled = isLoading || (guestLimitReached && !authenticated) || sessionEnded;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8f6f3" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8">
+      <header
+        className="sticky top-0 z-50 border-b px-4 py-2 md:px-8"
+        style={{ backgroundColor: "#f8f6f3", borderColor: "#e8e1d9" }}
+      >
         <Logo />
       </header>
 
       {/* Messages */}
-      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-6 flex flex-col">
-        <div className="max-w-2xl mx-auto space-y-6 mt-auto w-full">
+      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-8 flex flex-col">
+        <div className="max-w-2xl mx-auto space-y-5 mt-auto w-full">
           {messages.map((message) => (
             <div
               key={message.id}
               className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`}
             >
               <div
-                className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                  message.role === "user" ? "rounded-br-md" : "rounded-bl-md"
+                className={`max-w-[78%] px-4 py-3 rounded-2xl ${
+                  message.role === "user" ? "rounded-br-sm" : "rounded-bl-sm"
                 }`}
                 style={
                   message.role === "user"
-                    ? { backgroundColor: "#8aaf8e", color: "#ffffff" }
-                    : { backgroundColor: "#9a86be", color: "#ffffff" }
+                    ? {
+                        backgroundColor: "#d6e8d7",
+                        color: "#2c2c2c",
+                      }
+                    : {
+                        backgroundColor: "#ede8f5",
+                        color: "#2c2c2c",
+                        border: "1px solid rgba(203, 183, 175, 0.3)",
+                      }
                 }
               >
                 {message.id === "greeting" ? (
                   <GreetingMessage />
                 ) : (
-                  <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-base leading-relaxed whitespace-pre-wrap" style={{ color: "#2c2c2c" }}>
+                    {message.content}
+                  </p>
                 )}
               </div>
             </div>
@@ -456,11 +469,26 @@ const GuestChat = () => {
 
           {isLoading && (
             <div className="flex justify-start animate-fade-in">
-              <div className="bg-card border border-border/50 px-4 py-3 rounded-2xl rounded-bl-md">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-pulse" />
-                  <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-pulse delay-100" />
-                  <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-pulse delay-200" />
+              <div
+                className="px-4 py-3 rounded-2xl rounded-bl-sm"
+                style={{
+                  backgroundColor: "#ede8f5",
+                  border: "1px solid rgba(203, 183, 175, 0.3)",
+                }}
+              >
+                <div className="flex gap-1.5 items-center">
+                  <span
+                    className="w-2 h-2 rounded-full animate-pulse"
+                    style={{ backgroundColor: "#9a86be", opacity: 0.5 }}
+                  />
+                  <span
+                    className="w-2 h-2 rounded-full animate-pulse delay-100"
+                    style={{ backgroundColor: "#9a86be", opacity: 0.5 }}
+                  />
+                  <span
+                    className="w-2 h-2 rounded-full animate-pulse delay-200"
+                    style={{ backgroundColor: "#9a86be", opacity: 0.5 }}
+                  />
                 </div>
               </div>
             </div>
@@ -471,39 +499,46 @@ const GuestChat = () => {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-border/30">
+      <footer className="relative z-10" style={{ borderTop: "1px solid #e8e1d9" }}>
         {/* Timer + End Session (authenticated only) */}
         {authenticated && timeRemaining !== null && (
-          <div className="px-4 md:px-6 py-2 bg-card/30 border-b border-border/20">
+          <div className="px-4 md:px-6 py-2" style={{ backgroundColor: "#f8f6f3", borderBottom: "1px solid #f0ece6" }}>
             <div className="max-w-2xl mx-auto space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className="flex items-center gap-3 pt-1">
+                <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ backgroundColor: "#e8e1d9" }}>
                   <div
-                    className="h-full bg-primary/60 transition-all duration-1000"
-                    style={{ width: `${(timeRemaining / (25 * 60)) * 100}%` }}
+                    className="h-full transition-all duration-1000 rounded-full"
+                    style={{
+                      width: `${(timeRemaining / (25 * 60)) * 100}%`,
+                      backgroundColor: timeRemaining <= 300 ? "#c4a882" : "#7aab80",
+                    }}
                   />
                 </div>
-                <span className="text-xs text-muted-foreground whitespace-nowrap">{formatTime(timeRemaining)}</span>
+                <span className="text-xs whitespace-nowrap" style={{ color: "#8a8278" }}>
+                  {formatTime(timeRemaining)}
+                </span>
               </div>
               <div className="flex justify-end">
-                <Button
-                  variant="ghost"
+                <button
                   onClick={sessionEnded ? () => navigate("/cooldown") : handleEndSession}
                   disabled={isLoading}
-                  className="text-sm text-muted-foreground min-h-[44px] px-4"
+                  className="text-sm px-3 py-2 rounded-lg transition-colors min-h-[40px]"
+                  style={{ color: "#8a8278" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "#2c2c2c")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "#8a8278")}
                 >
                   {sessionEnded ? "Return to Dashboard" : "End session"}
-                </Button>
+                </button>
               </div>
             </div>
           </div>
         )}
 
         {/* Input area */}
-        <div className="p-4 md:p-6">
+        <div className="p-4 md:p-5" style={{ backgroundColor: "#f8f6f3" }}>
           <div className="max-w-2xl mx-auto space-y-2">
             <div className="flex gap-3 items-end">
-              <Textarea
+              <textarea
                 ref={textareaRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -515,29 +550,66 @@ const GuestChat = () => {
                       ? "Create an account to continue..."
                       : "Share what's on your mind..."
                 }
-                className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50 text-base"
+                className="flex-1 min-h-[48px] max-h-32 resize-none rounded-xl px-4 py-3 text-base outline-none transition-colors"
+                style={{
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e8e1d9",
+                  color: "#2c2c2c",
+                  fontFamily: "inherit",
+                  lineHeight: "1.6",
+                }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = "#7aab80")}
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#e8e1d9")}
                 disabled={inputDisabled}
                 autoFocus
               />
-              <Button
+              <button
                 onClick={() => handleSend()}
                 disabled={!input.trim() || inputDisabled}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="shrink-0 px-5 h-11 rounded-xl text-sm font-medium transition-all"
+                style={{
+                  backgroundColor: !input.trim() || inputDisabled ? "#c8deca" : "#4a7a4f",
+                  color: !input.trim() || inputDisabled ? "#8aaf8e" : "#ffffff",
+                  cursor: !input.trim() || inputDisabled ? "not-allowed" : "pointer",
+                  border: "none",
+                }}
+                onMouseEnter={(e) => {
+                  if (!(!input.trim() || inputDisabled)) {
+                    e.currentTarget.style.backgroundColor = "#3d6642";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!(!input.trim() || inputDisabled)) {
+                    e.currentTarget.style.backgroundColor = "#4a7a4f";
+                  }
+                }}
               >
                 Send
-              </Button>
+              </button>
             </div>
 
             {/* Consent text + End session (guest only) */}
             {!authenticated && (
               <div className="space-y-1">
-                <p className="text-[11px] text-muted-foreground/60 text-center">
+                <p className="text-[11px] text-center" style={{ color: "rgba(138, 130, 120, 0.7)" }}>
                   By sending a message, you agree to our{" "}
-                  <Link to="/terms" className="underline hover:text-foreground transition-colors">
+                  <Link
+                    to="/terms"
+                    className="underline transition-colors"
+                    style={{ color: "rgba(138, 130, 120, 0.7)" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#2c2c2c")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(138, 130, 120, 0.7)")}
+                  >
                     Terms
                   </Link>{" "}
                   and{" "}
-                  <Link to="/privacy" className="underline hover:text-foreground transition-colors">
+                  <Link
+                    to="/privacy"
+                    className="underline transition-colors"
+                    style={{ color: "rgba(138, 130, 120, 0.7)" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#2c2c2c")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(138, 130, 120, 0.7)")}
+                  >
                     Privacy Policy
                   </Link>
                   .
@@ -552,7 +624,10 @@ const GuestChat = () => {
                       sessionStorage.removeItem("sh_disclosure_accepted");
                       navigate("/");
                     }}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors py-1 min-h-[44px] flex items-center"
+                    className="text-xs transition-colors py-1 min-h-[44px] flex items-center"
+                    style={{ color: "#8a8278" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#2c2c2c")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#8a8278")}
                   >
                     End session
                   </button>
