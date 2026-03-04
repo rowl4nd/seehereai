@@ -26,8 +26,20 @@ const Mirror = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, updateProfile } = useProfile();
   const { credits } = useCredits();
-  const { activeSession, startSession, endSession, canStartSession, loading: sessionsLoading, addSessionToState } = useSessions();
-  const { createConversation: createEncryptedConversation, saveMessages, loadSessionMessages, loadHistory } = useEncryptedMessages();
+  const {
+    activeSession,
+    startSession,
+    endSession,
+    canStartSession,
+    loading: sessionsLoading,
+    addSessionToState,
+  } = useSessions();
+  const {
+    createConversation: createEncryptedConversation,
+    saveMessages,
+    loadSessionMessages,
+    loadHistory,
+  } = useEncryptedMessages();
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -37,9 +49,13 @@ const Mirror = () => {
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [showEndWarning, setShowEndWarning] = useState(false);
   const [sessionEnded, setSessionEnded] = useState(false);
-  const [pastConversations, setPastConversations] = useState<Array<{ messages: Array<{ role: string; content: string }> }>>([]);
+  const [pastConversations, setPastConversations] = useState<
+    Array<{ messages: Array<{ role: string; content: string }> }>
+  >([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [localSession, setLocalSession] = useState<{ id: string; session_type: string; started_at: string } | null>(null);
+  const [localSession, setLocalSession] = useState<{ id: string; session_type: string; started_at: string } | null>(
+    null,
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initRef = useRef(false);
@@ -77,19 +93,15 @@ const Mirror = () => {
     }
   }, [user, authLoading, navigate]);
 
-  // Guard: redirect to onboarding if not completed (skip guidance)
-  // Onboarding is still required for terms acknowledgement
-  // but guidance page is no longer needed
-
   // Fetch past conversations on mount
   useEffect(() => {
     if (!user) return;
-    
+
     const fetchPastConversations = async () => {
       const conversations = await loadHistory();
       setPastConversations(conversations as Array<{ messages: Array<{ role: string; content: string }> }>);
     };
-    
+
     fetchPastConversations();
   }, [user]);
 
@@ -101,7 +113,11 @@ const Mirror = () => {
     const initOrResumeSession = async () => {
       // If there's already an active session, try to resume it
       if (activeSession) {
-        setLocalSession({ id: activeSession.id, session_type: activeSession.session_type, started_at: activeSession.started_at });
+        setLocalSession({
+          id: activeSession.id,
+          session_type: activeSession.session_type,
+          started_at: activeSession.started_at,
+        });
         const startTime = new Date(activeSession.started_at).getTime();
         const duration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
         const endTime = startTime + duration * 1000;
@@ -116,13 +132,14 @@ const Mirror = () => {
         // Session still has time — load existing messages
         const existingConvos = await loadSessionMessages(activeSession.id);
 
-        const existingConvo = existingConvos.find((c) => 
-          Array.isArray(c.messages) && c.messages.length > 1
-        ) || existingConvos[0] || null;
+        const existingConvo =
+          existingConvos.find((c) => Array.isArray(c.messages) && c.messages.length > 1) || existingConvos[0] || null;
 
         if (existingConvo && Array.isArray(existingConvo.messages) && existingConvo.messages.length > 0) {
           // Resume with existing messages
-          const loadedMessages: Message[] = (existingConvo.messages as Array<{ role: string; content: string; timestamp?: string }>).map((m, i) => ({
+          const loadedMessages: Message[] = (
+            existingConvo.messages as Array<{ role: string; content: string; timestamp?: string }>
+          ).map((m, i) => ({
             id: m.timestamp || `loaded-${i}`,
             role: m.role as "user" | "assistant",
             content: m.content,
@@ -167,14 +184,14 @@ const Mirror = () => {
       }
 
       // Use atomic server-side function for session creation and credit deduction
-      const { data: rpcResult, error: rpcError } = await supabase.rpc('start_paid_session', {
-        _session_type: sessionType
+      const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session", {
+        _session_type: sessionType,
       });
 
       const result = rpcResult?.[0];
       if (rpcError || result?.error_msg || !result?.session_id) {
         toast.error(result?.error_msg || "Failed to start session");
-        if (result?.error_msg === 'Insufficient credits') {
+        if (result?.error_msg === "Insufficient credits") {
           navigate("/credits");
         } else {
           navigate("/dashboard");
@@ -182,7 +199,12 @@ const Mirror = () => {
         return;
       }
 
-      const session = { id: result.session_id, session_type: sessionType, started_at: new Date().toISOString(), is_active: true } as any;
+      const session = {
+        id: result.session_id,
+        session_type: sessionType,
+        started_at: new Date().toISOString(),
+        is_active: true,
+      } as any;
       setLocalSession({ id: session.id, session_type: session.session_type, started_at: session.started_at });
       // Add to sessions array so endSession can find it
       addSessionToState({
@@ -238,18 +260,22 @@ const Mirror = () => {
         const warningMsg: Message = {
           id: "warning-" + Date.now(),
           role: "assistant",
-          content: "We have about 5 minutes left. Take your time to share anything else on your mind, or we can begin to wrap up.",
+          content:
+            "We have about 5 minutes left. Take your time to share anything else on your mind, or we can begin to wrap up.",
         };
         setMessages((prev) => {
           const updated = [...prev, warningMsg];
           // Save warning message to DB immediately
           const cId = conversationIdRef.current;
           if (cId) {
-            saveMessages(cId, updated.map(m => ({
-              role: m.role,
-              content: m.content,
-              timestamp: m.id
-            })));
+            saveMessages(
+              cId,
+              updated.map((m) => ({
+                role: m.role,
+                content: m.content,
+                timestamp: m.id,
+              })),
+            );
           }
           return updated;
         });
@@ -261,10 +287,10 @@ const Mirror = () => {
         if (currentSession) {
           const cId = conversationIdRef.current;
           if (cId) {
-            const conversationMessages = messagesRef.current.map(m => ({
+            const conversationMessages = messagesRef.current.map((m) => ({
               role: m.role,
               content: m.content,
-              timestamp: m.id
+              timestamp: m.id,
             }));
             saveMessages(cId, conversationMessages);
           }
@@ -377,10 +403,10 @@ const Mirror = () => {
       pendingSaveRef.current = updatedMessages;
       return;
     }
-    const conversationMessages = updatedMessages.map(m => ({
+    const conversationMessages = updatedMessages.map((m) => ({
       role: m.role,
       content: m.content,
-      timestamp: m.id
+      timestamp: m.id,
     }));
     await saveMessages(cId, conversationMessages);
   };
@@ -408,7 +434,7 @@ const Mirror = () => {
         role: m.role,
         content: m.content,
       }));
-      
+
       // Add wrap-up indicator to the latest user message if in wrap-up mode
       if (showEndWarning && messagesForAI.length > 0) {
         const lastMsg = messagesForAI[messagesForAI.length - 1];
@@ -450,11 +476,14 @@ const Mirror = () => {
       if (response.data?.endSession && currentSession) {
         setSessionEnded(true);
         if (conversationIdRef.current) {
-          await saveMessages(conversationIdRef.current, updatedWithAssistant.map(m => ({
-            role: m.role,
-            content: m.content,
-            timestamp: m.id
-          })));
+          await saveMessages(
+            conversationIdRef.current,
+            updatedWithAssistant.map((m) => ({
+              role: m.role,
+              content: m.content,
+              timestamp: m.id,
+            })),
+          );
         }
         await endSession(currentSession.id);
       }
@@ -482,87 +511,90 @@ const Mirror = () => {
   };
 
   // Voice mode: send transcribed text as a message
-  const sendMessageFromVoice = useCallback(async (text: string) => {
-    if (!text.trim() || isLoading || sessionEnded) return;
+  const sendMessageFromVoice = useCallback(
+    async (text: string) => {
+      if (!text.trim() || isLoading || sessionEnded) return;
 
-    pendingVoiceResponseRef.current = true;
+      pendingVoiceResponseRef.current = true;
 
-    const userMessage: Message = {
-      id: "user-" + Date.now(),
-      role: "user",
-      content: text.trim(),
-    };
-
-    const updatedWithUser = [...messagesRef.current, userMessage];
-    setMessages(updatedWithUser);
-    setIsLoading(true);
-    saveMessagesToDb(updatedWithUser);
-
-    try {
-      const messagesForAI = updatedWithUser.map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
-
-      if (showEndWarning && messagesForAI.length > 0) {
-        const lastMsg = messagesForAI[messagesForAI.length - 1];
-        lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
-      }
-
-      const response = await supabase.functions.invoke("chat", {
-        body: {
-          messages: messagesForAI,
-          pastConversations: pastConversations,
-          userName: profile?.display_name || undefined,
-          nameDeclined: profile?.name_declined || false,
-          timeOfDay: getTimeOfDay(),
-        },
-      });
-
-      if (response.data?.detectedName && !profile?.display_name) {
-        updateProfile({ display_name: response.data.detectedName, name_declined: false });
-      }
-      if (response.data?.nameDeclined && !profile?.name_declined) {
-        updateProfile({ name_declined: true });
-      }
-
-      const assistantText = response.data?.message || "I hear you. Tell me more when you're ready.";
-      const assistantMessage: Message = {
-        id: "assistant-" + Date.now(),
-        role: "assistant",
-        content: assistantText,
+      const userMessage: Message = {
+        id: "user-" + Date.now(),
+        role: "user",
+        content: text.trim(),
       };
 
-      const updatedWithAssistant = [...updatedWithUser, assistantMessage];
-      setMessages(updatedWithAssistant);
-      saveMessagesToDb(updatedWithAssistant);
+      const updatedWithUser = [...messagesRef.current, userMessage];
+      setMessages(updatedWithUser);
+      setIsLoading(true);
+      saveMessagesToDb(updatedWithUser);
 
-      // Play TTS for the response via ref (avoids stale closure)
-      console.log("[Voice] voiceModeEnabledRef:", voiceModeEnabledRef.current, "playTTSRef:", !!playTTSRef.current);
-      if (voiceModeEnabledRef.current && playTTSRef.current) {
-        console.log("[Voice] Calling playTTS for assistant response");
-        playTTSRef.current(assistantText);
-      }
+      try {
+        const messagesForAI = updatedWithUser.map((m) => ({
+          role: m.role,
+          content: m.content,
+        }));
 
-      if (response.data?.endSession && currentSession) {
-        setSessionEnded(true);
-        await endSession(currentSession.id);
+        if (showEndWarning && messagesForAI.length > 0) {
+          const lastMsg = messagesForAI[messagesForAI.length - 1];
+          lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
+        }
+
+        const response = await supabase.functions.invoke("chat", {
+          body: {
+            messages: messagesForAI,
+            pastConversations: pastConversations,
+            userName: profile?.display_name || undefined,
+            nameDeclined: profile?.name_declined || false,
+            timeOfDay: getTimeOfDay(),
+          },
+        });
+
+        if (response.data?.detectedName && !profile?.display_name) {
+          updateProfile({ display_name: response.data.detectedName, name_declined: false });
+        }
+        if (response.data?.nameDeclined && !profile?.name_declined) {
+          updateProfile({ name_declined: true });
+        }
+
+        const assistantText = response.data?.message || "I hear you. Tell me more when you're ready.";
+        const assistantMessage: Message = {
+          id: "assistant-" + Date.now(),
+          role: "assistant",
+          content: assistantText,
+        };
+
+        const updatedWithAssistant = [...updatedWithUser, assistantMessage];
+        setMessages(updatedWithAssistant);
+        saveMessagesToDb(updatedWithAssistant);
+
+        // Play TTS for the response via ref (avoids stale closure)
+        console.log("[Voice] voiceModeEnabledRef:", voiceModeEnabledRef.current, "playTTSRef:", !!playTTSRef.current);
+        if (voiceModeEnabledRef.current && playTTSRef.current) {
+          console.log("[Voice] Calling playTTS for assistant response");
+          playTTSRef.current(assistantText);
+        }
+
+        if (response.data?.endSession && currentSession) {
+          setSessionEnded(true);
+          await endSession(currentSession.id);
+        }
+      } catch (error) {
+        console.error("Chat error:", error);
+        const errorMessage: Message = {
+          id: "error-" + Date.now(),
+          role: "assistant",
+          content: "I'm having trouble connecting right now. Please try again in a moment.",
+        };
+        const updatedWithError = [...updatedWithUser, errorMessage];
+        setMessages(updatedWithError);
+        saveMessagesToDb(updatedWithError);
+      } finally {
+        setIsLoading(false);
+        pendingVoiceResponseRef.current = false;
       }
-    } catch (error) {
-      console.error("Chat error:", error);
-      const errorMessage: Message = {
-        id: "error-" + Date.now(),
-        role: "assistant",
-        content: "I'm having trouble connecting right now. Please try again in a moment.",
-      };
-      const updatedWithError = [...updatedWithUser, errorMessage];
-      setMessages(updatedWithError);
-      saveMessagesToDb(updatedWithError);
-    } finally {
-      setIsLoading(false);
-      pendingVoiceResponseRef.current = false;
-    }
-  }, [isLoading, sessionEnded, showEndWarning, pastConversations, profile, currentSession]);
+    },
+    [isLoading, sessionEnded, showEndWarning, pastConversations, profile, currentSession],
+  );
 
   const voiceMode = useVoiceMode({
     onTranscriptCommit: sendMessageFromVoice,
@@ -612,49 +644,78 @@ const Mirror = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8f6f3" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8">
+      <header
+        className="sticky top-0 z-50 border-b px-4 py-2 md:px-8"
+        style={{ backgroundColor: "#f8f6f3", borderColor: "#e8e1d9" }}
+      >
         <Logo />
       </header>
 
       {/* Messages */}
-      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-6 flex flex-col">
-        <div className="max-w-2xl mx-auto space-y-6 mt-auto w-full">
+      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-8 flex flex-col">
+        <div className="max-w-2xl mx-auto space-y-5 mt-auto w-full">
           {messages.map((message) => (
             <div
               key={message.id}
               className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`}
             >
               <div
-                className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                  message.role === "user"
-                    ? "rounded-br-md"
-                    : "rounded-bl-md"
+                className={`max-w-[78%] px-4 py-3 rounded-2xl ${
+                  message.role === "user" ? "rounded-br-sm" : "rounded-bl-sm"
                 }`}
                 style={
                   message.role === "user"
-                    ? { backgroundColor: '#8aaf8e', color: '#ffffff' }
-                    : { backgroundColor: '#9a86be', color: '#ffffff' }
+                    ? {
+                        backgroundColor: "#d6e8d7",
+                        color: "#2c2c2c",
+                      }
+                    : {
+                        backgroundColor: "#ede8f5",
+                        color: "#2c2c2c",
+                        border: "1px solid rgba(203, 183, 175, 0.3)",
+                      }
                 }
               >
                 {message.id === "greeting" ? (
                   <WelcomeBackMessage userName={profile?.display_name} />
                 ) : (
-                  <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-base leading-relaxed whitespace-pre-wrap" style={{ color: "#2c2c2c" }}>
+                    {message.content}
+                  </p>
                 )}
               </div>
             </div>
           ))}
 
           {isLoading && (
-            <div className="flex justify-start animate-fade-in" role="status" aria-live="polite" aria-label="Waiting for response">
-              <div className="bg-card border border-border/50 px-4 py-3 rounded-2xl rounded-bl-md">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-pulse" />
-                  <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-pulse delay-100" />
-                  <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-pulse delay-200" />
+            <div
+              className="flex justify-start animate-fade-in"
+              role="status"
+              aria-live="polite"
+              aria-label="Waiting for response"
+            >
+              <div
+                className="px-4 py-3 rounded-2xl rounded-bl-sm"
+                style={{
+                  backgroundColor: "#ede8f5",
+                  border: "1px solid rgba(203, 183, 175, 0.3)",
+                }}
+              >
+                <div className="flex gap-1.5 items-center">
+                  <span
+                    className="w-2 h-2 rounded-full animate-pulse"
+                    style={{ backgroundColor: "#9a86be", opacity: 0.5 }}
+                  />
+                  <span
+                    className="w-2 h-2 rounded-full animate-pulse delay-100"
+                    style={{ backgroundColor: "#9a86be", opacity: 0.5 }}
+                  />
+                  <span
+                    className="w-2 h-2 rounded-full animate-pulse delay-200"
+                    style={{ backgroundColor: "#9a86be", opacity: 0.5 }}
+                  />
                 </div>
               </div>
             </div>
@@ -665,96 +726,141 @@ const Mirror = () => {
       </main>
 
       {/* Input and Timer */}
-      <footer className="relative z-10 border-t border-border/30">
+      <footer className="relative z-10" style={{ borderTop: "1px solid #e8e1d9" }}>
         {/* Timer and End session */}
-        <div className="px-4 md:px-6 py-2 bg-card/30 border-b border-border/20">
+        <div className="px-4 md:px-6 py-2" style={{ backgroundColor: "#f8f6f3", borderBottom: "1px solid #f0ece6" }}>
           <div className="max-w-2xl mx-auto space-y-2">
             {timeRemaining !== null && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 pt-1">
                 <div
-                  className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden"
+                  className="flex-1 h-1 rounded-full overflow-hidden"
                   role="progressbar"
                   aria-valuenow={timeRemaining}
                   aria-valuemax={sessionDuration}
                   aria-label={`${formatTime(timeRemaining)} remaining`}
+                  style={{ backgroundColor: "#e8e1d9" }}
                 >
                   <div
-                    className="h-full bg-primary/60 transition-all duration-1000"
-                    style={{ width: `${(timeRemaining / sessionDuration) * 100}%` }}
+                    className="h-full transition-all duration-1000 rounded-full"
+                    style={{
+                      width: `${(timeRemaining / sessionDuration) * 100}%`,
+                      backgroundColor: timeRemaining <= 300 ? "#c4a882" : "#7aab80",
+                    }}
                   />
                 </div>
-                <span className="text-xs text-muted-foreground whitespace-nowrap">{formatTime(timeRemaining)}</span>
+                <span className="text-xs whitespace-nowrap" style={{ color: "#8a8278" }}>
+                  {formatTime(timeRemaining)}
+                </span>
               </div>
             )}
             <div className="flex justify-end">
-              <Button
-                variant="ghost"
+              <button
                 onClick={sessionEnded ? () => navigate("/cooldown") : handleEndSession}
-                className="text-sm text-muted-foreground min-h-[44px] px-4"
+                className="text-sm px-3 py-2 rounded-lg transition-colors min-h-[40px]"
+                style={{ color: "#8a8278" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#2c2c2c")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#8a8278")}
               >
                 {sessionEnded ? "Return to Dashboard" : "End session"}
-              </Button>
+              </button>
             </div>
           </div>
         </div>
-        
+
         {/* Input area */}
-        <div className="p-4 md:p-6">
+        <div className="p-4 md:p-5" style={{ backgroundColor: "#f8f6f3" }}>
           <div className="max-w-2xl mx-auto flex gap-3 items-end">
             {VOICE_FEATURE_ENABLED && voiceModeEnabled ? (
-              <div className="flex-1 min-h-[48px] flex items-center px-4 py-3 rounded-md bg-card border border-border/50">
+              <div
+                className="flex-1 min-h-[48px] flex items-center px-4 py-3 rounded-xl"
+                style={{ backgroundColor: "#ffffff", border: "1px solid #e8e1d9" }}
+              >
                 {voiceMode.voiceState === "listening" && (
-                  <div className="flex items-center gap-2 text-primary">
-                    <span className="relative flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span
+                        className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                        style={{ backgroundColor: "#4a7a4f" }}
+                      />
+                      <span
+                        className="relative inline-flex rounded-full h-2.5 w-2.5"
+                        style={{ backgroundColor: "#4a7a4f" }}
+                      />
                     </span>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm" style={{ color: "#8a8278" }}>
                       {voiceMode.partialText || "Listening..."}
                     </span>
                   </div>
                 )}
                 {voiceMode.voiceState === "processing" && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="flex items-center gap-2" style={{ color: "#8a8278" }}>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span className="text-sm">Processing...</span>
                   </div>
                 )}
               </div>
             ) : (
-              <Textarea
+              <textarea
                 ref={textareaRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Share what's on your mind..."
-                className="flex-1 min-h-[48px] max-h-32 resize-none bg-card border-border/50 focus:border-primary/50 text-base"
+                className="flex-1 min-h-[48px] max-h-32 resize-none rounded-xl px-4 py-3 text-base outline-none transition-colors"
+                style={{
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e8e1d9",
+                  color: "#2c2c2c",
+                  fontFamily: "inherit",
+                  lineHeight: "1.6",
+                }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = "#7aab80")}
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#e8e1d9")}
                 disabled={isLoading || sessionEnded}
                 autoFocus
               />
             )}
             {/* Mic toggle - hidden while voice feature is disabled */}
             {VOICE_FEATURE_ENABLED && (
-              <Button
-                variant={voiceModeEnabled ? "default" : "outline"}
-                size="icon"
+              <button
                 onClick={handleVoiceToggle}
                 disabled={sessionEnded}
-                className={`shrink-0 ${voiceModeEnabled ? "bg-primary text-primary-foreground" : ""}`}
+                className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center transition-colors"
+                style={{
+                  backgroundColor: voiceModeEnabled ? "#4a7a4f" : "#ffffff",
+                  border: "1px solid #e8e1d9",
+                  color: voiceModeEnabled ? "#ffffff" : "#8a8278",
+                }}
                 title={voiceModeEnabled ? "Switch to text mode" : "Switch to voice mode"}
               >
                 {voiceModeEnabled ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-              </Button>
+              </button>
             )}
             {/* Send button - only in text mode */}
             {(!VOICE_FEATURE_ENABLED || !voiceModeEnabled) && (
-              <Button
+              <button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading || sessionEnded}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="shrink-0 px-5 h-11 rounded-xl text-sm font-medium transition-all"
+                style={{
+                  backgroundColor: !input.trim() || isLoading || sessionEnded ? "#c8deca" : "#4a7a4f",
+                  color: !input.trim() || isLoading || sessionEnded ? "#8aaf8e" : "#ffffff",
+                  cursor: !input.trim() || isLoading || sessionEnded ? "not-allowed" : "pointer",
+                  border: "none",
+                }}
+                onMouseEnter={(e) => {
+                  if (!(!input.trim() || isLoading || sessionEnded)) {
+                    e.currentTarget.style.backgroundColor = "#3d6642";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!(!input.trim() || isLoading || sessionEnded)) {
+                    e.currentTarget.style.backgroundColor = "#4a7a4f";
+                  }
+                }}
               >
                 Send
-              </Button>
+              </button>
             )}
           </div>
         </div>
