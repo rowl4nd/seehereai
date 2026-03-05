@@ -7,7 +7,6 @@ const Privacy = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8 flex items-center justify-between">
         <Logo />
@@ -23,21 +22,22 @@ const Privacy = () => {
       {/* Main content */}
       <main className="relative z-10 flex-1 px-6 py-12">
         <div className="w-full max-w-2xl mx-auto space-y-8 animate-fade-in">
-          <h1 className="text-3xl font-serif font-light text-foreground">
-            Privacy Policy
-          </h1>
+          <h1 className="text-3xl font-serif font-light text-foreground">Privacy Policy</h1>
 
           <div className="space-y-6 text-sm text-foreground/90 leading-relaxed">
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">1. Who We Are</h2>
               <p>
-                See Here is an AI-powered listening companion operated by See Here Ltd ("we", "us", "our"). We act as the data controller for your personal information. If you have any questions about how we handle your data, please contact us at{" "}
+                See Here is an AI-powered listening companion operated by See Here Ltd ("we", "us", "our"). We act as
+                the data controller for your personal information. If you have any questions about how we handle your
+                data, please contact us at{" "}
                 <a
                   href="mailto:hello@seehere.ai"
                   className="text-primary underline hover:text-primary/80 transition-colors"
                 >
                   hello@seehere.ai
-                </a>.
+                </a>
+                .
               </p>
             </section>
 
@@ -45,11 +45,29 @@ const Privacy = () => {
               <h2 className="text-xl font-serif text-foreground">2. What Data We Collect</h2>
               <p>We collect the following personal data when you use See Here:</p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li><strong>Account information:</strong> Your email address, used for authentication and communication</li>
-                <li><strong>Conversation data:</strong> The messages you share during sessions, stored to provide continuity between sessions</li>
-                <li><strong>Session history:</strong> Timestamps and duration of your sessions</li>
-                <li><strong>Payment information:</strong> Processed securely by Stripe — we do not store your card details</li>
-                <li><strong>Profile data:</strong> Display name (optional) and onboarding acknowledgements</li>
+                <li>
+                  <strong>Account information:</strong> Your email address, used for authentication and communication
+                </li>
+                <li>
+                  <strong>Conversation data:</strong> The messages you share during sessions, stored to provide
+                  continuity between sessions
+                </li>
+                <li>
+                  <strong>Session history:</strong> Timestamps and duration of your sessions
+                </li>
+                <li>
+                  <strong>Payment information:</strong> Processed securely by Stripe — we do not store your card details
+                </li>
+                <li>
+                  <strong>Profile data:</strong> Display name (optional — only stored if you choose to provide it) and
+                  onboarding acknowledgements
+                </li>
+                <li>
+                  <strong>Pre-registration messages:</strong> If you begin a conversation before creating an account,
+                  those messages are held temporarily in session storage only. If you do not create an account, they are
+                  permanently deleted and never stored. If you do create an account, they are saved to your conversation
+                  history at that point.
+                </li>
               </ul>
             </section>
 
@@ -57,32 +75,60 @@ const Privacy = () => {
               <h2 className="text-xl font-serif text-foreground">3. Why We Collect It (Lawful Basis)</h2>
               <p>We process your data under the following lawful bases as defined by the UK GDPR:</p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li><strong>Contractual necessity (Article 6(1)(b)):</strong> To provide the See Here service — including storing your conversations for session continuity, managing your account, and processing payments</li>
-                <li><strong>Legitimate interest (Article 6(1)(f)):</strong> To maintain and improve the service, ensure security, and prevent misuse</li>
-                <li><strong>Consent (Article 6(1)(a)):</strong> Where you have given explicit consent, such as acknowledging this privacy policy</li>
+                <li>
+                  <strong>Contractual necessity (Article 6(1)(b)):</strong> To provide the See Here service — including
+                  storing your conversations for session continuity, managing your account, and processing payments
+                </li>
+                <li>
+                  <strong>Legitimate interest (Article 6(1)(f)):</strong> To maintain and improve the service, ensure
+                  security, and prevent misuse
+                </li>
+                <li>
+                  <strong>Consent (Article 6(1)(a)):</strong> Where you have given explicit consent, such as
+                  acknowledging this privacy policy
+                </li>
               </ul>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">4. How Your Data Is Stored &amp; Protected</h2>
               <p>
-                Your data is stored in a secure, encrypted database. Your conversation messages are protected with <strong>AES-256-GCM encryption at rest</strong> — meaning they are encrypted before being written to the database and cannot be read in their raw stored form, even by database administrators. We also implement <strong>row-level security</strong>, which means your sessions, profile data, and encrypted conversations are technically isolated — only your authenticated account can access your own records. Data is transmitted over encrypted connections (HTTPS/TLS) at all times.
+                Your data is stored in a secure, encrypted database. Your conversation messages are protected with{" "}
+                <strong>AES-256-GCM encryption at rest</strong> — meaning they are encrypted before being written to the
+                database and cannot be read in their raw stored form, even by database administrators. We also implement{" "}
+                <strong>row-level security</strong>, which means your sessions, profile data, and encrypted
+                conversations are technically isolated — only your authenticated account can access your own records.
+                Data is transmitted over encrypted connections (HTTPS/TLS) at all times.
               </p>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">5. Who Can Access Your Data</h2>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li><strong>You:</strong> Only you can view your conversations, session history, and profile through the application</li>
-                <li><strong>Nominated administrator:</strong> A single nominated administrator has limited access to the database for service administration, troubleshooting, and legal compliance purposes only. However, conversation content is encrypted at rest and cannot be read at the database level — the administrator can see metadata (such as timestamps and session identifiers) but not message content</li>
-                <li><strong>Third parties:</strong> We do not sell, rent, or share your personal data with any third party for marketing or advertising purposes</li>
+                <li>
+                  <strong>You:</strong> Only you can view your conversations, session history, and profile through the
+                  application
+                </li>
+                <li>
+                  <strong>Nominated administrator:</strong> A single nominated administrator has limited access to the
+                  database for service administration, troubleshooting, and legal compliance purposes only. However,
+                  conversation content is encrypted at rest and cannot be read at the database level — the administrator
+                  can see metadata (such as timestamps and session identifiers) but not message content
+                </li>
+                <li>
+                  <strong>Third parties:</strong> We do not sell, rent, or share your personal data with any third party
+                  for marketing or advertising purposes
+                </li>
               </ul>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">6. Data Retention</h2>
               <p>
-                We retain your data for as long as your account is active. If you request deletion of your account, all associated data — including conversations, session history, and profile information — will be permanently deleted within 30 days. Payment records may be retained for longer where required by law (e.g. tax obligations).
+                We retain your data for as long as your account is active. If you request deletion of your account, all
+                associated data — including conversations, session history, and profile information — will be
+                permanently deleted within 30 days. Payment records may be retained for longer where required by law
+                (e.g. tax obligations).
               </p>
             </section>
 
@@ -90,12 +136,24 @@ const Privacy = () => {
               <h2 className="text-xl font-serif text-foreground">7. Your Rights Under GDPR</h2>
               <p>Under the UK General Data Protection Regulation, you have the following rights:</p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li><strong>Right of access:</strong> Request a copy of all personal data we hold about you</li>
-                <li><strong>Right to rectification:</strong> Request correction of inaccurate or incomplete data</li>
-                <li><strong>Right to erasure:</strong> Request deletion of your personal data ("right to be forgotten")</li>
-                <li><strong>Right to restrict processing:</strong> Request that we limit how we use your data</li>
-                <li><strong>Right to data portability:</strong> Request your data in a structured, machine-readable format</li>
-                <li><strong>Right to object:</strong> Object to processing based on legitimate interest</li>
+                <li>
+                  <strong>Right of access:</strong> Request a copy of all personal data we hold about you
+                </li>
+                <li>
+                  <strong>Right to rectification:</strong> Request correction of inaccurate or incomplete data
+                </li>
+                <li>
+                  <strong>Right to erasure:</strong> Request deletion of your personal data ("right to be forgotten")
+                </li>
+                <li>
+                  <strong>Right to restrict processing:</strong> Request that we limit how we use your data
+                </li>
+                <li>
+                  <strong>Right to data portability:</strong> Request your data in a structured, machine-readable format
+                </li>
+                <li>
+                  <strong>Right to object:</strong> Object to processing based on legitimate interest
+                </li>
               </ul>
             </section>
 
@@ -104,11 +162,14 @@ const Privacy = () => {
               <p>
                 To exercise any of your rights, please contact us at{" "}
                 <a
-                 href="mailto:hello@seehere.ai"
+                  href="mailto:hello@seehere.ai"
                   className="text-primary underline hover:text-primary/80 transition-colors"
                 >
                   hello@seehere.ai
-                </a>. We will respond to your request within one calendar month. If your request is complex, we may extend this by a further two months, and we will inform you of any such extension. You also have the right to lodge a complaint with the Information Commissioner's Office (ICO) at{" "}
+                </a>
+                . We will respond to your request within one calendar month. If your request is complex, we may extend
+                this by a further two months, and we will inform you of any such extension. You also have the right to
+                lodge a complaint with the Information Commissioner's Office (ICO) at{" "}
                 <a
                   href="https://ico.org.uk"
                   target="_blank"
@@ -116,14 +177,16 @@ const Privacy = () => {
                   className="text-primary underline hover:text-primary/80 transition-colors"
                 >
                   ico.org.uk
-                </a>.
+                </a>
+                .
               </p>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">9. Cookies</h2>
               <p>
-                See Here uses only essential cookies required for authentication and session management. We do not use tracking cookies, analytics cookies, or any third-party advertising cookies.
+                See Here uses only essential cookies required for authentication and session management. We do not use
+                tracking cookies, analytics cookies, or any third-party advertising cookies.
               </p>
             </section>
 
@@ -131,7 +194,8 @@ const Privacy = () => {
               <h2 className="text-xl font-serif text-foreground">10. Third-Party Services</h2>
               <p>We use the following third-party services:</p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li><strong>Stripe:</strong> For secure payment processing. Stripe's privacy policy can be found at{" "}
+                <li>
+                  <strong>Stripe:</strong> For secure payment processing. Stripe's privacy policy can be found at{" "}
                   <a
                     href="https://stripe.com/privacy"
                     target="_blank"
@@ -141,48 +205,82 @@ const Privacy = () => {
                     stripe.com/privacy
                   </a>
                 </li>
-                <li><strong>Google Gemini (Google Cloud Platform):</strong> Your conversation messages are processed via the Google Gemini API to generate responses. Under Google's enterprise API terms, your data is <strong>not used to train Google's foundational models</strong> and is not retained by Google beyond the duration of the API request</li>
+                <li>
+                  <strong>Google Gemini (Google Cloud Platform):</strong> Your conversation messages are processed via
+                  the Google Gemini API to generate responses. Under Google's enterprise API terms, your data is{" "}
+                  <strong>not used to train Google's foundational models</strong> and is not retained by Google beyond
+                  the duration of the API request
+                </li>
+                <li>
+                  <strong>Lovable (Lovable Labs Incorporated):</strong> Our application development and hosting
+                  platform. Your data is stored on Lovable Cloud infrastructure, hosted in the European Union. Lovable
+                  acts as a data processor on our behalf under a formal Data Processing Agreement. Lovable is SOC 2 Type
+                  II compliant and ISO 27001:2022 certified and does not use customer personal data to train AI or
+                  machine learning models. A list of Lovable's sub-processors is available at{" "}
+                  <a
+                    href="https://enterprise.lovable.dev/subprocessors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline hover:text-primary/80 transition-colors"
+                  >
+                    enterprise.lovable.dev/subprocessors
+                  </a>
+                </li>
               </ul>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">11. Data Transfers</h2>
               <p>
-                Your personal data may be processed outside the United Kingdom by our infrastructure and service partners, including Google (United States), Stripe (United States), and our hosting provider (United States). Where data is transferred internationally, we ensure appropriate safeguards are in place, including reliance on the <strong>UK Extension to the EU-US Data Privacy Framework</strong> and, where applicable, <strong>Standard Contractual Clauses (SCCs)</strong> approved by the UK Information Commissioner's Office.
+                Your personal data is hosted on Lovable Cloud infrastructure located in the European Union. Some data
+                may be processed outside the United Kingdom by our service partners, including Google (United States)
+                and Stripe (United States). Where data is transferred internationally, we ensure appropriate safeguards
+                are in place, including <strong>Standard Contractual Clauses (SCCs)</strong> incorporating the UK
+                Addendum, as approved by the UK Information Commissioner's Office.
               </p>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">12. Automated Processing</h2>
               <p>
-                See Here uses artificial intelligence to generate conversational responses based on your messages. This constitutes automated processing under the UK GDPR. However, the AI does <strong>not engage in automated decision-making</strong> that produces legal effects or similarly significant effects concerning you (as defined under Article 22 of the UK GDPR). All AI-generated responses are reflective in nature and do not determine access to services, creditworthiness, employment outcomes, or any other legally significant matter.
+                See Here uses artificial intelligence to generate conversational responses based on your messages. This
+                constitutes automated processing under the UK GDPR. However, the AI does{" "}
+                <strong>not engage in automated decision-making</strong> that produces legal effects or similarly
+                significant effects concerning you (as defined under Article 22 of the UK GDPR). All AI-generated
+                responses are reflective in nature and do not determine access to services, creditworthiness, employment
+                outcomes, or any other legally significant matter.
               </p>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">13. Children's Privacy</h2>
               <p>
-                See Here is intended for users aged 18 and over. We do not knowingly collect personal data from anyone under the age of 18. If we become aware that we have collected data from a minor, we will delete it promptly.
+                See Here is intended for users aged 18 and over. We do not knowingly collect personal data from anyone
+                under the age of 18. If we become aware that we have collected data from a minor, we will delete it
+                promptly.
               </p>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">14. Changes to This Policy</h2>
               <p>
-                We may update this privacy policy from time to time. Continued use of See Here after changes constitutes acceptance of the updated policy. We will notify users of significant changes where possible.
+                We may update this privacy policy from time to time. Continued use of See Here after changes constitutes
+                acceptance of the updated policy. We will notify users of significant changes where possible.
               </p>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-xl font-serif text-foreground">15. Contact</h2>
               <p>
-                If you have questions about this privacy policy or wish to exercise your data rights, please contact us at{" "}
+                If you have questions about this privacy policy or wish to exercise your data rights, please contact us
+                at{" "}
                 <a
                   href="mailto:hello@seehere.ai"
                   className="text-primary underline hover:text-primary/80 transition-colors"
                 >
                   hello@seehere.ai
-                </a>.
+                </a>
+                .
               </p>
             </section>
           </div>
@@ -191,9 +289,7 @@ const Privacy = () => {
 
       {/* Footer */}
       <footer className="relative z-10 p-6 text-center">
-        <p className="text-xs text-muted-foreground/50">
-          Last updated: February 2026
-        </p>
+        <p className="text-xs text-muted-foreground/50">Last updated: March 2026</p>
       </footer>
     </div>
   );
