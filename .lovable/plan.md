@@ -1,55 +1,12 @@
 
-# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Problem
-The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
+## Plan: Add Login Button to Disclosure Modal
 
-## Solution
-Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
+Add a "Log in" link/button to the `DisclosureModal` component in `src/pages/Index.tsx` so existing users can go to `/auth` instead of starting a new trial.
 
-## Technical Detail
+### Changes
 
-### Index.tsx -- Update `handleTryForFree`
+**`src/pages/Index.tsx`** (lines 46-98, `DisclosureModal` component):
+- Add a secondary button or text link below the "I understand — continue" button that reads "Already have an account? Log in" and navigates to `/auth`
+- Use `Link` from react-router-dom (already imported) styled as a subtle text link, consistent with the modal's existing design
 
-Change the function (around line 172) from:
-```typescript
-const handleTryForFree = () => {
-  if (user) navigate("/dashboard");
-  else navigate("/try");
-};
-```
-
-To:
-```typescript
-const handleTryForFree = () => {
-  if (user) {
-    navigate("/dashboard");
-  } else if (!disclosureAccepted) {
-    setShowDisclosure(true);
-  } else {
-    navigate("/try");
-  }
-};
-```
-
-### Index.tsx -- Update `handleDisclosureAccept`
-
-Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
-
-```typescript
-const handleDisclosureAccept = () => {
-  sessionStorage.setItem("sh_disclosure_accepted", "true");
-  setDisclosureAccepted(true);
-  setShowDisclosure(false);
-
-  // If the user was typing in the hero input, focus it
-  // Otherwise (clicked a Try for Free button), navigate to /try
-  if (document.activeElement === textareaRef.current || heroInput.trim()) {
-    setTimeout(() => textareaRef.current?.focus(), 50);
-  } else {
-    navigate("/try");
-  }
-};
-```
-
-This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
