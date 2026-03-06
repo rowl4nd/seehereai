@@ -191,9 +191,7 @@ const GuestChat = () => {
           onboarding_completed_at: new Date().toISOString(),
         });
 
-        const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session", {
-          _session_type: "free",
-        });
+        const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session");
 
         const result = rpcResult?.[0];
         if (rpcError || result?.error_msg || !result?.session_id) {
@@ -206,8 +204,6 @@ const GuestChat = () => {
         const startedAt = new Date().toISOString();
         setSessionId(newSessionId);
         setSessionStartedAt(startedAt);
-
-        await updateProfile({ free_sessions_used: 1 });
 
         const guestMsgs = messagesRef.current.map((m) => ({
           role: m.role,
