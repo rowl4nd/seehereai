@@ -220,6 +220,9 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
+          <a href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
+            Blog
+          </a>
           {!loading &&
             (user ? (
               <Link to="/dashboard">
