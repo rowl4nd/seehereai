@@ -6,6 +6,14 @@ import DisclosureModal from "@/components/DisclosureModal";
 
 const MentalClarity = () => {
   const navigate = useNavigate();
+  const [showDisclosure, setShowDisclosure] = useState(false);
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
+  const navigate = useNavigate();
   useEffect(() => {
     const prevTitle = document.title;
     document.title = "How to Use AI for Mental Clarity | SeeHere.ai";
