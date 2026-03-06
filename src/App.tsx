@@ -23,6 +23,10 @@ import WorkStress from "./pages/WorkStress";
 import SupportAlternative from "./pages/SupportAlternative";
 import Blog from "./pages/Blog";
 import NHSWaitingList from "./pages/NHSWaitingList";
+import AffordableMentalHealth from "./pages/AffordableMentalHealth";
+import AIEmotionalSupport from "./pages/AIEmotionalSupport";
+import AnxietySupport from "./pages/AnxietySupport";
+import TalkingToSomeone from "./pages/TalkingToSomeone";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +58,10 @@ const App = () => (
             <Route path="/support-alternative" element={<SupportAlternative />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/nhs-waiting-list" element={<NHSWaitingList />} />
+            <Route path="/blog/affordable-mental-health-support" element={<AffordableMentalHealth />} />
+            <Route path="/blog/ai-emotional-support" element={<AIEmotionalSupport />} />
+            <Route path="/blog/anxiety-support" element={<AnxietySupport />} />
+            <Route path="/blog/talking-to-someone" element={<TalkingToSomeone />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

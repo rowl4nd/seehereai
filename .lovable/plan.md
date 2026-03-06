@@ -1,22 +1,55 @@
 
+# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Plan: Add Four New Blog Post Pages
+## Problem
+The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
 
-Same approach as before — create placeholder files and wire up routing.
+## Solution
+Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
 
-### Changes
+## Technical Detail
 
-1. **Create four placeholder pages** with basic components:
-   - `src/pages/AffordableMentalHealth.tsx`
-   - `src/pages/AIEmotionalSupport.tsx`
-   - `src/pages/AnxietySupport.tsx`
-   - `src/pages/TalkingToSomeone.tsx`
+### Index.tsx -- Update `handleTryForFree`
 
-2. **Update `src/App.tsx`** — add four imports and four routes:
-   - `/blog/affordable-mental-health-support` → `<AffordableMentalHealth />`
-   - `/blog/ai-emotional-support` → `<AIEmotionalSupport />`
-   - `/blog/anxiety-support` → `<AnxietySupport />`
-   - `/blog/talking-to-someone` → `<TalkingToSomeone />`
+Change the function (around line 172) from:
+```typescript
+const handleTryForFree = () => {
+  if (user) navigate("/dashboard");
+  else navigate("/try");
+};
+```
 
-You can then paste your actual code directly into the four new files.
+To:
+```typescript
+const handleTryForFree = () => {
+  if (user) {
+    navigate("/dashboard");
+  } else if (!disclosureAccepted) {
+    setShowDisclosure(true);
+  } else {
+    navigate("/try");
+  }
+};
+```
 
+### Index.tsx -- Update `handleDisclosureAccept`
+
+Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
+
+```typescript
+const handleDisclosureAccept = () => {
+  sessionStorage.setItem("sh_disclosure_accepted", "true");
+  setDisclosureAccepted(true);
+  setShowDisclosure(false);
+
+  // If the user was typing in the hero input, focus it
+  // Otherwise (clicked a Try for Free button), navigate to /try
+  if (document.activeElement === textareaRef.current || heroInput.trim()) {
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  } else {
+    navigate("/try");
+  }
+};
+```
+
+This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
