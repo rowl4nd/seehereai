@@ -89,7 +89,7 @@ const Index = () => {
             name: "How much does it cost?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "You can start a session immediately for free. After 6 messages, we ask you to create a free account to continue. Beyond your free credits, sessions are available in 'Presence Packs' starting from £5. No subscriptions, no auto-renewals.",
+              text: "You can start a session immediately — no sign-up needed. After 6 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. After that, sessions are available in 'Presence Packs' starting from just £2 per session. No subscriptions, no auto-renewals.",
             },
           },
           {
