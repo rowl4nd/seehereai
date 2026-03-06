@@ -4,6 +4,14 @@ import Logo from "@/components/Logo";
 import DisclosureModal from "@/components/DisclosureModal";
 
 const TalkingToSomeone = () => {
+  const [showDisclosure, setShowDisclosure] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
   useEffect(() => {
     document.title = "Need Someone to Talk To? You Don't Have to Wait | SeeHere";
     const meta = document.createElement("meta");
