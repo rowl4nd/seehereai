@@ -87,6 +87,17 @@ const Mirror = () => {
   // Determine session duration (25 min free, 45 min paid)
   const sessionDuration = currentSession?.session_type === "paid" ? 45 * 60 : 25 * 60;
 
+  // SEO - noindex
+  useEffect(() => {
+    const meta = document.createElement("meta");
+    meta.name = "robots";
+    meta.content = "noindex, nofollow";
+    document.head.appendChild(meta);
+    return () => {
+      document.head.removeChild(meta);
+    };
+  }, []);
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/auth");
@@ -174,8 +185,19 @@ const Mirror = () => {
         return;
       }
 
-      // Use atomic server-side function for session creation, type determination, and credit deduction
-      const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session");
+      const freeRemaining = profile ? Math.max(0, 2 - (profile.free_sessions_used || 0)) : 0;
+      const sessionType = freeRemaining > 0 ? "free" : "paid";
+
+      if (sessionType === "paid" && (!credits || credits.balance <= 0)) {
+        toast.error("You need credits to start a session");
+        navigate("/credits");
+        return;
+      }
+
+      // Use atomic server-side function for session creation and credit deduction
+      const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session", {
+        _session_type: sessionType,
+      });
 
       const result = rpcResult?.[0];
       if (rpcError || result?.error_msg || !result?.session_id) {
@@ -188,10 +210,9 @@ const Mirror = () => {
         return;
       }
 
-      const serverSessionType = result.session_type || "free";
       const session = {
         id: result.session_id,
-        session_type: serverSessionType,
+        session_type: sessionType,
         started_at: new Date().toISOString(),
         is_active: true,
       } as any;
@@ -207,6 +228,10 @@ const Mirror = () => {
         is_active: true,
         created_at: session.started_at,
       });
+
+      if (sessionType === "free" && profile) {
+        await updateProfile({ free_sessions_used: (profile.free_sessions_used || 0) + 1 });
+      }
 
       setSessionStarted(true);
 
