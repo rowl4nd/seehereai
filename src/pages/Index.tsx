@@ -540,17 +540,16 @@ const Index = () => {
               Pay only for the space you use.
             </h2>
             <p className="text-[#5f5a53] leading-relaxed">
-              Start for free. After 6 messages, create a free account to continue. Beyond that, sessions are available
-              in Presence Packs from £5. No subscriptions. No auto-renewals. No guilt.
+              Start for free. Sign up to save your conversation. Your first 2 sessions are on us — after that, sessions start from just £2.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <div className="px-6 py-4 bg-white/70 backdrop-blur rounded-2xl border border-white/60 shadow-sm text-center">
                 <p className="text-2xl font-serif font-light text-[#3d3a35]">Free</p>
-                <p className="text-xs text-[#5f5a53] mt-1">First 6 messages</p>
+                <p className="text-xs text-[#5f5a53] mt-1">2 free sessions</p>
               </div>
               <div className="px-6 py-4 bg-[#4a7a4f]/10 rounded-2xl border border-[#4a7a4f]/20 shadow-sm text-center">
-                <p className="text-2xl font-serif font-light text-[#3d3a35]">From £5</p>
-                <p className="text-xs text-[#5f5a53] mt-1">Presence Packs</p>
+                <p className="text-2xl font-serif font-light text-[#3d3a35]">From £2</p>
+                <p className="text-xs text-[#5f5a53] mt-1">per session</p>
               </div>
             </div>
             <Button
