@@ -26,6 +26,7 @@ const NHSWaitingList = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8f6f3" }}>
+      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} />
       {/* Header */}
       <header
         className="sticky top-0 z-50 border-b px-4 py-2 md:px-8 flex items-center justify-between"
