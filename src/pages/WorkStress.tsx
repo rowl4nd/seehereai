@@ -13,7 +13,6 @@ const WorkStress = () => {
     setShowDisclosure(false);
     navigate("/try");
   };
-  const navigate = useNavigate();
   useEffect(() => {
     const prevTitle = document.title;
     document.title = "Private Support for Work Stress & Burnout | SeeHere.ai";

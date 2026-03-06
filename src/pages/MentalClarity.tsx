@@ -13,7 +13,6 @@ const MentalClarity = () => {
     setShowDisclosure(false);
     navigate("/try");
   };
-  const navigate = useNavigate();
   useEffect(() => {
     const prevTitle = document.title;
     document.title = "How to Use AI for Mental Clarity | SeeHere.ai";
