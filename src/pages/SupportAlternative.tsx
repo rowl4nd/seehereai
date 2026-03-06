@@ -274,12 +274,12 @@ const SupportAlternative = () => {
                 Try your first two sessions for free. No credit card, no pressure.
               </p>
             </div>
-            <Link
-              to="/"
+            <button
+              onClick={() => setShowDisclosure(true)}
               className="inline-block bg-primary text-primary-foreground px-12 py-5 rounded-full font-bold text-lg hover:scale-105 transition-all shadow-lg"
             >
               Start 2 Free Sessions
-            </Link>
+            </button>
             <p className="text-xs text-muted-foreground/60 uppercase tracking-widest">
               Completely Private · Person-Centred AI · No Subscription
             </p>
