@@ -23,6 +23,10 @@ import WorkStress from "./pages/WorkStress";
 import SupportAlternative from "./pages/SupportAlternative";
 import Blog from "./pages/Blog";
 import NHSWaitingList from "./pages/NHSWaitingList";
+import AffordableMentalHealth from "./pages/AffordableMentalHealth";
+import AIEmotionalSupport from "./pages/AIEmotionalSupport";
+import AnxietySupport from "./pages/AnxietySupport";
+import TalkingToSomeone from "./pages/TalkingToSomeone";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
