@@ -21,6 +21,8 @@ import Contact from "./pages/Contact";
 import MentalClarity from "./pages/MentalClarity";
 import WorkStress from "./pages/WorkStress";
 import SupportAlternative from "./pages/SupportAlternative";
+import Blog from "./pages/Blog";
+import NHSWaitingList from "./pages/NHSWaitingList";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +52,8 @@ const App = () => (
             <Route path="/mental-clarity" element={<MentalClarity />} />
             <Route path="/work-stress" element={<WorkStress />} />
             <Route path="/support-alternative" element={<SupportAlternative />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/nhs-waiting-list" element={<NHSWaitingList />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
