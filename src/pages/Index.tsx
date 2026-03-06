@@ -547,6 +547,9 @@ const Index = () => {
                 <p className="text-2xl font-serif font-light text-[#3d3a35]">Free</p>
                 <p className="text-xs text-[#5f5a53] mt-1">2 free sessions</p>
               </div>
+              <div className="flex items-center text-[#5f5a53]/50">
+                <ArrowRight size={20} />
+              </div>
               <div className="px-6 py-4 bg-[#4a7a4f]/10 rounded-2xl border border-[#4a7a4f]/20 shadow-sm text-center">
                 <p className="text-2xl font-serif font-light text-[#3d3a35]">From £2</p>
                 <p className="text-xs text-[#5f5a53] mt-1">per session</p>
