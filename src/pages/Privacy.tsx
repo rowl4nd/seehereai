@@ -1,9 +1,17 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import Logo from "@/components/Logo";
 
 const Privacy = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+    const prevTitle = document.title;
+    document.title = "Terms & Conditions | SeeHere";
+    return () => {
+      document.title = prevTitle;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
