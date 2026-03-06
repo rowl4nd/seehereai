@@ -691,6 +691,7 @@ const Index = () => {
             <p className="text-xs font-medium text-[#3d3a35]/60 uppercase tracking-widest">Find your space</p>
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
               {[
+                { href: "/blog", label: "Journal" },
                 { href: "/mental-clarity", label: "Mental Clarity" },
                 { href: "/work-stress", label: "Work Stress" },
                 { href: "/support-alternative", label: "Therapy Alternatives" },
