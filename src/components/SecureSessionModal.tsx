@@ -23,6 +23,8 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
   const handleDiscard = () => {
     sessionStorage.removeItem("guest_messages");
     sessionStorage.removeItem("guest_onboarding_complete");
+    sessionStorage.removeItem("guest_email");
+    sessionStorage.removeItem("sh_disclosure_accepted");
     navigate("/");
   };
 
