@@ -72,6 +72,15 @@ const SentimentDot = ({ sentiment }: { sentiment: Sentiment }) => {
 };
 
 const SupportAlternative = () => {
+  const [showDisclosure, setShowDisclosure] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
+
   useEffect(() => {
     const prevTitle = document.title;
     document.title = "Not in Crisis but Struggling? Therapy Alternatives | SeeHere.ai";
