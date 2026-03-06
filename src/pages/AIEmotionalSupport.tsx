@@ -4,6 +4,14 @@ import Logo from "@/components/Logo";
 import DisclosureModal from "@/components/DisclosureModal";
 
 const AIEmotionalSupport = () => {
+  const [showDisclosure, setShowDisclosure] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
   useEffect(() => {
     document.title = "What is AI Emotional Support — and Can It Actually Help? | SeeHere";
     const meta = document.createElement("meta");
