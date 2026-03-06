@@ -91,21 +91,22 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8f6f3" }}>
+      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} />
       {/* Header */}
       <header
         className="sticky top-0 z-50 border-b px-4 py-2 md:px-8 flex items-center justify-between"
         style={{ backgroundColor: "#f8f6f3", borderColor: "#e8e1d9" }}
       >
         <Logo />
-        <Link
-          to="/"
+        <button
+          onClick={() => setShowDisclosure(true)}
           className="text-sm font-medium transition-colors"
           style={{ color: "#4a7a4f" }}
           onMouseEnter={(e) => (e.currentTarget.style.color = "#3d6542")}
           onMouseLeave={(e) => (e.currentTarget.style.color = "#4a7a4f")}
         >
           Try SeeHere free →
-        </Link>
+        </button>
       </header>
 
       <main className="flex-1 px-6 py-16 md:py-24">
