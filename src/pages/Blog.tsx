@@ -69,6 +69,14 @@ const posts = [
 ];
 
 const Blog = () => {
+  const [showDisclosure, setShowDisclosure] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
   useEffect(() => {
     document.title = "SeeHere Journal | Emotional Wellbeing Guides & Support";
     const meta = document.createElement("meta");
