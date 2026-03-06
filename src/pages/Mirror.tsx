@@ -174,19 +174,8 @@ const Mirror = () => {
         return;
       }
 
-      const freeRemaining = profile ? Math.max(0, 2 - (profile.free_sessions_used || 0)) : 0;
-      const sessionType = freeRemaining > 0 ? "free" : "paid";
-
-      if (sessionType === "paid" && (!credits || credits.balance <= 0)) {
-        toast.error("You need credits to start a session");
-        navigate("/credits");
-        return;
-      }
-
-      // Use atomic server-side function for session creation and credit deduction
-      const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session", {
-        _session_type: sessionType,
-      });
+      // Use atomic server-side function for session creation, type determination, and credit deduction
+      const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session");
 
       const result = rpcResult?.[0];
       if (rpcError || result?.error_msg || !result?.session_id) {
@@ -199,9 +188,10 @@ const Mirror = () => {
         return;
       }
 
+      const serverSessionType = result.session_type || "free";
       const session = {
         id: result.session_id,
-        session_type: sessionType,
+        session_type: serverSessionType,
         started_at: new Date().toISOString(),
         is_active: true,
       } as any;
@@ -217,10 +207,6 @@ const Mirror = () => {
         is_active: true,
         created_at: session.started_at,
       });
-
-      if (sessionType === "free" && profile) {
-        await updateProfile({ free_sessions_used: (profile.free_sessions_used || 0) + 1 });
-      }
 
       setSessionStarted(true);
 

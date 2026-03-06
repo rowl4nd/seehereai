@@ -178,14 +178,24 @@ export type Database = {
       auto_end_expired_sessions: { Args: never; Returns: undefined }
       get_next_session_time: { Args: { _user_id: string }; Returns: string }
       has_cooldown_passed: { Args: { _user_id: string }; Returns: boolean }
-      start_paid_session: {
-        Args: { _session_type: string }
-        Returns: {
-          error_msg: string
-          new_balance: number
-          session_id: string
-        }[]
-      }
+      start_paid_session:
+        | {
+            Args: never
+            Returns: {
+              error_msg: string
+              new_balance: number
+              session_id: string
+              session_type: string
+            }[]
+          }
+        | {
+            Args: { _session_type: string }
+            Returns: {
+              error_msg: string
+              new_balance: number
+              session_id: string
+            }[]
+          }
     }
     Enums: {
       [_ in never]: never

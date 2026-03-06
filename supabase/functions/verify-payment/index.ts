@@ -13,6 +13,32 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Authenticate the caller
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response(
+      JSON.stringify({ error: "Unauthorized" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+    );
+  }
+
+  const supabaseAuth = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    { global: { headers: { Authorization: authHeader } } }
+  );
+
+  const token = authHeader.replace("Bearer ", "");
+  const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+  if (claimsError || !claimsData?.claims) {
+    return new Response(
+      JSON.stringify({ error: "Unauthorized" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+    );
+  }
+
+  const authenticatedUserId = claimsData.claims.sub;
+
   // Service role client for updating credits
   const supabaseAdmin = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
@@ -45,6 +71,14 @@ serve(async (req) => {
 
     if (!userId || sessionsToAdd <= 0) {
       throw new Error("Missing required metadata in checkout session");
+    }
+
+    // Verify the authenticated user owns this payment session
+    if (userId !== authenticatedUserId) {
+      return new Response(
+        JSON.stringify({ error: "Forbidden" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+      );
     }
 
     // Idempotency check: see if this payment was already processed
@@ -93,7 +127,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Verify payment error:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "Payment verification failed" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
     );
   }
