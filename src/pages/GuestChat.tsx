@@ -27,6 +27,17 @@ const GuestChat = () => {
   const location = useLocation();
   const initialMessageSent = useRef(false);
 
+  // SEO - noindex
+  useEffect(() => {
+    const meta = document.createElement("meta");
+    meta.name = "robots";
+    meta.content = "noindex, nofollow";
+    document.head.appendChild(meta);
+    return () => {
+      document.head.removeChild(meta);
+    };
+  }, []);
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -191,7 +202,9 @@ const GuestChat = () => {
           onboarding_completed_at: new Date().toISOString(),
         });
 
-        const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session");
+        const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session", {
+          _session_type: "free",
+        });
 
         const result = rpcResult?.[0];
         if (rpcError || result?.error_msg || !result?.session_id) {
@@ -204,6 +217,8 @@ const GuestChat = () => {
         const startedAt = new Date().toISOString();
         setSessionId(newSessionId);
         setSessionStartedAt(startedAt);
+
+        await updateProfile({ free_sessions_used: 1 });
 
         const guestMsgs = messagesRef.current.map((m) => ({
           role: m.role,
