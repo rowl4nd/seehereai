@@ -191,15 +191,15 @@ const NHSWaitingList = () => {
             <p className="text-sm" style={{ color: "#5f5a53" }}>
               SeeHere is free to try — no account needed, no waiting list.
             </p>
-            <Link
-              to="/"
+            <button
+              onClick={() => setShowDisclosure(true)}
               className="inline-block px-10 py-4 rounded-2xl text-sm font-medium text-white shadow-md transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
               style={{ backgroundColor: "#4a7a4f" }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#3d6542")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#4a7a4f")}
             >
               Try 2 free sessions
-            </Link>
+            </button>
             <p className="text-xs" style={{ color: "#8a8278" }}>
               Fully private · Built by therapists · No subscription
             </p>

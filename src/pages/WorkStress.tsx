@@ -85,12 +85,12 @@ const WorkStress = () => {
             <div className="bg-foreground text-background rounded-2xl p-10 text-center mt-8">
               <h3 className="text-2xl font-serif mb-4">Start your decompression.</h3>
               <p className="text-background/60 mb-8 max-w-md mx-auto">Your employer can't see it. Google can't track it. It's just you and your thoughts.</p>
-              <Link
-                to="/"
+              <button
+                onClick={() => setShowDisclosure(true)}
                 className="inline-block bg-background text-foreground px-10 py-4 rounded-full font-bold hover:opacity-90 transition-opacity"
               >
                 Open Your Private Space
-              </Link>
+              </button>
             </div>
           </div>
         </div>

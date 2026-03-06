@@ -105,12 +105,12 @@ const MentalClarity = () => {
             <div className="bg-card border border-border rounded-2xl p-8 shadow-sm text-center mt-8">
               <h3 className="text-xl font-serif font-light text-foreground mb-4">Ready for a moment of clarity?</h3>
               <p className="text-muted-foreground mb-6">No accounts, no tracking, and total privacy.</p>
-              <Link
-                to="/"
+              <button
+                onClick={() => setShowDisclosure(true)}
                 className="inline-block bg-foreground text-background px-8 py-3 rounded-full hover:opacity-90 transition-opacity"
               >
                 Start a Reflective Session
-              </Link>
+              </button>
             </div>
           </div>
         </div>
