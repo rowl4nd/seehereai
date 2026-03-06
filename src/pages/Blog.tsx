@@ -45,21 +45,21 @@ const posts = [
     readTime: "3 min read",
   },
   {
-    slug: "/mental-clarity",
+    slug: "/blog/mental-clarity",
     title: "Beyond Journaling: A Space to Find Your Own Answers",
     description: "Most AI wants to give you answers. SeeHere is designed to help you hear your own.",
     tag: "Reflection",
     readTime: "3 min read",
   },
   {
-    slug: "/work-stress",
+    slug: "/blog/work-stress",
     title: "When Work Feels Like a Burden You Can't Share",
     description: "A private, secure space to process professional burnout without it ever leaving the room.",
     tag: "Work & Stress",
     readTime: "3 min read",
   },
   {
-    slug: "/support-alternative",
+    slug: "/blog/support-alternative",
     title: "Not in Crisis but Struggling? Therapy Alternatives",
     description:
       "Bridging the gap between noticing a struggle and finding a space to talk. SeeHere is the missing middle.",
