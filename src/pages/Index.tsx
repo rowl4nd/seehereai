@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { MessageCircle, Heart, Shield, Clock, Check, X, Send } from "lucide-react";
+import { MessageCircle, Heart, Shield, Clock, Check, X, Send, ArrowRight } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
 
@@ -546,6 +546,9 @@ const Index = () => {
               <div className="px-6 py-4 bg-white/70 backdrop-blur rounded-2xl border border-white/60 shadow-sm text-center">
                 <p className="text-2xl font-serif font-light text-[#3d3a35]">Free</p>
                 <p className="text-xs text-[#5f5a53] mt-1">2 free sessions</p>
+              </div>
+              <div className="flex items-center text-[#5f5a53]/50">
+                <ArrowRight size={20} />
               </div>
               <div className="px-6 py-4 bg-[#4a7a4f]/10 rounded-2xl border border-[#4a7a4f]/20 shadow-sm text-center">
                 <p className="text-2xl font-serif font-light text-[#3d3a35]">From £2</p>
