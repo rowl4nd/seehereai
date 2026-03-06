@@ -59,7 +59,7 @@ const posts = [
     readTime: "3 min read",
   },
   {
-    slug: "/support-alternative",
+    slug: "/blog/support-alternative",
     title: "Not in Crisis but Struggling? Therapy Alternatives",
     description:
       "Bridging the gap between noticing a struggle and finding a space to talk. SeeHere is the missing middle.",
