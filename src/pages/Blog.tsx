@@ -52,7 +52,7 @@ const posts = [
     readTime: "3 min read",
   },
   {
-    slug: "/work-stress",
+    slug: "/blog/work-stress",
     title: "When Work Feels Like a Burden You Can't Share",
     description: "A private, secure space to process professional burnout without it ever leaving the room.",
     tag: "Work & Stress",
