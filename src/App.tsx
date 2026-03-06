@@ -58,6 +58,10 @@ const App = () => (
             <Route path="/support-alternative" element={<SupportAlternative />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/nhs-waiting-list" element={<NHSWaitingList />} />
+            <Route path="/blog/affordable-mental-health-support" element={<AffordableMentalHealth />} />
+            <Route path="/blog/ai-emotional-support" element={<AIEmotionalSupport />} />
+            <Route path="/blog/anxiety-support" element={<AnxietySupport />} />
+            <Route path="/blog/talking-to-someone" element={<TalkingToSomeone />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
