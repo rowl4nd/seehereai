@@ -4,6 +4,14 @@ import Logo from "@/components/Logo";
 import DisclosureModal from "@/components/DisclosureModal";
 
 const AffordableMentalHealth = () => {
+  const [showDisclosure, setShowDisclosure] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
   useEffect(() => {
     document.title = "Affordable Mental Health Support in the UK | SeeHere";
     const meta = document.createElement("meta");
