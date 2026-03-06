@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { X, Shield, Clock, HeartHandshake } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
+import DisclosureModal from "@/components/DisclosureModal";
 
 const rows = [
   {
