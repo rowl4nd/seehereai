@@ -159,7 +159,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
       {/* ── Disclosure modal ── */}
-      {showDisclosure && <DisclosureModal onAccept={handleDisclosureAccept} />}
+      {showDisclosure && <DisclosureModalComponent open={showDisclosure} onAccept={handleDisclosureAccept} />}
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-40 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">

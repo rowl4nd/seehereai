@@ -1,21 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 interface DisclosureModalProps {
   open: boolean;
-  onClose: () => void;
+  onAccept: () => void;
 }
 
-const DisclosureModal = ({ open, onClose }: DisclosureModalProps) => {
-  const navigate = useNavigate();
-
+const DisclosureModal = ({ open, onAccept }: DisclosureModalProps) => {
   if (!open) return null;
-
-  const handleAccept = () => {
-    sessionStorage.setItem("sh_disclosure_accepted", "true");
-    onClose();
-    navigate("/guest-chat");
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm">
@@ -62,7 +54,7 @@ const DisclosureModal = ({ open, onClose }: DisclosureModalProps) => {
           </p>
         </div>
         <Button
-          onClick={handleAccept}
+          onClick={onAccept}
           className="w-full bg-[#4a7a4f] hover:bg-[#3d6542] text-white py-6 rounded-2xl text-base font-medium shadow-lg"
         >
           I understand — continue
