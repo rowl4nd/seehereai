@@ -692,9 +692,6 @@ const Index = () => {
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
               {[
                 { href: "/blog", label: "Journal" },
-                { href: "/mental-clarity", label: "Mental Clarity" },
-                { href: "/work-stress", label: "Work Stress" },
-                { href: "/support-alternative", label: "Therapy Alternatives" },
               ].map(({ href, label }) => (
                 <a
                   key={href}
