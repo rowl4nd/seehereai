@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
 
 const WorkStress = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     const prevTitle = document.title;
     document.title = "Private Support for Work Stress & Burnout | SeeHere.ai";
@@ -25,7 +26,7 @@ const WorkStress = () => {
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8 flex items-center justify-between">
         <Logo />
         <button
-          onClick={() => window.close()}
+          onClick={() => navigate(-1)}
           className="text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Go back"
         >

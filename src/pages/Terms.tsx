@@ -19,7 +19,7 @@ const Terms = () => {
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8 flex items-center justify-between">
         <Logo />
         <button
-          onClick={() => window.close()}
+          onClick={() => navigate(-1)}
           className="text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Go back"
         >
