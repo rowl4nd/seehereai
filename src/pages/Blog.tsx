@@ -45,7 +45,7 @@ const posts = [
     readTime: "3 min read",
   },
   {
-    slug: "/mental-clarity",
+    slug: "/blog/mental-clarity",
     title: "Beyond Journaling: A Space to Find Your Own Answers",
     description: "Most AI wants to give you answers. SeeHere is designed to help you hear your own.",
     tag: "Reflection",
