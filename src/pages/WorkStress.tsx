@@ -1,10 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
+import DisclosureModal from "@/components/DisclosureModal";
 
 const WorkStress = () => {
   const navigate = useNavigate();
+  const [showDisclosure, setShowDisclosure] = useState(false);
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
   useEffect(() => {
     const prevTitle = document.title;
     document.title = "Private Support for Work Stress & Burnout | SeeHere.ai";
@@ -22,6 +30,7 @@ const WorkStress = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} />
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8 flex items-center justify-between">
         <Logo />
@@ -75,12 +84,12 @@ const WorkStress = () => {
             <div className="bg-foreground text-background rounded-2xl p-10 text-center mt-8">
               <h3 className="text-2xl font-serif mb-4">Start your decompression.</h3>
               <p className="text-background/60 mb-8 max-w-md mx-auto">Your employer can't see it. Google can't track it. It's just you and your thoughts.</p>
-              <Link
-                to="/"
+              <button
+                onClick={() => setShowDisclosure(true)}
                 className="inline-block bg-background text-foreground px-10 py-4 rounded-full font-bold hover:opacity-90 transition-opacity"
               >
                 Open Your Private Space
-              </Link>
+              </button>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import DisclosureModal from "@/components/DisclosureModal";
 import Logo from "@/components/Logo";
 
 const posts = [
@@ -68,6 +69,14 @@ const posts = [
 ];
 
 const Blog = () => {
+  const [showDisclosure, setShowDisclosure] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
   useEffect(() => {
     document.title = "SeeHere Journal | Emotional Wellbeing Guides & Support";
     const meta = document.createElement("meta");
@@ -82,21 +91,22 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8f6f3" }}>
+      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} />
       {/* Header */}
       <header
         className="sticky top-0 z-50 border-b px-4 py-2 md:px-8 flex items-center justify-between"
         style={{ backgroundColor: "#f8f6f3", borderColor: "#e8e1d9" }}
       >
         <Logo />
-        <Link
-          to="/"
+        <button
+          onClick={() => setShowDisclosure(true)}
           className="text-sm font-medium transition-colors"
           style={{ color: "#4a7a4f" }}
           onMouseEnter={(e) => (e.currentTarget.style.color = "#3d6542")}
           onMouseLeave={(e) => (e.currentTarget.style.color = "#4a7a4f")}
         >
           Try SeeHere free →
-        </Link>
+        </button>
       </header>
 
       <main className="flex-1 px-6 py-16 md:py-24">
@@ -163,15 +173,15 @@ const Blog = () => {
             <p className="text-sm" style={{ color: "#5f5a53" }}>
               Reading about support is a good start. Taking a step is better.
             </p>
-            <Link
-              to="/"
+            <button
+              onClick={() => setShowDisclosure(true)}
               className="inline-block px-10 py-4 rounded-2xl text-sm font-medium text-white shadow-md transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
               style={{ backgroundColor: "#4a7a4f" }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#3d6542")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#4a7a4f")}
             >
               Try 2 free sessions
-            </Link>
+            </button>
             <p className="text-xs" style={{ color: "#8a8278" }}>
               No account needed to start. Fully private.
             </p>

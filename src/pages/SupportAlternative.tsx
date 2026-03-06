@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { X, Shield, Clock, HeartHandshake } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
+import DisclosureModal from "@/components/DisclosureModal";
 
 const rows = [
   {
@@ -71,6 +72,15 @@ const SentimentDot = ({ sentiment }: { sentiment: Sentiment }) => {
 };
 
 const SupportAlternative = () => {
+  const [showDisclosure, setShowDisclosure] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
+
   useEffect(() => {
     const prevTitle = document.title;
     document.title = "Not in Crisis but Struggling? Therapy Alternatives | SeeHere.ai";
@@ -89,6 +99,7 @@ const SupportAlternative = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/10">
+      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} />
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8 flex items-center justify-between">
         <Logo />
         <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Go back">
@@ -263,12 +274,12 @@ const SupportAlternative = () => {
                 Try your first two sessions for free. No credit card, no pressure.
               </p>
             </div>
-            <Link
-              to="/"
+            <button
+              onClick={() => setShowDisclosure(true)}
               className="inline-block bg-primary text-primary-foreground px-12 py-5 rounded-full font-bold text-lg hover:scale-105 transition-all shadow-lg"
             >
               Start 2 Free Sessions
-            </Link>
+            </button>
             <p className="text-xs text-muted-foreground/60 uppercase tracking-widest">
               Completely Private · Person-Centred AI · No Subscription
             </p>

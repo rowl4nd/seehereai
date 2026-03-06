@@ -1,10 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
+import DisclosureModal from "@/components/DisclosureModal";
 
 const MentalClarity = () => {
   const navigate = useNavigate();
+  const [showDisclosure, setShowDisclosure] = useState(false);
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
   useEffect(() => {
     const prevTitle = document.title;
     document.title = "How to Use AI for Mental Clarity | SeeHere.ai";
@@ -22,6 +30,7 @@ const MentalClarity = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} />
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8 flex items-center justify-between">
         <Logo />
@@ -95,12 +104,12 @@ const MentalClarity = () => {
             <div className="bg-card border border-border rounded-2xl p-8 shadow-sm text-center mt-8">
               <h3 className="text-xl font-serif font-light text-foreground mb-4">Ready for a moment of clarity?</h3>
               <p className="text-muted-foreground mb-6">No accounts, no tracking, and total privacy.</p>
-              <Link
-                to="/"
+              <button
+                onClick={() => setShowDisclosure(true)}
                 className="inline-block bg-foreground text-background px-8 py-3 rounded-full hover:opacity-90 transition-opacity"
               >
                 Start a Reflective Session
-              </Link>
+              </button>
             </div>
           </div>
         </div>
