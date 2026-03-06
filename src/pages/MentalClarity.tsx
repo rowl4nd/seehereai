@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
 
 const MentalClarity = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     const prevTitle = document.title;
     document.title = "How to Use AI for Mental Clarity | SeeHere.ai";
