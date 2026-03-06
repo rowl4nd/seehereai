@@ -99,6 +99,7 @@ const SupportAlternative = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/10">
+      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} />
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8 flex items-center justify-between">
         <Logo />
         <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Go back">
