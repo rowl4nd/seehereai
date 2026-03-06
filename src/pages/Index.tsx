@@ -690,24 +690,6 @@ const Index = () => {
       {/* ── Footer ── */}
       <footer className="relative py-12 px-6 text-center border-t border-border/30 bg-[#f8f6f3]">
         <div className="relative z-10 space-y-6">
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-[#3d3a35]/60 uppercase tracking-widest">Find your space</p>
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
-              {[
-                { href: "/blog", label: "Journal" },
-              ].map(({ href, label }) => (
-                <a
-                  key={href}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-[#5f5a53] hover:text-[#3d3a35] transition-colors duration-200"
-                >
-                  {label}
-                </a>
-              ))}
-            </div>
-          </div>
           <div className="pt-4 border-t border-border/20 max-w-2xl mx-auto flex flex-wrap justify-center gap-x-8 gap-y-2">
             {[
               { href: "/terms", label: "Terms & Conditions" },
