@@ -346,7 +346,7 @@ serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         messages: [{ role: "system", content: fullSystemPrompt }, ...sanitisedMessages],
         max_tokens: 300,
-        temperature: 0.7,
+        temperature: 0.5,
       }),
     });
 
