@@ -381,7 +381,7 @@ serve(async (req) => {
     // Build user name context
     let nameContext = "\n\n## USER NAME CONTEXT\n";
     if (userName) {
-      nameContext += `The person's name is: ${userName}. Use it sparingly — no more than once every 4 exchanges. Never in consecutive responses. Never to open every message.`;
+      nameContext += `The person's name is: ${userName}. Use it a maximum of twice in the entire conversation. Never in consecutive responses. Never to open a message. When in doubt, leave it out.`;
     } else if (nameDeclined) {
       nameContext +=
         "The person has previously declined to share their name. Do NOT ask for it. Do not reference it. Just be warm and present.";
