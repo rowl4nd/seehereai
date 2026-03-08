@@ -27,6 +27,7 @@ import AffordableMentalHealth from "./pages/AffordableMentalHealth";
 import AIEmotionalSupport from "./pages/AIEmotionalSupport";
 import AnxietySupport from "./pages/AnxietySupport";
 import TalkingToSomeone from "./pages/TalkingToSomeone";
+import FounderStory from "./pages/FounderStory";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -62,6 +63,7 @@ const App = () => (
             <Route path="/blog/ai-emotional-support" element={<AIEmotionalSupport />} />
             <Route path="/blog/anxiety-support" element={<AnxietySupport />} />
             <Route path="/blog/talking-to-someone" element={<TalkingToSomeone />} />
+            <Route path="/blog/our-story" element={<FounderStory />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
