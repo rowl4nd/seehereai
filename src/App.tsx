@@ -27,6 +27,7 @@ import AffordableMentalHealth from "./pages/AffordableMentalHealth";
 import AIEmotionalSupport from "./pages/AIEmotionalSupport";
 import AnxietySupport from "./pages/AnxietySupport";
 import TalkingToSomeone from "./pages/TalkingToSomeone";
+import FounderStory from "./pages/FounderStory";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
