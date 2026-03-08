@@ -5,6 +5,14 @@ import Logo from "@/components/Logo";
 
 const posts = [
   {
+    slug: "/blog/our-story",
+    title: "Hi. I'm Ce — The Therapist Who Built SeeHere",
+    description:
+      "Why a BACP-accredited counsellor with 25 years of clinical experience decided that AI could be a genuine force for good.",
+    tag: "Our Story",
+    readTime: "4 min read",
+  },
+  {
     slug: "/blog/nhs-waiting-list",
     title: "Struggling While You Wait for NHS Therapy",
     description:

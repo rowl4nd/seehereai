@@ -63,6 +63,7 @@ const App = () => (
             <Route path="/blog/ai-emotional-support" element={<AIEmotionalSupport />} />
             <Route path="/blog/anxiety-support" element={<AnxietySupport />} />
             <Route path="/blog/talking-to-someone" element={<TalkingToSomeone />} />
+            <Route path="/blog/our-story" element={<FounderStory />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
