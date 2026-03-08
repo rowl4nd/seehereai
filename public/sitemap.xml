@@ -14,7 +14,7 @@
   <loc>https://seehere.ai/blog/our-story</loc>
   <changefreq>yearly</changefreq>
   <priority>0.8</priority>
-</url>
+  </url>
   <url>
     <loc>https://seehere.ai/blog/nhs-waiting-list</loc>
     <changefreq>monthly</changefreq>
