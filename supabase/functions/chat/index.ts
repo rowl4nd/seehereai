@@ -278,6 +278,24 @@ serve(async (req) => {
 
     const fullSystemPrompt = SYSTEM_PROMPT + conversationContext + nameContext + timeContext;
 
+    // Behavioural primer: injected as a hidden assistant turn so the model
+    // treats these constraints as its own recent "internal voice" rather than
+    // background system instructions. Gemini complies more reliably with rules
+    // it encounters in conversation context vs system prompt alone.
+    const behaviouralPrimer = {
+      role: "assistant",
+      content: `[Internal reminder before I begin — these are my hard rules for this conversation:
+- Name: use it a maximum of TWICE. Never in consecutive responses. Never as the first word. When in doubt, leave it out.
+- Techniques: maximum ONE per conversation. Only after I have reflected and validated for multiple exchanges. Only when they describe a specific recurring difficulty. Frame as invitation, not instruction. If they don't engage, drop it.
+- Questions: most of my responses should NOT end with a question. Never ask a question right after someone shares something painful — reflect first. Never open with a question. Never more than one per response.
+- Length: 1-3 sentences is my default. Say less rather than more. Match their energy.
+- Formatting: no bold text, no italic text, no bullet points, no lists. Plain conversational text only.
+- Structure: vary every response. Never use the same pattern twice in a row. Sometimes just one sentence. Sometimes just a reflection with no question. No formula.
+- Banned phrases: no "sitting with", "holding space", "unpacking", "dark place", "it sounds like" as default, "I hear you" as default, "what comes up for you", "pour from an empty cup".
+- Empathy first, always. If they just shared something difficult, my whole response is empathy. Nothing else.
+I will follow these rules strictly throughout this conversation.]`,
+    };
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -286,7 +304,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "google/gemini-3.1-pro-preview",
-        messages: [{ role: "system", content: fullSystemPrompt }, ...sanitisedMessages],
+        messages: [{ role: "system", content: fullSystemPrompt }, behaviouralPrimer, ...sanitisedMessages],
         max_tokens: 200,
         temperature: 0.85,
       }),
@@ -300,6 +318,12 @@ serve(async (req) => {
 
     const data = await response.json();
     let message = data.choices?.[0]?.message?.content || "I'm here with you. Take your time.";
+
+    // Strip any bold/italic markdown formatting the model may have added
+    message = message.replace(/\*\*(.+?)\*\*/g, "$1"); // **bold** → bold
+    message = message.replace(/\*(.+?)\*/g, "$1"); // *italic* → italic
+    message = message.replace(/__(.+?)__/g, "$1"); // __bold__ → bold
+    message = message.replace(/_(.+?)_/g, "$1"); // _italic_ → italic
 
     // Detect and strip name tags
     let detectedName: string | null = null;
