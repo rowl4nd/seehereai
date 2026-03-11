@@ -9,13 +9,6 @@ import Logo from "@/components/Logo";
 
 const creditPackages = [
   {
-    id: "single",
-    sessions: 1,
-    price: 500, // pence
-    priceDisplay: "£5",
-    pricePerSession: "£5",
-  },
-  {
     id: "four",
     sessions: 4,
     price: 1200,
@@ -38,6 +31,14 @@ const creditPackages = [
     pricePerSession: "£2",
   },
 ];
+
+const singleSession = {
+  id: "single",
+  sessions: 1,
+  price: 500,
+  priceDisplay: "£5",
+  pricePerSession: "£5",
+};
 
 const Credits = () => {
   const { user, loading: authLoading } = useAuth();
@@ -65,7 +66,7 @@ const Credits = () => {
       }
 
       if (response.data?.url) {
-        window.open(response.data.url, '_blank');
+        window.open(response.data.url, "_blank");
       }
     } catch (err) {
       console.error("Checkout error:", err);
@@ -85,7 +86,6 @@ const Credits = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/40 px-4 py-2 md:px-8">
         <Logo to="/dashboard" />
@@ -96,22 +96,16 @@ const Credits = () => {
         <div className="w-full max-w-3xl space-y-8 animate-fade-in">
           {/* Title */}
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-serif font-light text-foreground">
-              Session Credits
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Credits never expire. Use them whenever you're ready.
-            </p>
+            <h1 className="text-3xl font-serif font-light text-foreground">Session Credits</h1>
+            <p className="text-sm text-muted-foreground">Credits never expire. Use them whenever you're ready.</p>
           </div>
 
-          {/* Packages */}
-          <div className="grid gap-4 md:grid-cols-2">
+          {/* Main packages — 3 tiers */}
+          <div className="grid gap-4 md:grid-cols-3">
             {creditPackages.map((pkg) => (
               <Card
                 key={pkg.id}
-                className={`bg-card/50 border-border/50 relative ${
-                  pkg.popular ? "ring-2 ring-primary/30" : ""
-                }`}
+                className={`bg-card/50 border-border/50 relative ${pkg.popular ? "ring-2 ring-primary/30" : ""}`}
               >
                 {pkg.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -121,18 +115,12 @@ const Credits = () => {
                   </div>
                 )}
                 <CardHeader className="text-center pb-2">
-                  <CardTitle className="font-serif font-light text-2xl">
-                    {pkg.sessions} session{pkg.sessions > 1 ? "s" : ""}
-                  </CardTitle>
-                  <CardDescription>
-                    {pkg.pricePerSession}/session
-                  </CardDescription>
+                  <CardTitle className="font-serif font-light text-2xl">{pkg.sessions} sessions</CardTitle>
+                  <CardDescription>{pkg.pricePerSession}/session</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-center">
-                    <span className="text-3xl font-light text-foreground">
-                      {pkg.priceDisplay}
-                    </span>
+                    <span className="text-3xl font-light text-foreground">{pkg.priceDisplay}</span>
                   </div>
                   <Button
                     onClick={() => handlePurchase(pkg.id)}
@@ -151,9 +139,19 @@ const Credits = () => {
             ))}
           </div>
 
-          {/* Note */}
-          <p className="text-center text-xs text-muted-foreground/70">
-            Secure payment powered by Stripe
+          {/* Stripe note */}
+          <p className="text-center text-xs text-muted-foreground/70">Secure payment powered by Stripe</p>
+
+          {/* Single session — deprioritised */}
+          <p className="text-center text-xs text-muted-foreground/50">
+            Just want to try one?{" "}
+            <button
+              onClick={() => handlePurchase(singleSession.id)}
+              disabled={purchasingId !== null}
+              className="underline underline-offset-2 hover:text-muted-foreground transition-colors disabled:opacity-50"
+            >
+              Single session — £5
+            </button>
           </p>
         </div>
       </main>
