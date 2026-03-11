@@ -386,14 +386,12 @@ const Mirror = () => {
         content: "[EARLY_END] The user has chosen to end the session early. Please provide a warm wrap-up.",
       });
 
-      const response = await supabase.functions.invoke("chat", {
-        body: {
-          messages: messagesForAI,
-          pastConversations: pastConversations,
-          userName: profile?.display_name || undefined,
-          nameDeclined: profile?.name_declined || false,
-          timeOfDay: getTimeOfDay(),
-        },
+      const response = await invokeWithRetry("chat", {
+        messages: messagesForAI,
+        pastConversations: pastConversations,
+        userName: profile?.display_name || undefined,
+        nameDeclined: profile?.name_declined || false,
+        timeOfDay: getTimeOfDay(),
       });
 
       const wrapUpMessage: Message = {
