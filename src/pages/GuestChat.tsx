@@ -38,6 +38,22 @@ const GuestChat = () => {
     };
   }, []);
 
+  // Retry wrapper for edge function calls — handles mobile connection drops
+  const invokeWithRetry = async (functionName: string, body: any, retries = 1) => {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const response = await supabase.functions.invoke(functionName, { body });
+        if (response.error) throw response.error;
+        return response;
+      } catch (error) {
+        if (attempt < retries) {
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+          continue;
+        }
+        throw error;
+      }
+    }
+  };
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
