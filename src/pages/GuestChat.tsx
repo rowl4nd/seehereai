@@ -371,16 +371,12 @@ const GuestChat = () => {
         lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
       }
 
-      const response = await supabase.functions.invoke("chat", {
-        body: {
-          messages: messagesForAI,
-          ...(authenticated && {
-            pastConversations,
-            userName: profile?.display_name || undefined,
-            nameDeclined: profile?.name_declined || false,
-          }),
-          timeOfDay: getTimeOfDay(),
-        },
+      const response = await invokeWithRetry("chat", {
+        messages: messagesForAI,
+        pastConversations: pastConversations,
+        userName: profile?.display_name || undefined,
+        nameDeclined: profile?.name_declined || false,
+        timeOfDay: getTimeOfDay(),
       });
 
       // Handle name detection from AI (authenticated only, mirrors Mirror.tsx)
