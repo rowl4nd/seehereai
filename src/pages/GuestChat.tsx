@@ -17,7 +17,7 @@ interface Message {
   content: string;
 }
 
-const MAX_GUEST_MESSAGES = 6;
+const MAX_GUEST_MESSAGES = 5;
 
 const GuestChat = () => {
   const { user, loading: authLoading } = useAuth();
