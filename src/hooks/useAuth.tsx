@@ -34,12 +34,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       setLoading(false);
 
-      // Fire Meta Pixel for new signups (all auth methods)
-      if (event === "SIGNED_UP" && typeof window !== "undefined" && typeof window.fbq === "function") {
-        window.fbq("track", "CompleteRegistration", {
-          content_name: "SeeHere Account",
-          status: true,
-        });
+      // Fire Meta Pixel for new signups — detect by checking if user was just created
+      if (event === "SIGNED_IN" && session?.user && typeof window !== "undefined" && typeof window.fbq === "function") {
+        const createdAt = new Date(session.user.created_at).getTime();
+        const now = Date.now();
+        if (now - createdAt < 10000) {
+          window.fbq("track", "CompleteRegistration", {
+            content_name: "SeeHere Account",
+            status: true,
+          });
+        }
       }
     });
 
