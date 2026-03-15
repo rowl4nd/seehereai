@@ -1,55 +1,18 @@
 
-# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Problem
-The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
+## Plan: Fix CompleteRegistration pixel with localStorage + page-load fallback
 
-## Solution
-Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
+### Single file change: `src/hooks/useAuth.tsx`
 
-## Technical Detail
+**Extract a helper function** `fireCompleteRegistrationOnce(user)` that:
+1. Checks `localStorage` for key `sh_pixel_reg_fired_{userId}` — if present, skip
+2. Checks `typeof window.fbq === "function"` — if not loaded, skip
+3. Checks if `last_sign_in_at` is within 60 seconds of `created_at` (first login indicator)
+4. If all pass: fires `fbq('track', 'CompleteRegistration', ...)` and sets the localStorage flag
 
-### Index.tsx -- Update `handleTryForFree`
+**Call it in two places:**
+1. **In `onAuthStateChange`** when `event === "SIGNED_IN"` — catches the signup moment
+2. **In `getSession()` callback** when a session already exists on page load — catches the case where fbq wasn't loaded during signup
 
-Change the function (around line 172) from:
-```typescript
-const handleTryForFree = () => {
-  if (user) navigate("/dashboard");
-  else navigate("/try");
-};
-```
+This ensures the event fires exactly once per new user, regardless of timing.
 
-To:
-```typescript
-const handleTryForFree = () => {
-  if (user) {
-    navigate("/dashboard");
-  } else if (!disclosureAccepted) {
-    setShowDisclosure(true);
-  } else {
-    navigate("/try");
-  }
-};
-```
-
-### Index.tsx -- Update `handleDisclosureAccept`
-
-Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
-
-```typescript
-const handleDisclosureAccept = () => {
-  sessionStorage.setItem("sh_disclosure_accepted", "true");
-  setDisclosureAccepted(true);
-  setShowDisclosure(false);
-
-  // If the user was typing in the hero input, focus it
-  // Otherwise (clicked a Try for Free button), navigate to /try
-  if (document.activeElement === textareaRef.current || heroInput.trim()) {
-    setTimeout(() => textareaRef.current?.focus(), 50);
-  } else {
-    navigate("/try");
-  }
-};
-```
-
-This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
