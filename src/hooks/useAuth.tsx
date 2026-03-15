@@ -8,6 +8,26 @@ declare global {
   }
 }
 
+function fireCompleteRegistrationOnce(user: User) {
+  if (typeof window === "undefined" || typeof window.fbq !== "function") return;
+
+  const firedKey = `sh_pixel_reg_fired_${user.id}`;
+  if (localStorage.getItem(firedKey)) return;
+
+  const created = new Date(user.created_at).getTime();
+  const lastSignIn = user.last_sign_in_at
+    ? new Date(user.last_sign_in_at).getTime()
+    : created;
+
+  if (Math.abs(lastSignIn - created) < 60000) {
+    window.fbq("track", "CompleteRegistration", {
+      content_name: "SeeHere Account",
+      status: true,
+    });
+    localStorage.setItem(firedKey, "1");
+  }
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -26,7 +46,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener BEFORE getting session
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -34,24 +53,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       setLoading(false);
 
-      // Fire Meta Pixel for new signups — detect by checking if user was just created
-      if (event === "SIGNED_IN" && session?.user && typeof window !== "undefined" && typeof window.fbq === "function") {
-        const createdAt = new Date(session.user.created_at).getTime();
-        const now = Date.now();
-        if (now - createdAt < 10000) {
-          window.fbq("track", "CompleteRegistration", {
-            content_name: "SeeHere Account",
-            status: true,
-          });
-        }
+      if (event === "SIGNED_IN" && session?.user) {
+        fireCompleteRegistrationOnce(session.user);
       }
     });
 
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // Fallback: fire if pixel wasn't loaded during signup
+      if (session?.user) {
+        fireCompleteRegistrationOnce(session.user);
+      }
     });
 
     return () => subscription.unsubscribe();
