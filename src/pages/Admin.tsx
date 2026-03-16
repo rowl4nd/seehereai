@@ -357,6 +357,23 @@ function FunnelCard({
             )}
           </div>
         ))}
+        {conversionLabel && conversionFrom != null && conversionTo != null && (
+          <div className="mt-4 pt-3 border-t border-border">
+            <p className="text-xs text-muted-foreground">
+              {conversionLabel}:{" "}
+              <span className="font-semibold text-foreground">
+                {conversionFrom > 0
+                  ? `${((conversionTo / conversionFrom) * 100).toFixed(1)}%`
+                  : "—"}
+              </span>
+              {conversionFrom > 0 && (
+                <span className="ml-1">
+                  ({conversionTo} of {conversionFrom})
+                </span>
+              )}
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
