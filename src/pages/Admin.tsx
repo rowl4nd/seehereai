@@ -218,6 +218,14 @@ export default function Admin() {
         <FunnelCard title="Returning User Journey" subtitle="From 'Logged in'" steps={returningUserFunnel} />
       </div>
 
+      {/* Headline Metrics */}
+      <HeadlineMetrics
+        disclosureShown={getFilteredCount('disclosure_shown', 'new')}
+        accountCreated={getFilteredCount('account_created', 'new')}
+        secondFreeSessionCount={secondFreeSessionCount}
+        purchaseCompleted={getCount('purchase_completed')}
+      />
+
       {/* Events Table */}
       <Card>
         <CardHeader>
