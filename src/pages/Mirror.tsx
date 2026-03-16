@@ -315,7 +315,14 @@ const Mirror = () => {
       // End session when timer hits 0 — stay on page
       if (remaining <= 0 && !sessionEnded) {
         setSessionEnded(true);
+        trackEvent("session_ended_naturally");
         if (currentSession) {
+          const elapsed = Math.floor((Date.now() - new Date(currentSession.started_at).getTime()) / 1000);
+          trackEvent("session_completed", {
+            session_id: currentSession.id,
+            session_type: currentSession.session_type,
+            duration_seconds: elapsed,
+          });
           const cId = conversationIdRef.current;
           if (cId) {
             const conversationMessages = messagesRef.current.map((m) => ({
