@@ -308,3 +308,47 @@ function DatePicker({
     </Popover>
   );
 }
+
+function FunnelCard({
+  title,
+  subtitle,
+  steps,
+}: {
+  title: string;
+  subtitle: string;
+  steps: { step: string; count: number }[];
+}) {
+  const pct = (n: number, total: number) =>
+    total > 0 ? `${((n / total) * 100).toFixed(1)}%` : "—";
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">{title}</CardTitle>
+        <p className="text-sm text-muted-foreground">{subtitle}</p>
+      </CardHeader>
+      <CardContent className="space-y-1">
+        {steps.map((item, i) => (
+          <div key={item.step}>
+            <div className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-4 py-2">
+              <span className="text-sm text-muted-foreground">{item.step.replace(/_/g, " ")}</span>
+              <div className="text-right">
+                <span className="text-lg font-bold text-foreground">{item.count}</span>
+                {i > 0 && steps[i - 1].count > 0 && (
+                  <span className="ml-2 text-xs text-muted-foreground">
+                    {pct(item.count, steps[i - 1].count)}
+                  </span>
+                )}
+              </div>
+            </div>
+            {i < steps.length - 1 && (
+              <div className="flex justify-center py-0.5">
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground rotate-90" />
+              </div>
+            )}
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
