@@ -17,11 +17,13 @@ interface SecureSessionModalProps {
 
 const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
   const [email, setEmail] = useState(() => sessionStorage.getItem("guest_email") || "");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleDiscard = () => {
+    trackEvent("signup_modal_dismissed");
     sessionStorage.removeItem("guest_messages");
     sessionStorage.removeItem("guest_onboarding_complete");
     sessionStorage.removeItem("guest_email");
