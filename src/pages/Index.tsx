@@ -48,6 +48,12 @@ import DisclosureModalComponent from "@/components/DisclosureModal";
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 const Index = () => {
+  const { trackEvent } = useAnalytics();
+
+  useEffect(() => {
+    trackEvent('homepage_viewed');
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
