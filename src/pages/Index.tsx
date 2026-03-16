@@ -135,6 +135,7 @@ const Index = () => {
     sessionStorage.setItem("sh_disclosure_accepted", "true");
     setDisclosureAccepted(true);
     setShowDisclosure(false);
+    trackEvent("disclosure_accepted");
 
     const val = heroInput.trim();
     if (val) {
