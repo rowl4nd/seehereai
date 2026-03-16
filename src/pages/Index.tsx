@@ -58,7 +58,7 @@ const Index = () => {
 
   useEffect(() => {
     trackEvent('homepage_viewed');
-
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   // Check if already accepted this session
