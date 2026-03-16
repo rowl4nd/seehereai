@@ -375,6 +375,13 @@ const Mirror = () => {
     // If we're already past the 5-minute warning, just end immediately and stay on page
     if (showEndWarning) {
       setSessionEnded(true);
+      const elapsed = Math.floor((Date.now() - new Date(currentSession.started_at).getTime()) / 1000);
+      trackEvent("session_ended_early");
+      trackEvent("session_completed", {
+        session_id: currentSession.id,
+        session_type: currentSession.session_type,
+        duration_seconds: elapsed,
+      });
       if (conversationIdRef.current) {
         await saveMessagesToDb(messagesRef.current);
       }
