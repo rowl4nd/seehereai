@@ -358,10 +358,7 @@ const GuestChat = () => {
     setIsLoading(true);
 
     // Track message event
-    if (!authenticated) {
-      const userMsgCount = updatedWithUser.filter((m) => m.role === "user").length;
-      trackEvent("guest_message_sent", { message_number: userMsgCount });
-    } else {
+    if (authenticated) {
       const userMsgCount = updatedWithUser.filter((m) => m.role === "user").length;
       trackEvent("session_message_sent", { session_id: sessionId, message_number: userMsgCount });
     }

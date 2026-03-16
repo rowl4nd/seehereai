@@ -28,7 +28,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 const NEW_USER_STEPS = [
   "disclosure_shown",
   "disclosure_accepted",
-  "guest_message_sent",
   "signup_modal_shown",
   "account_created",
   "session_started",
