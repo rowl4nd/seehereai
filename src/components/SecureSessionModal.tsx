@@ -49,6 +49,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
       }
 
       toast.success("Welcome to See Here");
+      trackEvent("account_created", { method: "email" });
 
       onSuccess();
     } catch {
