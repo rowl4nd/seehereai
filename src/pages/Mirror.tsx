@@ -42,6 +42,7 @@ const Mirror = () => {
     loadHistory,
   } = useEncryptedMessages();
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
 
   // Retry wrapper for edge function calls — handles mobile connection drops
   const invokeWithRetry = async (functionName: string, body: any, retries = 1) => {
