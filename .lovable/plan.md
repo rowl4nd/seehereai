@@ -1,36 +1,55 @@
 
+# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Plan: Add Homepage Analytics Events and Funnel Branch
+## Problem
+The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
 
-### 1. `src/pages/Index.tsx` — Add two events
+## Solution
+Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
 
-**`homepage_viewed`**: Fire `trackEvent('homepage_viewed')` in a `useEffect` on mount (empty deps array).
+## Technical Detail
 
-**`login_from_homepage`**: Add `onClick` handlers that call `trackEvent('login_from_homepage')` on:
-- The header "Log in" button (line ~185, `<Link to="/auth">`)
-- The "Have an account? Log in" link (line ~282, `<Link to="/auth">`)
+### Index.tsx -- Update `handleTryForFree`
 
-Both links navigate to `/auth` as before — just add tracking before navigation. Since these are `<Link>` elements, wrap them or use `onClick` on the parent/link.
+Change the function (around line 172) from:
+```typescript
+const handleTryForFree = () => {
+  if (user) navigate("/dashboard");
+  else navigate("/try");
+};
+```
 
-### 2. `src/pages/Admin.tsx` — Update funnel visualization
+To:
+```typescript
+const handleTryForFree = () => {
+  if (user) {
+    navigate("/dashboard");
+  } else if (!disclosureAccepted) {
+    setShowDisclosure(true);
+  } else {
+    navigate("/try");
+  }
+};
+```
 
-**Update `FUNNEL_STEPS`**: Add `"homepage_viewed"` as the first entry, and add `"login_from_homepage"` to the array (for count lookup).
+### Index.tsx -- Update `handleDisclosureAccept`
 
-**Replace the funnel rendering** with a two-part layout:
+Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
 
-1. **First box**: `homepage_viewed` count
-2. **Three-way branch** (displayed as three stacked rows between `homepage_viewed` and the rest):
-   - "Started chatting" → count of `disclosure_shown` (% of `homepage_viewed`)
-   - "Logged in" → count of `login_from_homepage` (% of `homepage_viewed`)
-   - "No interaction" → `homepage_viewed - disclosure_shown - login_from_homepage` (% of `homepage_viewed`)
-3. **Arrow from "Started chatting"** continues into the existing funnel from `disclosure_shown` → `disclosure_accepted` → onward
+```typescript
+const handleDisclosureAccept = () => {
+  sessionStorage.setItem("sh_disclosure_accepted", "true");
+  setDisclosureAccepted(true);
+  setShowDisclosure(false);
 
-### Files Modified
+  // If the user was typing in the hero input, focus it
+  // Otherwise (clicked a Try for Free button), navigate to /try
+  if (document.activeElement === textareaRef.current || heroInput.trim()) {
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  } else {
+    navigate("/try");
+  }
+};
+```
 
-| File | Changes |
-|------|---------|
-| `src/pages/Index.tsx` | Add `homepage_viewed` on mount, `login_from_homepage` on login clicks |
-| `src/pages/Admin.tsx` | Add `homepage_viewed` to funnel, render three-way branch UI |
-
-No database or edge function changes needed — the events use the existing tracking infrastructure.
-
+This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.

@@ -56,6 +56,11 @@ const Index = () => {
   const [disclosureAccepted, setDisclosureAccepted] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  useEffect(() => {
+    trackEvent('homepage_viewed');
+
+
+
   // Check if already accepted this session
   useEffect(() => {
     const accepted = sessionStorage.getItem("sh_disclosure_accepted");
@@ -182,7 +187,7 @@ const Index = () => {
                 </Button>
               </Link>
             ) : (
-              <Link to="/auth">
+              <Link to="/auth" onClick={() => trackEvent('login_from_homepage')}>
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
@@ -279,7 +284,7 @@ const Index = () => {
               </form>
               <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
                 Try 2 sessions free ·{" "}
-                <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors">
+                <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors" onClick={() => trackEvent('login_from_homepage')}>
                   Have an account? Log in
                 </Link>
               </p>
