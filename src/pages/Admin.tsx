@@ -118,6 +118,7 @@ export default function Admin() {
         setCounts(json.counts || []);
         setDaily(json.daily || []);
         setFilteredCounts(json.filtered_counts || {});
+        setSecondFreeSessionCount(json.second_free_session_count || 0);
       }
     } catch {
       // silent
