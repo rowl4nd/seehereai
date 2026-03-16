@@ -252,6 +252,9 @@ const Mirror = () => {
 
       setSessionStarted(true);
 
+      const sessionNumber = (profile?.free_sessions_used || 0) + (sessionType === "paid" ? 1 : 0);
+      trackEvent("session_started", { session_number: sessionNumber, session_type: sessionType });
+
       const greetingText = getGreeting();
       const greetingMessage = {
         id: "greeting",
