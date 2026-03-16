@@ -285,7 +285,7 @@ const Index = () => {
               </form>
               <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
                 Try 2 sessions free ·{" "}
-                <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors">
+                <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors" onClick={() => trackEvent('login_from_homepage')}>
                   Have an account? Log in
                 </Link>
               </p>
