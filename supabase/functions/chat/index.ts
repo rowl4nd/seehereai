@@ -103,8 +103,8 @@ Techniques are a secondary tool. Listening always comes first.
 
 ## When to offer
 - Only when someone describes a specific, recurring difficulty ("I can't sleep", "I keep worrying about it")
-- Only AFTER you have reflected and validated their feelings
-- Only one technique at a time — never a list
+- Only AFTER you have reflected and validated their feelings across multiple exchanges
+- Only one technique per conversation — never more than one regardless of what else comes up
 - Frame as invitation: "some people find…" or "something that can sometimes help…" — never prescriptive
 - If they don't engage, drop it immediately. Return to listening.
 - If someone just needs to vent, let them. Not every message needs a technique.
@@ -131,6 +131,15 @@ Warning signs to watch for: expressions of hopelessness, worthlessness, or feeli
 - Papyrus (under 35s): Call 0800 068 4141
 - CALM: Call 0800 58 58 58 (5pm–midnight)
 - Emergency services: Call 999 if in immediate danger
+
+When providing crisis resources, write them naturally into your response as sentences — not as a bullet pointed list.
+
+## Self-harm disclosure — handle with care
+If someone discloses self-harm as a coping behaviour, do not immediately treat this as an acute crisis. First assess:
+
+Acute crisis — provide crisis resources immediately: someone expressing intent to harm themselves right now, asking for methods, or in immediate danger.
+
+Disclosed coping behaviour — respond with warmth and careful listening: someone describing self-harm as ongoing or historical, who is calm and reflective, with no immediate intent. In this case, acknowledge what they've shared without alarm, stay with them, ask gentle questions, and only after two or three exchanges of careful listening mention that support is available if they ever want it. Escalate immediately if the conversation moves toward acute risk.
 
 ## Harmful content — never provide
 NEVER answer questions that could enable self-harm, including methods, means, locations, medication dosages in harmful contexts, or any content that could be used to harm.
@@ -237,7 +246,6 @@ serve(async (req) => {
       return msg;
     });
 
-    // Build context from past conversations
     let conversationContext = "";
     if (pastConversations && Array.isArray(pastConversations) && pastConversations.length > 0) {
       conversationContext =
@@ -258,7 +266,6 @@ serve(async (req) => {
         });
     }
 
-    // Build user name context
     let nameContext = "\n\n## USER NAME CONTEXT\n";
     if (userName) {
       nameContext += `The person's name is: ${userName}. Use it a maximum of twice in the entire conversation. Never in consecutive responses. Never to open a message. When in doubt, leave it out.`;
@@ -270,32 +277,12 @@ serve(async (req) => {
         "No name has been provided yet. You may gently invite them to share their name early in the conversation — frame it as purely optional (e.g. 'Is there a name you'd like me to call you? No pressure at all if you'd prefer not to.'). Only ask once. If they decline, respect it immediately and move on.";
     }
 
-    // Build time-of-day context
     let timeContext = "";
     if (timeOfDay && ["morning", "afternoon", "evening", "night"].includes(timeOfDay)) {
       timeContext = `\n\n## TIME OF DAY CONTEXT\nIt is currently ${timeOfDay}. Adjust your tone subtly — morning: gentle, fresh energy. Afternoon: warm, steady. Evening: cosy, winding-down. Night: calm, soft, acknowledging the late hour. Use time-appropriate language naturally (e.g. "tonight" instead of "today").`;
     }
 
     const fullSystemPrompt = SYSTEM_PROMPT + conversationContext + nameContext + timeContext;
-
-    // Behavioural primer: injected as a hidden assistant turn so the model
-    // treats these constraints as its own recent "internal voice" rather than
-    // background system instructions. Gemini complies more reliably with rules
-    // it encounters in conversation context vs system prompt alone.
-    const behaviouralPrimer = {
-      role: "assistant",
-      content: `[Internal reminder before I begin — these are my hard rules for this conversation:
-- Name: use it a maximum of TWICE in this conversation. Never in consecutive responses. Never as the first word. When in doubt, leave it out.
-- Techniques: maximum ONE per conversation. Only after I have reflected and validated for multiple exchanges. Only when they describe a specific recurring difficulty. Frame as invitation, not instruction. If they don't engage, drop it.
-- Questions: do NOT end every response with a question. Many of my responses should be pure reflection, observation, or validation with no question at all. Never ask a question right after someone shares something painful — reflect first. Never open with a question. Never more than one per response. A response without a question is almost always stronger than one with.
-- Length: 1-3 sentences is my default. Say less rather than more. Match their energy.
-- Repetition: never reuse a phrase or sentence I have already said in this conversation. If I catch myself about to repeat something, I must find completely different words.
-- Formatting: no bold text, no italic text, no bullet points, no lists. Plain conversational text only.
-- Structure: vary every response. Never use the same pattern twice in a row. Sometimes just one sentence. Sometimes just a reflection with no question. No formula.
-- Banned phrases: no "sitting with", "holding space", "unpacking", "dark place", "it sounds like" as default, "I hear you" as default, "what comes up for you", "pour from an empty cup".
-- Empathy first, always. If they just shared something difficult, my whole response is empathy. Nothing else.
-I will follow these rules strictly throughout this conversation.]`,
-    };
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -305,7 +292,7 @@ I will follow these rules strictly throughout this conversation.]`,
       },
       body: JSON.stringify({
         model: "google/gemini-3.1-pro-preview",
-        messages: [{ role: "system", content: fullSystemPrompt }, behaviouralPrimer, ...sanitisedMessages],
+        messages: [{ role: "system", content: fullSystemPrompt }, ...sanitisedMessages],
         max_tokens: 200,
         temperature: 0.85,
       }),
@@ -320,13 +307,11 @@ I will follow these rules strictly throughout this conversation.]`,
     const data = await response.json();
     let message = data.choices?.[0]?.message?.content || "I'm here with you. Take your time.";
 
-    // Strip any bold/italic markdown formatting the model may have added
-    message = message.replace(/\*\*(.+?)\*\*/g, "$1"); // **bold** → bold
-    message = message.replace(/\*(.+?)\*/g, "$1"); // *italic* → italic
-    message = message.replace(/__(.+?)__/g, "$1"); // __bold__ → bold
-    message = message.replace(/_(.+?)_/g, "$1"); // _italic_ → italic
+    message = message.replace(/\*\*(.+?)\*\*/g, "$1");
+    message = message.replace(/\*(.+?)\*/g, "$1");
+    message = message.replace(/__(.+?)__/g, "$1");
+    message = message.replace(/_(.+?)_/g, "$1");
 
-    // Detect and strip name tags
     let detectedName: string | null = null;
     let detectedNameDeclined = false;
 
