@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
