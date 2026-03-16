@@ -252,10 +252,8 @@ const Index = () => {
               <form onSubmit={handleHeroSubmit} className="relative group">
                 <textarea
                   ref={textareaRef}
-                  readOnly={!disclosureAccepted && !user}
                   value={heroInput}
                   onChange={(e) => setHeroInput(e.target.value)}
-                  onFocus={handleTextareaFocus}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
