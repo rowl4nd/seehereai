@@ -1,53 +1,55 @@
 
+# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Plan: Admin Analytics Dashboard
+## Problem
+The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
 
-### 1. Database Migration
+## Solution
+Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
 
-Create `admin_users` table and RLS:
+## Technical Detail
 
-```sql
-CREATE TABLE public.admin_users (
-  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE
-);
+### Index.tsx -- Update `handleTryForFree`
 
-ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can check own admin status"
-  ON public.admin_users FOR SELECT
-  TO authenticated
-  USING (auth.uid() = user_id);
+Change the function (around line 172) from:
+```typescript
+const handleTryForFree = () => {
+  if (user) navigate("/dashboard");
+  else navigate("/try");
+};
 ```
 
-### 2. Edge Function: `supabase/functions/admin-analytics/index.ts`
+To:
+```typescript
+const handleTryForFree = () => {
+  if (user) {
+    navigate("/dashboard");
+  } else if (!disclosureAccepted) {
+    setShowDisclosure(true);
+  } else {
+    navigate("/try");
+  }
+};
+```
 
-- Extracts JWT from authorization header, verifies user exists in `admin_users`
-- Accepts optional query params: `start_date`, `end_date`, `event_name`
-- Queries `analytics_events` using service role, returns:
-  - `counts`: array of `{ event_name, count }` sorted by count descending
-  - `daily`: array of `{ date, count }` for the date range
-- `verify_jwt = false` in config.toml (manual auth check inside)
+### Index.tsx -- Update `handleDisclosureAccept`
 
-### 3. Admin Page: `src/pages/Admin.tsx`
+Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
 
-- On mount: checks auth → checks admin status via `supabase.from('admin_users').select().eq('user_id', user.id)` → redirects to `/` if either fails
-- **Date range picker**: Two date inputs defaulting to last 7 days
-- **Funnel summary**: Horizontal flow of the 10 funnel steps with counts and drop-off percentages between each
-- **Event table**: All events with total counts, sorted descending
-- **Daily trend chart**: Line chart using Recharts (already in project via chart.tsx) showing events per day
-- Minimal styling with existing shadcn components (Card, Table, Button)
+```typescript
+const handleDisclosureAccept = () => {
+  sessionStorage.setItem("sh_disclosure_accepted", "true");
+  setDisclosureAccepted(true);
+  setShowDisclosure(false);
 
-### 4. Route Addition: `src/App.tsx`
+  // If the user was typing in the hero input, focus it
+  // Otherwise (clicked a Try for Free button), navigate to /try
+  if (document.activeElement === textareaRef.current || heroInput.trim()) {
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  } else {
+    navigate("/try");
+  }
+};
+```
 
-Add `<Route path="/admin" element={<Admin />} />` — no nav link needed.
-
-### Files Created/Modified
-
-| File | Action |
-|------|--------|
-| DB migration | Create `admin_users` table + RLS |
-| `supabase/config.toml` | Add `[functions.admin-analytics] verify_jwt = false` |
-| `supabase/functions/admin-analytics/index.ts` | New edge function |
-| `src/pages/Admin.tsx` | New dashboard page |
-| `src/App.tsx` | Add `/admin` route |
-
+This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
