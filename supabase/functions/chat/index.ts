@@ -377,7 +377,7 @@ serve(async (req) => {
         "The person has previously declined to share their name. Do NOT ask for it. Do not reference it. Just be warm and present.";
     } else {
       nameContext +=
-        "No name has been provided yet. You may gently invite them to share their name early in the conversation — frame it as purely optional (e.g. 'Is there a name you'd like me to call you? No pressure at all if you'd prefer not to.'). Only ask once. If they decline, respect it immediately and move on.";
+        "No name has been provided yet. You must gently invite them to share their name early in the conversation — frame it as purely optional (e.g. 'Is there a name you'd like me to call you? No pressure at all if you'd prefer not to.'). Only ask once. If they decline, respect it immediately and move on.";
     }
 
     let timeContext = "";
