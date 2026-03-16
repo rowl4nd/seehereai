@@ -12,6 +12,7 @@ const Cooldown = () => {
   const { nextSessionTime } = useSessions();
   const { profile } = useProfile();
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
   const [timeUntilNext, setTimeUntilNext] = useState<string>("");
 
   // Determine which session just ended
