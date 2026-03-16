@@ -26,6 +26,21 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 
 const FUNNEL_STEPS = [
+  "homepage_viewed",
+  "login_from_homepage",
+  "disclosure_shown",
+  "disclosure_accepted",
+  "guest_message_sent",
+  "signup_modal_shown",
+  "account_created",
+  "session_started",
+  "cooldown_page_viewed",
+  "credits_page_viewed",
+  "purchase_started",
+  "purchase_completed",
+];
+
+const LINEAR_FUNNEL_STEPS = [
   "disclosure_shown",
   "disclosure_accepted",
   "guest_message_sent",
