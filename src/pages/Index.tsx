@@ -123,6 +123,7 @@ const Index = () => {
     if (user) {
       navigate("/dashboard");
     } else if (!disclosureAccepted) {
+      trackEvent("disclosure_shown", { trigger: "cta_button" });
       setShowDisclosure(true);
     } else {
       navigate("/try");
