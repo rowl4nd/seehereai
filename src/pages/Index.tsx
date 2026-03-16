@@ -50,6 +50,7 @@ import DisclosureModalComponent from "@/components/DisclosureModal";
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
   const [heroInput, setHeroInput] = useState("");
   const [showDisclosure, setShowDisclosure] = useState(false);
   const [disclosureAccepted, setDisclosureAccepted] = useState(false);
