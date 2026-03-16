@@ -25,6 +25,7 @@ const GuestChat = () => {
   const { profile, updateProfile } = useProfile();
   const { createConversation: createEncryptedConversation, saveMessages, loadHistory } = useEncryptedMessages();
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
   const location = useLocation();
   const initialMessageSent = useRef(false);
 
