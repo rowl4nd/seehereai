@@ -57,6 +57,7 @@ export default function Admin() {
   const [counts, setCounts] = useState<{ event_name: string; count: number }[]>([]);
   const [daily, setDaily] = useState<{ date: string; count: number }[]>([]);
   const [filteredCounts, setFilteredCounts] = useState<Record<string, number>>({});
+  const [secondFreeSessionCount, setSecondFreeSessionCount] = useState(0);
   const [fetching, setFetching] = useState(false);
 
   // Auth + admin check
@@ -117,6 +118,7 @@ export default function Admin() {
         setCounts(json.counts || []);
         setDaily(json.daily || []);
         setFilteredCounts(json.filtered_counts || {});
+        setSecondFreeSessionCount(json.second_free_session_count || 0);
       }
     } catch {
       // silent
@@ -212,12 +214,17 @@ export default function Admin() {
           title="New User Journey"
           subtitle="From 'Started chatting'"
           steps={newUserFunnel}
-          conversionLabel="New user conversion"
-          conversionFrom={getFilteredCount('disclosure_shown', 'new')}
-          conversionTo={getFilteredCount('account_created', 'new')}
         />
         <FunnelCard title="Returning User Journey" subtitle="From 'Logged in'" steps={returningUserFunnel} />
       </div>
+
+      {/* Headline Metrics */}
+      <HeadlineMetrics
+        disclosureShown={getFilteredCount('disclosure_shown', 'new')}
+        accountCreated={getFilteredCount('account_created', 'new')}
+        secondFreeSessionCount={secondFreeSessionCount}
+        purchaseCompleted={getCount('purchase_completed')}
+      />
 
       {/* Events Table */}
       <Card>
@@ -316,16 +323,10 @@ function FunnelCard({
   title,
   subtitle,
   steps,
-  conversionLabel,
-  conversionFrom,
-  conversionTo,
 }: {
   title: string;
   subtitle: string;
   steps: { step: string; count: number }[];
-  conversionLabel?: string;
-  conversionFrom?: number;
-  conversionTo?: number;
 }) {
   const pct = (n: number, total: number) =>
     total > 0 ? `${((n / total) * 100).toFixed(1)}%` : "—";
@@ -357,24 +358,39 @@ function FunnelCard({
             )}
           </div>
         ))}
-        {conversionLabel && conversionFrom != null && conversionTo != null && (
-          <div className="mt-4 pt-3 border-t border-border">
-            <p className="text-xs text-muted-foreground">
-              {conversionLabel}:{" "}
-              <span className="font-semibold text-foreground">
-                {conversionFrom > 0
-                  ? `${((conversionTo / conversionFrom) * 100).toFixed(1)}%`
-                  : "—"}
-              </span>
-              {conversionFrom > 0 && (
-                <span className="ml-1">
-                  ({conversionTo} of {conversionFrom})
-                </span>
-              )}
-            </p>
-          </div>
-        )}
       </CardContent>
     </Card>
+  );
+}
+
+function HeadlineMetrics({
+  disclosureShown,
+  accountCreated,
+  secondFreeSessionCount,
+  purchaseCompleted,
+}: {
+  disclosureShown: number;
+  accountCreated: number;
+  secondFreeSessionCount: number;
+  purchaseCompleted: number;
+}) {
+  const metric = (label: string, numerator: number, denominator: number) => {
+    const pct = denominator > 0 ? `${((numerator / denominator) * 100).toFixed(1)}%` : "—";
+    const detail = denominator > 0 ? `(${numerator} of ${denominator})` : "";
+    return (
+      <p className="text-sm text-muted-foreground">
+        {label}:{" "}
+        <span className="font-semibold text-foreground">{pct}</span>
+        {detail && <span className="ml-1">{detail}</span>}
+      </p>
+    );
+  };
+
+  return (
+    <div className="flex flex-col gap-2 px-1">
+      {metric("New user conversion", accountCreated, disclosureShown)}
+      {metric("Returned for second session", secondFreeSessionCount, accountCreated)}
+      {metric("Account to purchase", purchaseCompleted, accountCreated)}
+    </div>
   );
 }
