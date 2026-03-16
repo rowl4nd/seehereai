@@ -152,6 +152,7 @@ const Index = () => {
     if (user) {
       navigate("/dashboard");
     } else if (!disclosureAccepted) {
+      trackEvent("disclosure_shown", { trigger: "hero_submit" });
       setShowDisclosure(true);
     } else {
       navigate("/try", { state: { initialMessage: val } });

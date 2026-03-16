@@ -382,6 +382,15 @@ const Mirror = () => {
     }
 
     // Before the 5-minute warning: get AI wrap-up first
+    trackEvent("session_ended_early");
+    if (currentSession) {
+      const elapsed = Math.floor((Date.now() - new Date(currentSession.started_at).getTime()) / 1000);
+      trackEvent("session_completed", {
+        session_id: currentSession.id,
+        session_type: currentSession.session_type,
+        duration_seconds: elapsed,
+      });
+    }
     setSessionEnded(true); // Disable input immediately
     setIsLoading(true);
 

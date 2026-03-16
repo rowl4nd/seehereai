@@ -29,6 +29,10 @@ const Cooldown = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
+    trackEvent("cooldown_page_viewed", { sessions_completed: freeSessions });
+  }, []);
+
+  useEffect(() => {
     if (!nextSessionTime) return;
 
     const updateTime = () => {

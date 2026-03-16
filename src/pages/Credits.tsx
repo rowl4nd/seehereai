@@ -59,6 +59,7 @@ const Credits = () => {
   const [purchasingId, setPurchasingId] = useState<string | null>(null);
 
   const handlePurchase = async (packageId: string) => {
+    trackEvent("purchase_started", { package: packageId });
     setPurchasingId(packageId);
     try {
       const response = await supabase.functions.invoke("create-checkout", {

@@ -30,6 +30,10 @@ const PaymentSuccess = () => {
           setSessionsAdded(null);
         } else if (response.data?.success) {
           setSessionsAdded(response.data.sessions);
+          trackEvent("purchase_completed", {
+            sessions: response.data.sessions,
+            currency: "GBP",
+          });
         } else if (response.data?.message === "Already processed") {
           setSessionsAdded(response.data.sessions || null);
         } else {

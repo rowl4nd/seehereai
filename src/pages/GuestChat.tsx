@@ -357,6 +357,15 @@ const GuestChat = () => {
     setInput("");
     setIsLoading(true);
 
+    // Track message event
+    if (!authenticated) {
+      const userMsgCount = updatedWithUser.filter((m) => m.role === "user").length;
+      trackEvent("guest_message_sent", { message_number: userMsgCount });
+    } else {
+      const userMsgCount = updatedWithUser.filter((m) => m.role === "user").length;
+      trackEvent("session_message_sent", { session_id: sessionId, message_number: userMsgCount });
+    }
+
     // Save to sessionStorage (guest) or DB (authenticated)
     if (!authenticated) {
       sessionStorage.setItem("guest_messages", JSON.stringify(updatedWithUser));
