@@ -306,7 +306,7 @@ I will follow these rules strictly throughout this conversation.]`,
         model: "google/gemini-3.1-pro-preview",
         messages: [{ role: "system", content: fullSystemPrompt }, behaviouralPrimer, ...sanitisedMessages],
         max_tokens: 200,
-        temperature: 0.85,
+        temperature: 0.7,
       }),
     });
 
