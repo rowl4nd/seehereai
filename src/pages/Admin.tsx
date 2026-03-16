@@ -208,7 +208,14 @@ export default function Admin() {
 
       {/* Two Journey Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <FunnelCard title="New User Journey" subtitle="From 'Started chatting'" steps={newUserFunnel} />
+        <FunnelCard
+          title="New User Journey"
+          subtitle="From 'Started chatting'"
+          steps={newUserFunnel}
+          conversionLabel="New user conversion"
+          conversionFrom={getFilteredCount('disclosure_shown', 'new')}
+          conversionTo={getFilteredCount('account_created', 'new')}
+        />
         <FunnelCard title="Returning User Journey" subtitle="From 'Logged in'" steps={returningUserFunnel} />
       </div>
 
@@ -309,10 +316,16 @@ function FunnelCard({
   title,
   subtitle,
   steps,
+  conversionLabel,
+  conversionFrom,
+  conversionTo,
 }: {
   title: string;
   subtitle: string;
   steps: { step: string; count: number }[];
+  conversionLabel?: string;
+  conversionFrom?: number;
+  conversionTo?: number;
 }) {
   const pct = (n: number, total: number) =>
     total > 0 ? `${((n / total) * 100).toFixed(1)}%` : "—";
@@ -344,6 +357,23 @@ function FunnelCard({
             )}
           </div>
         ))}
+        {conversionLabel && conversionFrom != null && conversionTo != null && (
+          <div className="mt-4 pt-3 border-t border-border">
+            <p className="text-xs text-muted-foreground">
+              {conversionLabel}:{" "}
+              <span className="font-semibold text-foreground">
+                {conversionFrom > 0
+                  ? `${((conversionTo / conversionFrom) * 100).toFixed(1)}%`
+                  : "—"}
+              </span>
+              {conversionFrom > 0 && (
+                <span className="ml-1">
+                  ({conversionTo} of {conversionFrom})
+                </span>
+              )}
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
