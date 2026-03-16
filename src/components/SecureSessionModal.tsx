@@ -130,7 +130,10 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
               redirect_uri: window.location.origin + "/try",
             });
             if (error) toast.error(error.message);
-            else onSuccess();
+            else {
+              trackEvent("account_created", { method: "google" });
+              onSuccess();
+            }
           }}
           variant="outline"
           className="w-full gap-2 border-border/50"
