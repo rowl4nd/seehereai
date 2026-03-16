@@ -44,6 +44,7 @@ const singleSession = {
 const Credits = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
 
   useEffect(() => {
     if (!authLoading && !user) {
