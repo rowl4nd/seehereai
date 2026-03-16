@@ -40,12 +40,16 @@ const FUNNEL_STEPS = [
   "purchase_completed",
 ];
 
-const LINEAR_FUNNEL_STEPS = [
+const NEW_USER_STEPS = [
   "disclosure_shown",
   "disclosure_accepted",
   "guest_message_sent",
   "signup_modal_shown",
   "account_created",
+];
+
+const RETURNING_USER_STEPS = [
+  "login_from_homepage",
   "session_started",
   "cooldown_page_viewed",
   "credits_page_viewed",
