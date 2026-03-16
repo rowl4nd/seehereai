@@ -6,6 +6,7 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
+  const { trackEvent } = useAnalytics();
   const [verifying, setVerifying] = useState(true);
   const [sessionsAdded, setSessionsAdded] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
