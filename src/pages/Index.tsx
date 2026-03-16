@@ -127,11 +127,6 @@ const Index = () => {
     }
   };
 
-  const handleTextareaFocus = () => {
-    if (!disclosureAccepted && !user) {
-      setShowDisclosure(true);
-    }
-  };
 
   const handleDisclosureAccept = () => {
     sessionStorage.setItem("sh_disclosure_accepted", "true");
