@@ -28,6 +28,7 @@ import AIEmotionalSupport from "./pages/AIEmotionalSupport";
 import AnxietySupport from "./pages/AnxietySupport";
 import TalkingToSomeone from "./pages/TalkingToSomeone";
 import FounderStory from "./pages/FounderStory";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
