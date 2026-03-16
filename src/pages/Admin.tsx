@@ -389,7 +389,18 @@ function HeadlineMetrics({
   return (
     <div className="flex flex-col gap-2 px-1">
       {metric("New user conversion", accountCreated, disclosureShown)}
-      {metric("Returned for second session", secondFreeSessionCount, accountCreated)}
+      <p className="text-sm text-muted-foreground">
+        1st session started: <span className="font-semibold text-foreground">{accountCreated}</span>
+      </p>
+      <p className="text-sm text-muted-foreground">
+        2nd session started: <span className="font-semibold text-foreground">{secondFreeSessionCount}</span>
+      </p>
+      <p className="text-sm text-muted-foreground">
+        Free session return rate:{" "}
+        <span className="font-semibold text-foreground">
+          {accountCreated > 0 ? `${((secondFreeSessionCount / accountCreated) * 100).toFixed(1)}%` : "—"}
+        </span>
+      </p>
       {metric("Second session to purchase", purchaseCompleted, secondFreeSessionCount)}
     </div>
   );
