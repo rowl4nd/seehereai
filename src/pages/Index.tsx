@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { MessageCircle, Heart, Shield, Clock, Check, X, Send, ArrowRight } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
@@ -49,10 +50,16 @@ import DisclosureModalComponent from "@/components/DisclosureModal";
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
   const [heroInput, setHeroInput] = useState("");
   const [showDisclosure, setShowDisclosure] = useState(false);
   const [disclosureAccepted, setDisclosureAccepted] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    trackEvent('homepage_viewed');
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
 
   // Check if already accepted this session
   useEffect(() => {
@@ -121,25 +128,23 @@ const Index = () => {
     if (user) {
       navigate("/dashboard");
     } else if (!disclosureAccepted) {
+      trackEvent("disclosure_shown", { trigger: "cta_button" });
       setShowDisclosure(true);
     } else {
       navigate("/try");
     }
   };
 
-  const handleTextareaFocus = () => {
-    if (!disclosureAccepted && !user) {
-      setShowDisclosure(true);
-    }
-  };
 
   const handleDisclosureAccept = () => {
     sessionStorage.setItem("sh_disclosure_accepted", "true");
     setDisclosureAccepted(true);
     setShowDisclosure(false);
+    trackEvent("disclosure_accepted");
 
-    if (document.activeElement === textareaRef.current || heroInput.trim()) {
-      setTimeout(() => textareaRef.current?.focus(), 50);
+    const val = heroInput.trim();
+    if (val) {
+      navigate("/try", { state: { initialMessage: val } });
     } else {
       navigate("/try");
     }
@@ -151,6 +156,9 @@ const Index = () => {
     if (!val) return;
     if (user) {
       navigate("/dashboard");
+    } else if (!disclosureAccepted) {
+      trackEvent("disclosure_shown", { trigger: "hero_submit" });
+      setShowDisclosure(true);
     } else {
       navigate("/try", { state: { initialMessage: val } });
     }
@@ -179,7 +187,7 @@ const Index = () => {
                 </Button>
               </Link>
             ) : (
-              <Link to="/auth">
+              <Link to="/auth" onClick={() => trackEvent('login_from_homepage')}>
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
@@ -254,10 +262,8 @@ const Index = () => {
               <form onSubmit={handleHeroSubmit} className="relative group">
                 <textarea
                   ref={textareaRef}
-                  readOnly={!disclosureAccepted && !user}
                   value={heroInput}
                   onChange={(e) => setHeroInput(e.target.value)}
-                  onFocus={handleTextareaFocus}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
@@ -278,7 +284,7 @@ const Index = () => {
               </form>
               <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
                 Try 2 sessions free ·{" "}
-                <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors">
+                <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors" onClick={() => trackEvent('login_from_homepage')}>
                   Have an account? Log in
                 </Link>
               </p>

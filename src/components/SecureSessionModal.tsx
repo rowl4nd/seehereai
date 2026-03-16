@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 
 interface SecureSessionModalProps {
@@ -16,11 +17,13 @@ interface SecureSessionModalProps {
 
 const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
   const [email, setEmail] = useState(() => sessionStorage.getItem("guest_email") || "");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleDiscard = () => {
+    trackEvent("signup_modal_dismissed");
     sessionStorage.removeItem("guest_messages");
     sessionStorage.removeItem("guest_onboarding_complete");
     sessionStorage.removeItem("guest_email");
@@ -46,6 +49,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
       }
 
       toast.success("Welcome to See Here");
+      trackEvent("account_created", { method: "email" });
 
       onSuccess();
     } catch {
@@ -126,7 +130,10 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
               redirect_uri: window.location.origin + "/try",
             });
             if (error) toast.error(error.message);
-            else onSuccess();
+            else {
+              trackEvent("account_created", { method: "google" });
+              onSuccess();
+            }
           }}
           variant="outline"
           className="w-full gap-2 border-border/50"
@@ -147,7 +154,10 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
               redirect_uri: window.location.origin + "/try",
             });
             if (error) toast.error(error.message);
-            else onSuccess();
+            else {
+              trackEvent("account_created", { method: "apple" });
+              onSuccess();
+            }
           }}
           variant="outline"
           className="w-full gap-2 border-border/50"
