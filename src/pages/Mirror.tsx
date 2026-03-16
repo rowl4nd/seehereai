@@ -454,6 +454,9 @@ const Mirror = () => {
     setInput("");
     setIsLoading(true);
 
+    const userMsgCount = updatedWithUser.filter((m) => m.role === "user").length;
+    trackEvent("session_message_sent", { session_id: currentSession?.id, message_number: userMsgCount });
+
     // Save user message immediately
     saveMessagesToDb(updatedWithUser);
 
