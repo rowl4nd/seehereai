@@ -58,11 +58,8 @@ const Index = () => {
 
   useEffect(() => {
     trackEvent('homepage_viewed');
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const [heroInput, setHeroInput] = useState("");
-  const [showDisclosure, setShowDisclosure] = useState(false);
-  const [disclosureAccepted, setDisclosureAccepted] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+
 
   // Check if already accepted this session
   useEffect(() => {
