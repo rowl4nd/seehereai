@@ -1,30 +1,55 @@
 
+# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Issue: Headline metrics showing "—" because `session_number` is always off by one
+## Problem
+The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
 
-### Root cause
+## Solution
+Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
 
-In `src/pages/Mirror.tsx`, when a free session starts:
-1. Line 251 increments `free_sessions_used` in the database
-2. Line 256 calculates `sessionNumber` using the **stale** `profile.free_sessions_used` value (before the increment)
+## Technical Detail
 
-So a user on their 2nd free session has `free_sessions_used = 1` in the profile object. The event fires with `session_number: 1` instead of `2`. The edge function looks for `session_number === "2"` and finds nothing, so `secondFreeSessionCount` is 0, and the metric shows "—".
+### Index.tsx -- Update `handleTryForFree`
 
-### Fix
-
-**`src/pages/Mirror.tsx` line 256**: Account for the increment that already happened on line 251.
-
-Change:
+Change the function (around line 172) from:
 ```typescript
-const sessionNumber = (profile?.free_sessions_used || 0) + (sessionType === "paid" ? 1 : 0);
+const handleTryForFree = () => {
+  if (user) navigate("/dashboard");
+  else navigate("/try");
+};
 ```
+
 To:
 ```typescript
-const sessionNumber = (profile?.free_sessions_used || 0) + 1;
+const handleTryForFree = () => {
+  if (user) {
+    navigate("/dashboard");
+  } else if (!disclosureAccepted) {
+    setShowDisclosure(true);
+  } else {
+    navigate("/try");
+  }
+};
 ```
 
-This gives the correct 1-indexed session number regardless of session type (for free: stale value + 1 = correct; for paid: total free sessions + 1 = next session number).
+### Index.tsx -- Update `handleDisclosureAccept`
 
-### Note
-Existing analytics data already recorded with the wrong `session_number` won't retroactively fix. Only new events going forward will have the correct value. The "—" will resolve once new second-session events are tracked.
+Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
 
+```typescript
+const handleDisclosureAccept = () => {
+  sessionStorage.setItem("sh_disclosure_accepted", "true");
+  setDisclosureAccepted(true);
+  setShowDisclosure(false);
+
+  // If the user was typing in the hero input, focus it
+  // Otherwise (clicked a Try for Free button), navigate to /try
+  if (document.activeElement === textareaRef.current || heroInput.trim()) {
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  } else {
+    navigate("/try");
+  }
+};
+```
+
+This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
