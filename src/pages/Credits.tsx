@@ -52,6 +52,10 @@ const Credits = () => {
     }
   }, [user, authLoading, navigate]);
 
+  useEffect(() => {
+    trackEvent("credits_page_viewed");
+  }, []);
+
   const [purchasingId, setPurchasingId] = useState<string | null>(null);
 
   const handlePurchase = async (packageId: string) => {
