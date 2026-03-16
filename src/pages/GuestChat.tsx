@@ -10,6 +10,7 @@ import Logo from "@/components/Logo";
 import SecureSessionModal from "@/components/SecureSessionModal";
 import GreetingMessage from "@/components/GreetingMessage";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface Message {
   id: string;
