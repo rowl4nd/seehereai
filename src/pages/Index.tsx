@@ -147,6 +147,8 @@ const Index = () => {
     if (!val) return;
     if (user) {
       navigate("/dashboard");
+    } else if (!disclosureAccepted) {
+      setShowDisclosure(true);
     } else {
       navigate("/try", { state: { initialMessage: val } });
     }
