@@ -5,14 +5,12 @@ import { useSessions } from "@/hooks/useSessions";
 import { useProfile } from "@/hooks/useProfile";
 import { formatDistanceToNow } from "date-fns";
 import Logo from "@/components/Logo";
-import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Cooldown = () => {
   const { user, loading: authLoading } = useAuth();
   const { nextSessionTime } = useSessions();
   const { profile } = useProfile();
   const navigate = useNavigate();
-  const { trackEvent } = useAnalytics();
   const [timeUntilNext, setTimeUntilNext] = useState<string>("");
 
   // Determine which session just ended
@@ -27,11 +25,6 @@ const Cooldown = () => {
       navigate("/auth");
     }
   }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    const userType = user?.created_at && (Date.now() - new Date(user.created_at).getTime()) < 24 * 60 * 60 * 1000 ? 'new' : 'returning';
-    trackEvent("cooldown_page_viewed", { sessions_completed: freeSessions, user_type: userType });
-  }, []);
 
   useEffect(() => {
     if (!nextSessionTime) return;

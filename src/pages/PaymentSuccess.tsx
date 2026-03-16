@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
-import { useAnalytics } from "@/hooks/useAnalytics";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
-  const { trackEvent } = useAnalytics();
   const [verifying, setVerifying] = useState(true);
   const [sessionsAdded, setSessionsAdded] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -30,10 +28,6 @@ const PaymentSuccess = () => {
           setSessionsAdded(null);
         } else if (response.data?.success) {
           setSessionsAdded(response.data.sessions);
-          trackEvent("purchase_completed", {
-            sessions: response.data.sessions,
-            currency: "GBP",
-          });
         } else if (response.data?.message === "Already processed") {
           setSessionsAdded(response.data.sessions || null);
         } else {

@@ -10,7 +10,6 @@ import Logo from "@/components/Logo";
 import SecureSessionModal from "@/components/SecureSessionModal";
 import GreetingMessage from "@/components/GreetingMessage";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
-import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface Message {
   id: string;
@@ -25,7 +24,6 @@ const GuestChat = () => {
   const { profile, updateProfile } = useProfile();
   const { createConversation: createEncryptedConversation, saveMessages, loadHistory } = useEncryptedMessages();
   const navigate = useNavigate();
-  const { trackEvent } = useAnalytics();
   const location = useLocation();
   const initialMessageSent = useRef(false);
 
@@ -357,15 +355,6 @@ const GuestChat = () => {
     setInput("");
     setIsLoading(true);
 
-    // Track message event
-    if (!authenticated) {
-      const userMsgCount = updatedWithUser.filter((m) => m.role === "user").length;
-      trackEvent("guest_message_sent", { message_number: userMsgCount });
-    } else {
-      const userMsgCount = updatedWithUser.filter((m) => m.role === "user").length;
-      trackEvent("session_message_sent", { session_id: sessionId, message_number: userMsgCount });
-    }
-
     // Save to sessionStorage (guest) or DB (authenticated)
     if (!authenticated) {
       sessionStorage.setItem("guest_messages", JSON.stringify(updatedWithUser));
@@ -415,7 +404,6 @@ const GuestChat = () => {
         if (userCount >= MAX_GUEST_MESSAGES) {
           setGuestLimitReached(true);
           setShowModal(true);
-          trackEvent("signup_modal_shown", { message_count: userCount });
         }
       } else {
         saveMessagesToDb(updatedWithAssistant);
