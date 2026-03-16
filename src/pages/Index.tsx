@@ -127,19 +127,15 @@ const Index = () => {
     }
   };
 
-  const handleTextareaFocus = () => {
-    if (!disclosureAccepted && !user) {
-      setShowDisclosure(true);
-    }
-  };
 
   const handleDisclosureAccept = () => {
     sessionStorage.setItem("sh_disclosure_accepted", "true");
     setDisclosureAccepted(true);
     setShowDisclosure(false);
 
-    if (document.activeElement === textareaRef.current || heroInput.trim()) {
-      setTimeout(() => textareaRef.current?.focus(), 50);
+    const val = heroInput.trim();
+    if (val) {
+      navigate("/try", { state: { initialMessage: val } });
     } else {
       navigate("/try");
     }
@@ -151,6 +147,8 @@ const Index = () => {
     if (!val) return;
     if (user) {
       navigate("/dashboard");
+    } else if (!disclosureAccepted) {
+      setShowDisclosure(true);
     } else {
       navigate("/try", { state: { initialMessage: val } });
     }
@@ -254,10 +252,8 @@ const Index = () => {
               <form onSubmit={handleHeroSubmit} className="relative group">
                 <textarea
                   ref={textareaRef}
-                  readOnly={!disclosureAccepted && !user}
                   value={heroInput}
                   onChange={(e) => setHeroInput(e.target.value)}
-                  onFocus={handleTextareaFocus}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
