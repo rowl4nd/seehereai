@@ -82,6 +82,7 @@ Deno.serve(async (req) => {
     const countMap: Record<string, number> = {};
     const dailyMap: Record<string, number> = {};
     const filteredCounts: Record<string, number> = {};
+    let secondFreeSessionCount = 0;
 
     const SHARED_EVENTS = ["session_started", "cooldown_page_viewed"];
 
@@ -99,6 +100,14 @@ Deno.serve(async (req) => {
           filteredCounts[key] = (filteredCounts[key] || 0) + 1;
         }
       }
+
+      // Count second free sessions
+      if (e.event_name === "session_started" && e.metadata) {
+        const meta = typeof e.metadata === "string" ? JSON.parse(e.metadata) : e.metadata;
+        if (String(meta?.session_number) === "2" && meta?.session_type === "free") {
+          secondFreeSessionCount++;
+        }
+      }
     }
 
     const counts = Object.entries(countMap)
@@ -109,7 +118,7 @@ Deno.serve(async (req) => {
       .map(([date, count]) => ({ date, count }))
       .sort((a, b) => a.date.localeCompare(b.date));
 
-    return new Response(JSON.stringify({ counts, daily, filtered_counts: filteredCounts }), {
+    return new Response(JSON.stringify({ counts, daily, filtered_counts: filteredCounts, second_free_session_count: secondFreeSessionCount }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
