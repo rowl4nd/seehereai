@@ -12,6 +12,7 @@ import Logo from "@/components/Logo";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
 import { useVoiceMode } from "@/hooks/useVoiceMode";
 import WelcomeBackMessage from "@/components/WelcomeBackMessage";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { Mic, MicOff, Loader2 } from "lucide-react";
 
 interface Message {
