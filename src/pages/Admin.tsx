@@ -30,7 +30,6 @@ const NEW_USER_STEPS = [
   "disclosure_accepted",
   "signup_modal_shown",
   "account_created",
-  "session_started",
   "cooldown_page_viewed",
 ];
 
