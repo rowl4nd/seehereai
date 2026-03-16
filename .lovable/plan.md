@@ -1,55 +1,18 @@
 
-# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Problem
-The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
+## Plan: Replace second headline metric with three-line breakdown
 
-## Solution
-Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
+**File: `src/pages/Admin.tsx`** — Update the `HeadlineMetrics` component (lines 389-394).
 
-## Technical Detail
+Replace the single "Returned for second session" line with three separate lines:
 
-### Index.tsx -- Update `handleTryForFree`
-
-Change the function (around line 172) from:
-```typescript
-const handleTryForFree = () => {
-  if (user) navigate("/dashboard");
-  else navigate("/try");
-};
+```
+<p>1st session started: <bold>{accountCreated}</bold></p>
+<p>2nd session started: <bold>{secondFreeSessionCount}</bold></p>
+<p>Free session return rate: <bold>{pct}</bold></p>
 ```
 
-To:
-```typescript
-const handleTryForFree = () => {
-  if (user) {
-    navigate("/dashboard");
-  } else if (!disclosureAccepted) {
-    setShowDisclosure(true);
-  } else {
-    navigate("/try");
-  }
-};
-```
+Where `pct` = `(secondFreeSessionCount / accountCreated) * 100`, displayed as percentage (e.g. "50.0%"), or "—" if `accountCreated` is 0.
 
-### Index.tsx -- Update `handleDisclosureAccept`
+Same `text-sm text-muted-foreground` styling with `font-semibold text-foreground` for the values. The other two metrics (New user conversion, Second session to purchase) remain unchanged.
 
-Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
-
-```typescript
-const handleDisclosureAccept = () => {
-  sessionStorage.setItem("sh_disclosure_accepted", "true");
-  setDisclosureAccepted(true);
-  setShowDisclosure(false);
-
-  // If the user was typing in the hero input, focus it
-  // Otherwise (clicked a Try for Free button), navigate to /try
-  if (document.activeElement === textareaRef.current || heroInput.trim()) {
-    setTimeout(() => textareaRef.current?.focus(), 50);
-  } else {
-    navigate("/try");
-  }
-};
-```
-
-This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
