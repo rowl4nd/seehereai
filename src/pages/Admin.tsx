@@ -58,6 +58,7 @@ export default function Admin() {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [counts, setCounts] = useState<{ event_name: string; count: number }[]>([]);
   const [daily, setDaily] = useState<{ date: string; count: number }[]>([]);
+  const [filteredCounts, setFilteredCounts] = useState<Record<string, number>>({});
   const [fetching, setFetching] = useState(false);
 
   // Auth + admin check
