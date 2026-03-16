@@ -118,6 +118,7 @@ export default function Admin() {
         const json = await res.json();
         setCounts(json.counts || []);
         setDaily(json.daily || []);
+        setFilteredCounts(json.filtered_counts || {});
       }
     } catch {
       // silent
