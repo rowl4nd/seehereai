@@ -57,6 +57,7 @@ export default function Admin() {
   const [counts, setCounts] = useState<{ event_name: string; count: number }[]>([]);
   const [daily, setDaily] = useState<{ date: string; count: number }[]>([]);
   const [filteredCounts, setFilteredCounts] = useState<Record<string, number>>({});
+  const [secondFreeSessionCount, setSecondFreeSessionCount] = useState(0);
   const [fetching, setFetching] = useState(false);
 
   // Auth + admin check
