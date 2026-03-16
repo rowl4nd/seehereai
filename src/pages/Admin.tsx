@@ -150,14 +150,21 @@ export default function Admin() {
   const pct = (n: number, total: number) =>
     total > 0 ? `${((n / total) * 100).toFixed(1)}%` : "—";
 
+  const getFilteredCount = (step: string, userType: 'new' | 'returning') => {
+    if (SHARED_EVENTS.includes(step)) {
+      return filteredCounts[`${step}:${userType}`] || 0;
+    }
+    return getCount(step);
+  };
+
   const newUserFunnel = NEW_USER_STEPS.map((step) => ({
     step,
-    count: getCount(step),
+    count: getFilteredCount(step, 'new'),
   }));
 
   const returningUserFunnel = RETURNING_USER_STEPS.map((step) => ({
     step,
-    count: getCount(step),
+    count: getFilteredCount(step, 'returning'),
   }));
 
   return (
