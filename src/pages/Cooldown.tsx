@@ -5,6 +5,7 @@ import { useSessions } from "@/hooks/useSessions";
 import { useProfile } from "@/hooks/useProfile";
 import { formatDistanceToNow } from "date-fns";
 import Logo from "@/components/Logo";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Cooldown = () => {
   const { user, loading: authLoading } = useAuth();
