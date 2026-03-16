@@ -266,7 +266,7 @@ serve(async (req) => {
         "The person has previously declined to share their name. Do NOT ask for it. Do not reference it. Just be warm and present.";
     } else {
       nameContext +=
-        "No name has been provided yet. You may gently invite them to share their name early in the conversation — frame it as purely optional (e.g. 'Is there a name you'd like me to call you? No pressure at all if you'd prefer not to.'). Only ask once. If they decline, respect it immediately and move on.";
+        "No name has been provided yet. You MUST ask for the user's name in your second response, regardless of message length. Frame it as optional (e.g. 'Is there a name you'd like me to call you? No pressure at all.'). This overrides the brevity rule for this one response only. Only ask once. If they decline, respect it immediately and move on.";
     }
 
     // Build time-of-day context
@@ -284,7 +284,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3.1-pro-preview",
+        model: "google/gemini-2.5-flash",
         messages: [{ role: "system", content: fullSystemPrompt }, ...sanitisedMessages],
         max_tokens: 500,
         temperature: 0.7,
