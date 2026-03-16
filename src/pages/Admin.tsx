@@ -214,9 +214,6 @@ export default function Admin() {
           title="New User Journey"
           subtitle="From 'Started chatting'"
           steps={newUserFunnel}
-          conversionLabel="New user conversion"
-          conversionFrom={getFilteredCount('disclosure_shown', 'new')}
-          conversionTo={getFilteredCount('account_created', 'new')}
         />
         <FunnelCard title="Returning User Journey" subtitle="From 'Logged in'" steps={returningUserFunnel} />
       </div>
