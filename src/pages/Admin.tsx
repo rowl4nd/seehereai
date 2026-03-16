@@ -316,10 +316,16 @@ function FunnelCard({
   title,
   subtitle,
   steps,
+  conversionLabel,
+  conversionFrom,
+  conversionTo,
 }: {
   title: string;
   subtitle: string;
   steps: { step: string; count: number }[];
+  conversionLabel?: string;
+  conversionFrom?: number;
+  conversionTo?: number;
 }) {
   const pct = (n: number, total: number) =>
     total > 0 ? `${((n / total) * 100).toFixed(1)}%` : "—";
