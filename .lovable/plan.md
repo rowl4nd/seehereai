@@ -1,55 +1,26 @@
 
-# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Problem
-The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
+## Plan: Add headline metrics section and second-session count
 
-## Solution
-Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
+### 1. Update edge function to count second free sessions
 
-## Technical Detail
+**`supabase/functions/admin-analytics/index.ts`**: In the existing loop over events, add a counter for `session_started` events where `metadata.session_number === '2'` and `metadata.session_type === 'free'`. Return this as `second_free_session_count` in the response JSON alongside `counts`, `daily`, and `filtered_counts`.
 
-### Index.tsx -- Update `handleTryForFree`
+### 2. Add summary metrics section to Admin.tsx
 
-Change the function (around line 172) from:
-```typescript
-const handleTryForFree = () => {
-  if (user) navigate("/dashboard");
-  else navigate("/try");
-};
-```
+**`src/pages/Admin.tsx`**:
+- Store `secondFreeSessionCount` from the API response
+- Between the funnel cards grid and the Event Counts card, add a simple `div` with three text lines spaced apart:
+  - **New user conversion**: `(account_created / disclosure_shown) × 100` — e.g. "New user conversion: 8.3% (1 of 12)"
+  - **Returned for second session**: `(secondFreeSessionCount / account_created) × 100` — e.g. "Returned for second session: 25.0% (3 of 12)"
+  - **Account to purchase**: `(purchase_completed / account_created) × 100` — e.g. "Account to purchase: 4.2% (1 of 24)"
+- Style: small muted text, no cards/borders, just clean spaced text
+- Remove the existing `conversionLabel`/`conversionFrom`/`conversionTo` props from the New User Journey FunnelCard (since the conversion is now in the summary section)
 
-To:
-```typescript
-const handleTryForFree = () => {
-  if (user) {
-    navigate("/dashboard");
-  } else if (!disclosureAccepted) {
-    setShowDisclosure(true);
-  } else {
-    navigate("/try");
-  }
-};
-```
+### Files modified
 
-### Index.tsx -- Update `handleDisclosureAccept`
+| File | Change |
+|------|--------|
+| `supabase/functions/admin-analytics/index.ts` | Count `session_started` with `session_number=2` + `session_type=free`, return as `second_free_session_count` |
+| `src/pages/Admin.tsx` | Add headline metrics section, consume new field, remove duplicate conversion from funnel card |
 
-Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
-
-```typescript
-const handleDisclosureAccept = () => {
-  sessionStorage.setItem("sh_disclosure_accepted", "true");
-  setDisclosureAccepted(true);
-  setShowDisclosure(false);
-
-  // If the user was typing in the hero input, focus it
-  // Otherwise (clicked a Try for Free button), navigate to /try
-  if (document.activeElement === textareaRef.current || heroInput.trim()) {
-    setTimeout(() => textareaRef.current?.focus(), 50);
-  } else {
-    navigate("/try");
-  }
-};
-```
-
-This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
