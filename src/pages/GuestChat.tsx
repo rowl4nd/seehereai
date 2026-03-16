@@ -406,6 +406,7 @@ const GuestChat = () => {
         if (userCount >= MAX_GUEST_MESSAGES) {
           setGuestLimitReached(true);
           setShowModal(true);
+          trackEvent("signup_modal_shown", { message_count: userCount });
         }
       } else {
         saveMessagesToDb(updatedWithAssistant);
