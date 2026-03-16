@@ -133,8 +133,9 @@ const Index = () => {
     setDisclosureAccepted(true);
     setShowDisclosure(false);
 
-    if (document.activeElement === textareaRef.current || heroInput.trim()) {
-      setTimeout(() => textareaRef.current?.focus(), 50);
+    const val = heroInput.trim();
+    if (val) {
+      navigate("/try", { state: { initialMessage: val } });
     } else {
       navigate("/try");
     }
