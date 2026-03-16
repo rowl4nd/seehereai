@@ -390,7 +390,7 @@ function HeadlineMetrics({
     <div className="flex flex-col gap-2 px-1">
       {metric("New user conversion", accountCreated, disclosureShown)}
       {metric("Returned for second session", secondFreeSessionCount, accountCreated)}
-      {metric("Account to purchase", purchaseCompleted, accountCreated)}
+      {metric("Second session to purchase", purchaseCompleted, secondFreeSessionCount)}
     </div>
   );
 }
