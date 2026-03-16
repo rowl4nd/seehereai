@@ -25,9 +25,7 @@ import {
 } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 
-const FUNNEL_STEPS = [
-  "homepage_viewed",
-  "login_from_homepage",
+const NEW_USER_STEPS = [
   "disclosure_shown",
   "disclosure_accepted",
   "guest_message_sent",
@@ -35,17 +33,6 @@ const FUNNEL_STEPS = [
   "account_created",
   "session_started",
   "cooldown_page_viewed",
-  "credits_page_viewed",
-  "purchase_started",
-  "purchase_completed",
-];
-
-const NEW_USER_STEPS = [
-  "disclosure_shown",
-  "disclosure_accepted",
-  "guest_message_sent",
-  "signup_modal_shown",
-  "account_created",
 ];
 
 const RETURNING_USER_STEPS = [
@@ -56,6 +43,8 @@ const RETURNING_USER_STEPS = [
   "purchase_started",
   "purchase_completed",
 ];
+
+const SHARED_EVENTS = ["session_started", "cooldown_page_viewed"];
 
 const chartConfig: ChartConfig = {
   count: { label: "Events", color: "hsl(var(--primary))" },
