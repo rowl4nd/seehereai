@@ -156,6 +156,9 @@ export default function Admin() {
   const loginCount = getCount("login_from_homepage");
   const noInteraction = Math.max(0, homepageCount - disclosureCount - loginCount);
 
+  const pct = (n: number, total: number) =>
+    total > 0 ? `${((n / total) * 100).toFixed(1)}%` : "—";
+
   const newUserFunnel = NEW_USER_STEPS.map((step) => ({
     step,
     count: getCount(step),
