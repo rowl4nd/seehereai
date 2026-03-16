@@ -12,7 +12,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify auth
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -38,7 +37,6 @@ Deno.serve(async (req) => {
 
     const userId = claimsData.claims.sub;
 
-    // Check admin status using service role
     const serviceClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -57,16 +55,14 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Parse query params
     const url = new URL(req.url);
     const startDate = url.searchParams.get("start_date") || new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
     const endDate = url.searchParams.get("end_date") || new Date().toISOString().split("T")[0];
     const eventNameFilter = url.searchParams.get("event_name");
 
-    // Build query for counts
     let countQuery = serviceClient
       .from("analytics_events")
-      .select("event_name, created_at")
+      .select("event_name, created_at, metadata")
       .gte("created_at", `${startDate}T00:00:00Z`)
       .lte("created_at", `${endDate}T23:59:59Z`);
 
@@ -83,14 +79,26 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Aggregate counts by event_name
     const countMap: Record<string, number> = {};
     const dailyMap: Record<string, number> = {};
+    const filteredCounts: Record<string, number> = {};
+
+    const SHARED_EVENTS = ["session_started", "cooldown_page_viewed"];
 
     for (const e of events || []) {
       countMap[e.event_name] = (countMap[e.event_name] || 0) + 1;
       const day = e.created_at.split("T")[0];
       dailyMap[day] = (dailyMap[day] || 0) + 1;
+
+      // Build filtered counts for shared events by user_type
+      if (SHARED_EVENTS.includes(e.event_name) && e.metadata) {
+        const meta = typeof e.metadata === "string" ? JSON.parse(e.metadata) : e.metadata;
+        const userType = meta?.user_type;
+        if (userType === "new" || userType === "returning") {
+          const key = `${e.event_name}:${userType}`;
+          filteredCounts[key] = (filteredCounts[key] || 0) + 1;
+        }
+      }
     }
 
     const counts = Object.entries(countMap)
@@ -101,7 +109,7 @@ Deno.serve(async (req) => {
       .map(([date, count]) => ({ date, count }))
       .sort((a, b) => a.date.localeCompare(b.date));
 
-    return new Response(JSON.stringify({ counts, daily }), {
+    return new Response(JSON.stringify({ counts, daily, filtered_counts: filteredCounts }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {

@@ -25,9 +25,7 @@ import {
 } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 
-const FUNNEL_STEPS = [
-  "homepage_viewed",
-  "login_from_homepage",
+const NEW_USER_STEPS = [
   "disclosure_shown",
   "disclosure_accepted",
   "guest_message_sent",
@@ -35,17 +33,6 @@ const FUNNEL_STEPS = [
   "account_created",
   "session_started",
   "cooldown_page_viewed",
-  "credits_page_viewed",
-  "purchase_started",
-  "purchase_completed",
-];
-
-const NEW_USER_STEPS = [
-  "disclosure_shown",
-  "disclosure_accepted",
-  "guest_message_sent",
-  "signup_modal_shown",
-  "account_created",
 ];
 
 const RETURNING_USER_STEPS = [
@@ -56,6 +43,8 @@ const RETURNING_USER_STEPS = [
   "purchase_started",
   "purchase_completed",
 ];
+
+const SHARED_EVENTS = ["session_started", "cooldown_page_viewed"];
 
 const chartConfig: ChartConfig = {
   count: { label: "Events", color: "hsl(var(--primary))" },
@@ -69,6 +58,7 @@ export default function Admin() {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [counts, setCounts] = useState<{ event_name: string; count: number }[]>([]);
   const [daily, setDaily] = useState<{ date: string; count: number }[]>([]);
+  const [filteredCounts, setFilteredCounts] = useState<Record<string, number>>({});
   const [fetching, setFetching] = useState(false);
 
   // Auth + admin check
@@ -128,6 +118,7 @@ export default function Admin() {
         const json = await res.json();
         setCounts(json.counts || []);
         setDaily(json.daily || []);
+        setFilteredCounts(json.filtered_counts || {});
       }
     } catch {
       // silent
@@ -159,14 +150,21 @@ export default function Admin() {
   const pct = (n: number, total: number) =>
     total > 0 ? `${((n / total) * 100).toFixed(1)}%` : "—";
 
+  const getFilteredCount = (step: string, userType: 'new' | 'returning') => {
+    if (SHARED_EVENTS.includes(step)) {
+      return filteredCounts[`${step}:${userType}`] || 0;
+    }
+    return getCount(step);
+  };
+
   const newUserFunnel = NEW_USER_STEPS.map((step) => ({
     step,
-    count: getCount(step),
+    count: getFilteredCount(step, 'new'),
   }));
 
   const returningUserFunnel = RETURNING_USER_STEPS.map((step) => ({
     step,
-    count: getCount(step),
+    count: getFilteredCount(step, 'returning'),
   }));
 
   return (

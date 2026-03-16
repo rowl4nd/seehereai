@@ -29,7 +29,8 @@ const Cooldown = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    trackEvent("cooldown_page_viewed", { sessions_completed: freeSessions });
+    const userType = user?.created_at && (Date.now() - new Date(user.created_at).getTime()) < 24 * 60 * 60 * 1000 ? 'new' : 'returning';
+    trackEvent("cooldown_page_viewed", { sessions_completed: freeSessions, user_type: userType });
   }, []);
 
   useEffect(() => {

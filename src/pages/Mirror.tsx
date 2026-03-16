@@ -254,7 +254,8 @@ const Mirror = () => {
       setSessionStarted(true);
 
       const sessionNumber = (profile?.free_sessions_used || 0) + (sessionType === "paid" ? 1 : 0);
-      trackEvent("session_started", { session_number: sessionNumber, session_type: sessionType });
+      const userType = user.created_at && (Date.now() - new Date(user.created_at).getTime()) < 24 * 60 * 60 * 1000 ? 'new' : 'returning';
+      trackEvent("session_started", { session_number: sessionNumber, session_type: sessionType, user_type: userType });
 
       const greetingText = getGreeting();
       const greetingMessage = {
