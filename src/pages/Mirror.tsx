@@ -12,6 +12,7 @@ import Logo from "@/components/Logo";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
 import { useVoiceMode } from "@/hooks/useVoiceMode";
 import WelcomeBackMessage from "@/components/WelcomeBackMessage";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { Mic, MicOff, Loader2 } from "lucide-react";
 
 interface Message {
@@ -41,6 +42,7 @@ const Mirror = () => {
     loadHistory,
   } = useEncryptedMessages();
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
 
   // Retry wrapper for edge function calls — handles mobile connection drops
   const invokeWithRetry = async (functionName: string, body: any, retries = 1) => {
@@ -251,6 +253,9 @@ const Mirror = () => {
 
       setSessionStarted(true);
 
+      const sessionNumber = (profile?.free_sessions_used || 0) + (sessionType === "paid" ? 1 : 0);
+      trackEvent("session_started", { session_number: sessionNumber, session_type: sessionType });
+
       const greetingText = getGreeting();
       const greetingMessage = {
         id: "greeting",
@@ -311,7 +316,14 @@ const Mirror = () => {
       // End session when timer hits 0 — stay on page
       if (remaining <= 0 && !sessionEnded) {
         setSessionEnded(true);
+        trackEvent("session_ended_naturally");
         if (currentSession) {
+          const elapsed = Math.floor((Date.now() - new Date(currentSession.started_at).getTime()) / 1000);
+          trackEvent("session_completed", {
+            session_id: currentSession.id,
+            session_type: currentSession.session_type,
+            duration_seconds: elapsed,
+          });
           const cId = conversationIdRef.current;
           if (cId) {
             const conversationMessages = messagesRef.current.map((m) => ({
@@ -363,6 +375,13 @@ const Mirror = () => {
     // If we're already past the 5-minute warning, just end immediately and stay on page
     if (showEndWarning) {
       setSessionEnded(true);
+      const elapsed = Math.floor((Date.now() - new Date(currentSession.started_at).getTime()) / 1000);
+      trackEvent("session_ended_early");
+      trackEvent("session_completed", {
+        session_id: currentSession.id,
+        session_type: currentSession.session_type,
+        duration_seconds: elapsed,
+      });
       if (conversationIdRef.current) {
         await saveMessagesToDb(messagesRef.current);
       }
@@ -371,6 +390,15 @@ const Mirror = () => {
     }
 
     // Before the 5-minute warning: get AI wrap-up first
+    trackEvent("session_ended_early");
+    if (currentSession) {
+      const elapsed = Math.floor((Date.now() - new Date(currentSession.started_at).getTime()) / 1000);
+      trackEvent("session_completed", {
+        session_id: currentSession.id,
+        session_type: currentSession.session_type,
+        duration_seconds: elapsed,
+      });
+    }
     setSessionEnded(true); // Disable input immediately
     setIsLoading(true);
 
@@ -449,6 +477,9 @@ const Mirror = () => {
     setMessages(updatedWithUser);
     setInput("");
     setIsLoading(true);
+
+    const userMsgCount = updatedWithUser.filter((m) => m.role === "user").length;
+    trackEvent("session_message_sent", { session_id: currentSession?.id, message_number: userMsgCount });
 
     // Save user message immediately
     saveMessagesToDb(updatedWithUser);

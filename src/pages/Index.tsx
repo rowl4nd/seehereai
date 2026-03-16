@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { MessageCircle, Heart, Shield, Clock, Check, X, Send, ArrowRight } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
@@ -49,6 +50,7 @@ import DisclosureModalComponent from "@/components/DisclosureModal";
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
   const [heroInput, setHeroInput] = useState("");
   const [showDisclosure, setShowDisclosure] = useState(false);
   const [disclosureAccepted, setDisclosureAccepted] = useState(false);
@@ -121,6 +123,7 @@ const Index = () => {
     if (user) {
       navigate("/dashboard");
     } else if (!disclosureAccepted) {
+      trackEvent("disclosure_shown", { trigger: "cta_button" });
       setShowDisclosure(true);
     } else {
       navigate("/try");
@@ -132,6 +135,7 @@ const Index = () => {
     sessionStorage.setItem("sh_disclosure_accepted", "true");
     setDisclosureAccepted(true);
     setShowDisclosure(false);
+    trackEvent("disclosure_accepted");
 
     const val = heroInput.trim();
     if (val) {
@@ -148,6 +152,7 @@ const Index = () => {
     if (user) {
       navigate("/dashboard");
     } else if (!disclosureAccepted) {
+      trackEvent("disclosure_shown", { trigger: "hero_submit" });
       setShowDisclosure(true);
     } else {
       navigate("/try", { state: { initialMessage: val } });

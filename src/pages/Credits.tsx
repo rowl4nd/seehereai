@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const creditPackages = [
   {
@@ -43,6 +44,7 @@ const singleSession = {
 const Credits = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -50,9 +52,14 @@ const Credits = () => {
     }
   }, [user, authLoading, navigate]);
 
+  useEffect(() => {
+    trackEvent("credits_page_viewed");
+  }, []);
+
   const [purchasingId, setPurchasingId] = useState<string | null>(null);
 
   const handlePurchase = async (packageId: string) => {
+    trackEvent("purchase_started", { package: packageId });
     setPurchasingId(packageId);
     try {
       const response = await supabase.functions.invoke("create-checkout", {
