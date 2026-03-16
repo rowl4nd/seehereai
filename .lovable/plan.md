@@ -1,55 +1,29 @@
 
-# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Problem
-The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
+## Plan: Split Funnel into Two User Journeys
 
-## Solution
-Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
+**Only file changed:** `src/pages/Admin.tsx` — layout change only, no tracking modifications.
 
-## Technical Detail
+### Structure
 
-### Index.tsx -- Update `handleTryForFree`
+Replace the current single funnel card with:
 
-Change the function (around line 172) from:
-```typescript
-const handleTryForFree = () => {
-  if (user) navigate("/dashboard");
-  else navigate("/try");
-};
-```
+1. **Homepage Viewed** — top-level count, centered
+2. **Three-way branch** — same as current (Started chatting, Logged in, No interaction) with % of homepage_viewed
+3. **Two journey cards side by side** (using a `grid grid-cols-1 lg:grid-cols-2 gap-4` layout):
 
-To:
-```typescript
-const handleTryForFree = () => {
-  if (user) {
-    navigate("/dashboard");
-  } else if (!disclosureAccepted) {
-    setShowDisclosure(true);
-  } else {
-    navigate("/try");
-  }
-};
-```
+**New User Journey** (flows from "Started chatting"):
+`disclosure_shown → disclosure_accepted → guest_message_sent → signup_modal_shown → account_created`
+Each step shows count + drop-off % from previous step.
 
-### Index.tsx -- Update `handleDisclosureAccept`
+**Returning User Journey** (flows from "Logged in"):
+`login_from_homepage → session_started → cooldown_page_viewed → credits_page_viewed → purchase_started → purchase_completed`
+Each step shows count + drop-off % from previous step.
 
-Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
+### Implementation
 
-```typescript
-const handleDisclosureAccept = () => {
-  sessionStorage.setItem("sh_disclosure_accepted", "true");
-  setDisclosureAccepted(true);
-  setShowDisclosure(false);
+- Replace `LINEAR_FUNNEL_STEPS` with two constants: `NEW_USER_STEPS` and `RETURNING_USER_STEPS`
+- Replace the funnel Card content (lines 176–232) with the new layout: homepage count → branch → two side-by-side Cards
+- Each journey card renders its steps vertically (cleaner than horizontal for 5-6 steps) with arrow indicators and drop-off percentages
+- Reuse existing `getCount` and `pct` helpers
 
-  // If the user was typing in the hero input, focus it
-  // Otherwise (clicked a Try for Free button), navigate to /try
-  if (document.activeElement === textareaRef.current || heroInput.trim()) {
-    setTimeout(() => textareaRef.current?.focus(), 50);
-  } else {
-    navigate("/try");
-  }
-};
-```
-
-This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
