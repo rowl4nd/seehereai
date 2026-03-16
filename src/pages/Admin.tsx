@@ -40,12 +40,16 @@ const FUNNEL_STEPS = [
   "purchase_completed",
 ];
 
-const LINEAR_FUNNEL_STEPS = [
+const NEW_USER_STEPS = [
   "disclosure_shown",
   "disclosure_accepted",
   "guest_message_sent",
   "signup_modal_shown",
   "account_created",
+];
+
+const RETURNING_USER_STEPS = [
+  "login_from_homepage",
   "session_started",
   "cooldown_page_viewed",
   "credits_page_viewed",
@@ -155,7 +159,12 @@ export default function Admin() {
   const pct = (n: number, total: number) =>
     total > 0 ? `${((n / total) * 100).toFixed(1)}%` : "—";
 
-  const linearFunnel = LINEAR_FUNNEL_STEPS.map((step) => ({
+  const newUserFunnel = NEW_USER_STEPS.map((step) => ({
+    step,
+    count: getCount(step),
+  }));
+
+  const returningUserFunnel = RETURNING_USER_STEPS.map((step) => ({
     step,
     count: getCount(step),
   }));
@@ -173,63 +182,39 @@ export default function Admin() {
         </div>
       </div>
 
-      {/* Funnel */}
+      {/* Homepage Viewed */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Conversion Funnel</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-start gap-1 overflow-x-auto pb-2">
-            {/* Homepage viewed */}
-            <div className="text-center min-w-[110px] pt-8">
-              <div className="text-xs text-muted-foreground">homepage viewed</div>
-              <div className="text-xl font-bold text-foreground">{homepageCount}</div>
-            </div>
+        <CardContent className="pt-6">
+          <div className="text-center">
+            <div className="text-sm text-muted-foreground">homepage viewed</div>
+            <div className="text-3xl font-bold text-foreground">{homepageCount}</div>
+          </div>
 
-            <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 mx-1 mt-10" />
-
-            {/* Three-way branch */}
-            <div className="flex flex-col gap-2 min-w-[140px]">
-              {[
-                { label: "Started chatting", count: disclosureCount },
-                { label: "Logged in", count: loginCount },
-                { label: "No interaction", count: noInteraction },
-              ].map((branch) => (
-                <div
-                  key={branch.label}
-                  className="rounded-md border border-border bg-muted/30 px-3 py-2 text-center"
-                >
-                  <div className="text-xs text-muted-foreground">{branch.label}</div>
-                  <div className="text-lg font-bold text-foreground">{branch.count}</div>
-                  <div className="text-xs text-muted-foreground">{pct(branch.count, homepageCount)}</div>
-                </div>
-              ))}
-            </div>
-
-            <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 mx-1 mt-4" />
-
-            {/* Linear funnel from disclosure_shown onward */}
-            {linearFunnel.map((item, i) => (
-              <div key={item.step} className="flex items-center">
-                <div className="text-center min-w-[100px] pt-2">
-                  <div className="text-xs text-muted-foreground truncate max-w-[100px]" title={item.step}>
-                    {item.step.replace(/_/g, " ")}
-                  </div>
-                  <div className="text-xl font-bold text-foreground">{item.count}</div>
-                  {i > 0 && linearFunnel[i - 1].count > 0 && (
-                    <div className="text-xs text-muted-foreground">
-                      {pct(item.count, linearFunnel[i - 1].count)}
-                    </div>
-                  )}
-                </div>
-                {i < linearFunnel.length - 1 && (
-                  <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 mx-1" />
-                )}
+          {/* Three-way branch */}
+          <div className="flex justify-center gap-4 mt-6">
+            {[
+              { label: "Started chatting", count: disclosureCount },
+              { label: "Logged in", count: loginCount },
+              { label: "No interaction", count: noInteraction },
+            ].map((branch) => (
+              <div
+                key={branch.label}
+                className="rounded-md border border-border bg-muted/30 px-4 py-3 text-center min-w-[140px]"
+              >
+                <div className="text-xs text-muted-foreground">{branch.label}</div>
+                <div className="text-lg font-bold text-foreground">{branch.count}</div>
+                <div className="text-xs text-muted-foreground">{pct(branch.count, homepageCount)}</div>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
+
+      {/* Two Journey Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <FunnelCard title="New User Journey" subtitle="From 'Started chatting'" steps={newUserFunnel} />
+        <FunnelCard title="Returning User Journey" subtitle="From 'Logged in'" steps={returningUserFunnel} />
+      </div>
 
       {/* Events Table */}
       <Card>
@@ -321,5 +306,49 @@ function DatePicker({
         />
       </PopoverContent>
     </Popover>
+  );
+}
+
+function FunnelCard({
+  title,
+  subtitle,
+  steps,
+}: {
+  title: string;
+  subtitle: string;
+  steps: { step: string; count: number }[];
+}) {
+  const pct = (n: number, total: number) =>
+    total > 0 ? `${((n / total) * 100).toFixed(1)}%` : "—";
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">{title}</CardTitle>
+        <p className="text-sm text-muted-foreground">{subtitle}</p>
+      </CardHeader>
+      <CardContent className="space-y-1">
+        {steps.map((item, i) => (
+          <div key={item.step}>
+            <div className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-4 py-2">
+              <span className="text-sm text-muted-foreground">{item.step.replace(/_/g, " ")}</span>
+              <div className="text-right">
+                <span className="text-lg font-bold text-foreground">{item.count}</span>
+                {i > 0 && steps[i - 1].count > 0 && (
+                  <span className="ml-2 text-xs text-muted-foreground">
+                    {pct(item.count, steps[i - 1].count)}
+                  </span>
+                )}
+              </div>
+            </div>
+            {i < steps.length - 1 && (
+              <div className="flex justify-center py-0.5">
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground rotate-90" />
+              </div>
+            )}
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }
