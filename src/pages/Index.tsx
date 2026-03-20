@@ -106,23 +106,6 @@ const ScrollSection = ({
   const handleTryForFree = () => {
     if (user) {
       navigate("/dashboard");
-    } else if (!disclosureAccepted) {
-      trackEvent("disclosure_shown", { trigger: "cta_button" });
-      setShowDisclosure(true);
-    } else {
-      navigate("/try");
-    }
-  };
-
-  const handleDisclosureAccept = () => {
-    sessionStorage.setItem("sh_disclosure_accepted", "true");
-    setDisclosureAccepted(true);
-    setShowDisclosure(false);
-    trackEvent("disclosure_accepted");
-
-    const val = heroInput.trim();
-    if (val) {
-      navigate("/try", { state: { initialMessage: val } });
     } else {
       navigate("/try");
     }
@@ -134,9 +117,6 @@ const ScrollSection = ({
     if (!val) return;
     if (user) {
       navigate("/dashboard");
-    } else if (!disclosureAccepted) {
-      trackEvent("disclosure_shown", { trigger: "hero_submit" });
-      setShowDisclosure(true);
     } else {
       navigate("/try", { state: { initialMessage: val } });
     }
@@ -144,8 +124,6 @@ const ScrollSection = ({
 
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
-      {/* ── Disclosure modal ── */}
-      {showDisclosure && <DisclosureModalComponent open={showDisclosure} onAccept={handleDisclosureAccept} />}
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-40 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">

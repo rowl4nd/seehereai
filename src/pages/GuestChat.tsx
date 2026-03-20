@@ -7,8 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
-import SecureSessionModal from "@/components/SecureSessionModal";
-import GreetingMessage from "@/components/GreetingMessage";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
@@ -20,6 +18,29 @@ interface Message {
 
 const MAX_GUEST_MESSAGES = 5;
 
+// Helper to render markdown-style links in chat messages
+const renderMessageContent = (content: string) => {
+  const parts = content.split(/(\[.*?\]\(.*?\))/g);
+  return parts.map((part, i) => {
+    const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
+    if (linkMatch) {
+      return (
+        <a
+          key={i}
+          href={linkMatch[2]}
+          target={linkMatch[2].startsWith("/") ? "_self" : "_blank"}
+          rel="noopener noreferrer"
+          className="underline transition-colors"
+          style={{ color: "#4a7a4f" }}
+        >
+          {linkMatch[1]}
+        </a>
+      );
+    }
+    return <span key={i}>{part}</span>;
+  });
+};
+
 const GuestChat = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, updateProfile } = useProfile();
@@ -28,6 +49,7 @@ const GuestChat = () => {
   const { trackEvent } = useAnalytics();
   const location = useLocation();
   const initialMessageSent = useRef(false);
+  const firstUserMessageTracked = useRef(false);
 
   // SEO - noindex
   useEffect(() => {
@@ -40,7 +62,7 @@ const GuestChat = () => {
     };
   }, []);
 
-  // Retry wrapper for edge function calls — handles mobile connection drops
+  // Retry wrapper for edge function calls
   const invokeWithRetry = async (functionName: string, body: any, retries = 1) => {
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
@@ -56,11 +78,12 @@ const GuestChat = () => {
       }
     }
   };
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [guestLimitReached, setGuestLimitReached] = useState(false);
+  const [awaitingEmail, setAwaitingEmail] = useState(false);
 
   // Authenticated session state (post-signup)
   const [authenticated, setAuthenticated] = useState(false);
@@ -95,7 +118,7 @@ const GuestChat = () => {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Centralised save helper with pending queue (mirrors Mirror.tsx)
+  // Centralised save helper
   const saveMessagesToDb = async (updatedMessages: Message[]) => {
     const cId = conversationIdRef.current;
     if (!cId) {
@@ -110,7 +133,27 @@ const GuestChat = () => {
     await saveMessages(cId, conversationMessages);
   };
 
-  // Load guest messages or show greeting
+  // Opening messages
+  const WELCOME_MESSAGES: Message[] = [
+    {
+      id: "welcome-disclosure",
+      role: "assistant",
+      content:
+        "Welcome to SeeHere. I'm a warm, AI-powered listening companion — not a therapist. By continuing, you acknowledge our [Terms & Conditions](/terms) and [Privacy Policy](/privacy). If you're in immediate distress, please call [116 123](tel:116123) (Samaritans) or [999](tel:999).",
+    },
+    {
+      id: "returning-user",
+      role: "assistant",
+      content: "Been here before? [Log in](/auth) to pick up where you left off.",
+    },
+    {
+      id: "opening-invitation",
+      role: "assistant",
+      content: "When you're ready, what's been on your mind?",
+    },
+  ];
+
+  // Load guest messages or show welcome messages
   useEffect(() => {
     const saved = sessionStorage.getItem("guest_messages");
     if (saved) {
@@ -120,7 +163,11 @@ const GuestChat = () => {
         const userCount = parsed.filter((m) => m.role === "user").length;
         if (userCount >= MAX_GUEST_MESSAGES) {
           setGuestLimitReached(true);
-          setShowModal(true);
+          // Check if we're awaiting email
+          const awaitingState = sessionStorage.getItem("sh_awaiting_email");
+          if (awaitingState === "true") {
+            setAwaitingEmail(true);
+          }
         }
       } catch {
         // ignore
@@ -128,13 +175,8 @@ const GuestChat = () => {
     }
 
     if (!saved) {
-      const greeting: Message = {
-        id: "greeting",
-        role: "assistant",
-        content: "greeting_placeholder",
-      };
-      setMessages([greeting]);
-      sessionStorage.setItem("guest_messages", JSON.stringify([greeting]));
+      setMessages(WELCOME_MESSAGES);
+      sessionStorage.setItem("guest_messages", JSON.stringify(WELCOME_MESSAGES));
     }
   }, []);
 
@@ -158,7 +200,7 @@ const GuestChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Timer for authenticated session (mirrors Mirror.tsx)
+  // Timer for authenticated session
   useEffect(() => {
     if (!authenticated || !sessionStartedAt) return;
 
@@ -171,7 +213,6 @@ const GuestChat = () => {
       const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
       setTimeRemaining(remaining);
 
-      // 5-minute warning with assistant message injection
       if (remaining <= 300 && remaining > 0 && !showEndWarning) {
         setShowEndWarning(true);
         const warningMsg: Message = {
@@ -205,7 +246,7 @@ const GuestChat = () => {
     return () => clearInterval(interval);
   }, [authenticated, sessionStartedAt, sessionEnded, sessionId, showEndWarning]);
 
-  // After auth state changes (user signs up), migrate guest data
+  // After auth state changes (user signs up via email in chat), migrate guest data
   useEffect(() => {
     if (!user || !guestLimitReached || migrationDoneRef.current) return;
     migrationDoneRef.current = true;
@@ -247,22 +288,37 @@ const GuestChat = () => {
         const newConvoId = await createEncryptedConversation(newSessionId, guestMsgs);
         if (newConvoId) setConversationId(newConvoId);
 
-        // Load past conversations for AI context
         const conversations = await loadHistory();
         setPastConversations(conversations as Array<{ messages: Array<{ role: string; content: string }> }>);
 
         sessionStorage.removeItem("guest_messages");
         sessionStorage.removeItem("guest_onboarding_complete");
         sessionStorage.removeItem("guest_email");
+        sessionStorage.removeItem("sh_awaiting_email");
 
         // Fire-and-forget welcome email
         if (user.email) {
           supabase.functions.invoke("send-welcome-email", { body: { email: user.email } }).catch(() => {});
         }
 
+        // Trigger password reset email so user can set their password
+        if (user.email) {
+          supabase.auth.resetPasswordForEmail(user.email, {
+            redirectTo: `${window.location.origin}/reset-password`,
+          }).catch(() => {});
+        }
+
         setAuthenticated(true);
-        setShowModal(false);
         setGuestLimitReached(false);
+        setAwaitingEmail(false);
+
+        // Inject confirmation message
+        const confirmMsg: Message = {
+          id: "account-confirmed-" + Date.now(),
+          role: "assistant",
+          content: `Your session is saved. I've sent a welcome email to ${user.email} — you can set your password there anytime. Let's keep going.`,
+        };
+        setMessages((prev) => [...prev, confirmMsg]);
 
         toast.success("Session secured — you can continue chatting.");
       } catch (err) {
@@ -274,17 +330,12 @@ const GuestChat = () => {
     migrateGuestData();
   }, [user, guestLimitReached]);
 
-  const handleSignUpSuccess = () => {
-    // The auth state listener in useAuth will trigger the migration useEffect above
-  };
-
   const handleEndSession = async () => {
     if (sessionEnded) {
       navigate("/cooldown");
       return;
     }
 
-    // If before 5-minute warning, send early end signal for AI wrap-up
     if (!showEndWarning) {
       setSessionEnded(true);
       setIsLoading(true);
@@ -322,7 +373,6 @@ const GuestChat = () => {
       await saveMessagesToDb(messagesRef.current);
     }
 
-    // End session in DB
     if (sessionId) {
       const elapsed = sessionStartedAt ? Math.floor((Date.now() - new Date(sessionStartedAt).getTime()) / 60000) : 0;
       await supabase
@@ -342,9 +392,87 @@ const GuestChat = () => {
     }
   }, [authLoading, location.state]);
 
+  // Handle email signup in chat
+  const handleEmailSignup = async (email: string) => {
+    setIsLoading(true);
+    try {
+      const randomPassword = crypto.randomUUID();
+      const { error } = await supabase.auth.signUp({
+        email,
+        password: randomPassword,
+        options: { emailRedirectTo: window.location.origin },
+      });
+
+      if (error) {
+        const errorMsg: Message = {
+          id: "email-error-" + Date.now(),
+          role: "assistant",
+          content: `I wasn't able to save with that email — ${error.message}. Could you try again?`,
+        };
+        setMessages((prev) => {
+          const updated = [...prev, errorMsg];
+          sessionStorage.setItem("guest_messages", JSON.stringify(updated));
+          return updated;
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      trackEvent("account_created", { method: "email_in_chat" });
+      // The auth state change listener will trigger migrateGuestData
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  // Handle refusal to provide email
+  const handleEmailRefusal = () => {
+    trackEvent("signup_modal_dismissed");
+    const closingMsg: Message = {
+      id: "session-close-" + Date.now(),
+      role: "assistant",
+      content:
+        "I understand. Thank you for sharing with me today — what you said matters, even if it isn't saved. Take care of yourself.",
+    };
+    setMessages((prev) => {
+      const updated = [...prev, closingMsg];
+      sessionStorage.setItem("guest_messages", JSON.stringify(updated));
+      return updated;
+    });
+    setSessionEnded(true);
+    setAwaitingEmail(false);
+    sessionStorage.removeItem("sh_awaiting_email");
+    // Clean up after a moment
+    setTimeout(() => {
+      sessionStorage.removeItem("guest_messages");
+      sessionStorage.removeItem("guest_onboarding_complete");
+      sessionStorage.removeItem("guest_email");
+    }, 5000);
+  };
+
   const handleSend = async (overrideMessage?: string) => {
     const text = overrideMessage || input.trim();
-    if (!text || isLoading || (guestLimitReached && !authenticated) || sessionEnded) return;
+    if (!text || isLoading || sessionEnded) return;
+
+    // If we're awaiting email input
+    if (awaitingEmail && !authenticated) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const userMsg: Message = { id: "user-" + Date.now(), role: "user", content: text };
+      setMessages((prev) => [...prev, userMsg]);
+      setInput("");
+
+      if (emailRegex.test(text.trim())) {
+        sessionStorage.setItem("guest_email", text.trim());
+        await handleEmailSignup(text.trim());
+      } else {
+        handleEmailRefusal();
+      }
+      return;
+    }
+
+    // Normal guest limit check
+    if (guestLimitReached && !authenticated) return;
 
     const userMessage: Message = {
       id: "user-" + Date.now(),
@@ -356,6 +484,12 @@ const GuestChat = () => {
     setMessages(updatedWithUser);
     setInput("");
     setIsLoading(true);
+
+    // Track first user message as disclosure_accepted
+    if (!firstUserMessageTracked.current && !authenticated) {
+      firstUserMessageTracked.current = true;
+      trackEvent("disclosure_accepted");
+    }
 
     // Track message event
     if (authenticated) {
@@ -373,7 +507,7 @@ const GuestChat = () => {
     try {
       const messagesForAI = updatedWithUser.map((m) => ({ role: m.role, content: m.content }));
 
-      // Add wrap-up indicator if in final 5 minutes (mirrors Mirror.tsx)
+      // Add wrap-up indicator if in final 5 minutes
       if (authenticated && showEndWarning && messagesForAI.length > 0) {
         const lastMsg = messagesForAI[messagesForAI.length - 1];
         lastMsg.content = `[5 MINUTE WARNING] ${lastMsg.content}`;
@@ -387,7 +521,7 @@ const GuestChat = () => {
         timeOfDay: getTimeOfDay(),
       });
 
-      // Handle name detection from AI (authenticated only, mirrors Mirror.tsx)
+      // Handle name detection from AI (authenticated only)
       if (authenticated) {
         if (response.data?.detectedName && !profile?.display_name) {
           updateProfile({ display_name: response.data.detectedName, name_declined: false });
@@ -411,13 +545,25 @@ const GuestChat = () => {
         const userCount = updatedWithAssistant.filter((m) => m.role === "user").length;
         if (userCount >= MAX_GUEST_MESSAGES) {
           setGuestLimitReached(true);
-          setShowModal(true);
-          trackEvent("signup_modal_shown", { message_count: userCount });
+
+          // Inject email collection message
+          const emailPrompt: Message = {
+            id: "email-prompt-" + Date.now(),
+            role: "assistant",
+            content:
+              "You've shared some really meaningful things. I'd love for you to be able to come back and continue. If you'd like to save this conversation and unlock your 2nd free session, just type your email address below. If you'd prefer not to, that's completely okay — but I won't be able to save what we've talked about, and our conversation will end here.",
+          };
+          const withPrompt = [...updatedWithAssistant, emailPrompt];
+          setMessages(withPrompt);
+          sessionStorage.setItem("guest_messages", JSON.stringify(withPrompt));
+          setAwaitingEmail(true);
+          sessionStorage.setItem("sh_awaiting_email", "true");
+          trackEvent("signup_prompt_shown", { message_count: userCount });
         }
       } else {
         saveMessagesToDb(updatedWithAssistant);
 
-        // Handle END_SESSION flag (crisis detection, mirrors Mirror.tsx)
+        // Handle END_SESSION flag (crisis detection)
         if (response.data?.endSession && sessionId) {
           setSessionEnded(true);
           await saveMessagesToDb(updatedWithAssistant);
@@ -449,7 +595,14 @@ const GuestChat = () => {
     }
   };
 
-  const inputDisabled = isLoading || (guestLimitReached && !authenticated) || sessionEnded;
+  const inputDisabled = isLoading || sessionEnded;
+
+  // Special message IDs that need link rendering
+  const LINK_MESSAGE_IDS = ["welcome-disclosure", "returning-user", "email-prompt-"];
+
+  const shouldRenderLinks = (messageId: string) => {
+    return LINK_MESSAGE_IDS.some((id) => messageId.startsWith(id));
+  };
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8f6f3" }}>
@@ -486,13 +639,11 @@ const GuestChat = () => {
                       }
                 }
               >
-                {message.id === "greeting" ? (
-                  <GreetingMessage />
-                ) : (
-                  <p className="text-base leading-relaxed whitespace-pre-wrap" style={{ color: "#2c2c2c" }}>
-                    {message.content}
-                  </p>
-                )}
+                <p className="text-base leading-relaxed whitespace-pre-wrap" style={{ color: "#2c2c2c" }}>
+                  {shouldRenderLinks(message.id) || message.id.startsWith("account-confirmed-")
+                    ? renderMessageContent(message.content)
+                    : message.content}
+                </p>
               </div>
             </div>
           ))}
@@ -576,8 +727,8 @@ const GuestChat = () => {
                 placeholder={
                   sessionEnded
                     ? "Session ended"
-                    : inputDisabled
-                      ? "Create an account to continue..."
+                    : awaitingEmail
+                      ? "Type your email address, or anything else to end..."
                       : "Share what's on your mind..."
                 }
                 className="flex-1 min-h-[48px] max-h-32 resize-none rounded-xl px-4 py-3 text-base outline-none transition-colors"
@@ -618,32 +769,9 @@ const GuestChat = () => {
               </button>
             </div>
 
-            {/* Consent text + End session (guest only) */}
-            {!authenticated && (
+            {/* End session (guest only) */}
+            {!authenticated && !sessionEnded && (
               <div className="space-y-1">
-                <p className="text-[11px] text-center" style={{ color: "rgba(138, 130, 120, 0.7)" }}>
-                  By sending a message, you agree to our{" "}
-                  <Link
-                    to="/terms"
-                    className="underline transition-colors"
-                    style={{ color: "rgba(138, 130, 120, 0.7)" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#2c2c2c")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(138, 130, 120, 0.7)")}
-                  >
-                    Terms
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    to="/privacy"
-                    className="underline transition-colors"
-                    style={{ color: "rgba(138, 130, 120, 0.7)" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#2c2c2c")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(138, 130, 120, 0.7)")}
-                  >
-                    Privacy Policy
-                  </Link>
-                  .
-                </p>
                 <div className="flex justify-center">
                   <button
                     type="button"
@@ -651,7 +779,7 @@ const GuestChat = () => {
                       sessionStorage.removeItem("guest_messages");
                       sessionStorage.removeItem("guest_onboarding_complete");
                       sessionStorage.removeItem("guest_email");
-                      sessionStorage.removeItem("sh_disclosure_accepted");
+                      sessionStorage.removeItem("sh_awaiting_email");
                       navigate("/");
                     }}
                     className="text-xs transition-colors py-1 min-h-[44px] flex items-center"
@@ -667,9 +795,6 @@ const GuestChat = () => {
           </div>
         </div>
       </footer>
-
-      {/* Secure Session Modal */}
-      <SecureSessionModal open={showModal} onSuccess={handleSignUpSuccess} />
     </div>
   );
 };
