@@ -319,13 +319,20 @@ const GuestChat = () => {
         setGuestLimitReached(false);
         setAwaitingEmail(false);
 
-        // Inject confirmation message
+        // Inject confirmation message + held AI response
         const confirmMsg: Message = {
           id: "account-confirmed-" + Date.now(),
           role: "assistant",
           content: `Your session is saved. I've sent a welcome email to ${user.email} — you can set your password there anytime. Let's keep going.`,
         };
-        setMessages((prev) => [...prev, confirmMsg]);
+        const held = heldResponse;
+        if (held) {
+          setMessages((prev) => [...prev, confirmMsg, held]);
+          setHeldResponse(null);
+          sessionStorage.removeItem("sh_held_response");
+        } else {
+          setMessages((prev) => [...prev, confirmMsg]);
+        }
 
         toast.success("Session secured — you can continue chatting.");
       } catch (err) {
