@@ -43,8 +43,6 @@ const ScrollSection = ({
   );
 };
 
-// ─── Disclosure modal (shared component) ──────────────────────────────────────
-import DisclosureModalComponent from "@/components/DisclosureModal";
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 const Index = () => {
@@ -52,19 +50,11 @@ const Index = () => {
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
   const [heroInput, setHeroInput] = useState("");
-  const [showDisclosure, setShowDisclosure] = useState(false);
-  const [disclosureAccepted, setDisclosureAccepted] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     trackEvent("homepage_viewed");
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Check if already accepted this session
-  useEffect(() => {
-    const accepted = sessionStorage.getItem("sh_disclosure_accepted");
-    if (accepted) setDisclosureAccepted(true);
-  }, []);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -126,23 +116,6 @@ const Index = () => {
   const handleTryForFree = () => {
     if (user) {
       navigate("/dashboard");
-    } else if (!disclosureAccepted) {
-      trackEvent("disclosure_shown", { trigger: "cta_button" });
-      setShowDisclosure(true);
-    } else {
-      navigate("/try");
-    }
-  };
-
-  const handleDisclosureAccept = () => {
-    sessionStorage.setItem("sh_disclosure_accepted", "true");
-    setDisclosureAccepted(true);
-    setShowDisclosure(false);
-    trackEvent("disclosure_accepted");
-
-    const val = heroInput.trim();
-    if (val) {
-      navigate("/try", { state: { initialMessage: val } });
     } else {
       navigate("/try");
     }
@@ -154,9 +127,6 @@ const Index = () => {
     if (!val) return;
     if (user) {
       navigate("/dashboard");
-    } else if (!disclosureAccepted) {
-      trackEvent("disclosure_shown", { trigger: "hero_submit" });
-      setShowDisclosure(true);
     } else {
       navigate("/try", { state: { initialMessage: val } });
     }
@@ -164,8 +134,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
-      {/* ── Disclosure modal ── */}
-      {showDisclosure && <DisclosureModalComponent open={showDisclosure} onAccept={handleDisclosureAccept} />}
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-40 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">
