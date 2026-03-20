@@ -17,10 +17,6 @@ const DisclosureModal = ({ open, onAccept }: DisclosureModalProps) => {
             Welcome to SeeHere. I'm a warm, AI-powered space for you to share whatever is on your mind.
           </p>
           <p className="text-base leading-relaxed">
-            Before we begin, please know that I am a <strong>listening companion, not a therapist</strong>, and I don't
-            diagnose, treat, or give medical advice.
-          </p>
-          <p className="text-base leading-relaxed">
             Your privacy is held safely here. By continuing our chat, you acknowledge that you've read and agree to our{" "}
             <a
               href="/terms"
@@ -38,17 +34,6 @@ const DisclosureModal = ({ open, onAccept }: DisclosureModalProps) => {
               className="underline hover:text-[#4a7a4f] transition-colors"
             >
               Privacy Policy
-            </a>
-            .
-          </p>
-          <p className="text-sm leading-relaxed font-medium" style={{ color: "#c0392b" }}>
-            If you are in immediate danger or distress, please stop here and call{" "}
-            <a href="tel:116123" className="underline">
-              116 123
-            </a>{" "}
-            (Samaritans) or{" "}
-            <a href="tel:999" className="underline">
-              999
             </a>
             .
           </p>
