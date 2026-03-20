@@ -56,6 +56,7 @@ const Index = () => {
     trackEvent("homepage_viewed");
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
     const script = document.createElement("script");
     script.type = "application/ld+json";
     script.textContent = JSON.stringify([
