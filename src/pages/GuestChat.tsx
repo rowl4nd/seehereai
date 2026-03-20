@@ -296,6 +296,7 @@ const GuestChat = () => {
         sessionStorage.removeItem("guest_onboarding_complete");
         sessionStorage.removeItem("guest_email");
         sessionStorage.removeItem("sh_awaiting_email");
+        sessionStorage.removeItem("sh_final_chance");
 
         // Fire-and-forget welcome email
         if (user.email) {
