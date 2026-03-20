@@ -801,6 +801,7 @@ const GuestChat = () => {
                       sessionStorage.removeItem("guest_onboarding_complete");
                       sessionStorage.removeItem("guest_email");
                       sessionStorage.removeItem("sh_awaiting_email");
+                      sessionStorage.removeItem("sh_final_chance");
                       navigate("/");
                     }}
                     className="text-xs transition-colors py-1 min-h-[44px] flex items-center"
