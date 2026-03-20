@@ -67,6 +67,15 @@ const Index = () => {
     }
   };
 
+  const handleTryForFree = () => {
+    trackEvent("try_for_free_click");
+    if (user) {
+      navigate("/dashboard");
+    } else {
+      navigate("/try");
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
       {/* Header with "Pricing Card Style" Login */}
