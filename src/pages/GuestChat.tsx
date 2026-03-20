@@ -84,6 +84,7 @@ const GuestChat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [guestLimitReached, setGuestLimitReached] = useState(false);
   const [awaitingEmail, setAwaitingEmail] = useState(false);
+  const [finalChance, setFinalChance] = useState(() => sessionStorage.getItem("sh_final_chance") === "true");
 
   // Authenticated session state (post-signup)
   const [authenticated, setAuthenticated] = useState(false);
@@ -295,6 +296,7 @@ const GuestChat = () => {
         sessionStorage.removeItem("guest_onboarding_complete");
         sessionStorage.removeItem("guest_email");
         sessionStorage.removeItem("sh_awaiting_email");
+        sessionStorage.removeItem("sh_final_chance");
 
         // Fire-and-forget welcome email
         if (user.email) {
@@ -442,7 +444,9 @@ const GuestChat = () => {
     });
     setSessionEnded(true);
     setAwaitingEmail(false);
+    setFinalChance(false);
     sessionStorage.removeItem("sh_awaiting_email");
+    sessionStorage.removeItem("sh_final_chance");
     // Clean up after a moment
     setTimeout(() => {
       sessionStorage.removeItem("guest_messages");
@@ -465,7 +469,22 @@ const GuestChat = () => {
       if (emailRegex.test(text.trim())) {
         sessionStorage.setItem("guest_email", text.trim());
         await handleEmailSignup(text.trim());
+      } else if (!finalChance) {
+        // First refusal — offer last chance
+        setFinalChance(true);
+        sessionStorage.setItem("sh_final_chance", "true");
+        const lastChanceMsg: Message = {
+          id: "last-chance-" + Date.now(),
+          role: "assistant",
+          content: "No problem at all. If you change your mind, just type your email address below — otherwise feel free to close this tab whenever you're ready.",
+        };
+        setMessages((prev) => {
+          const updated = [...prev, lastChanceMsg];
+          sessionStorage.setItem("guest_messages", JSON.stringify(updated));
+          return updated;
+        });
       } else {
+        // Second refusal — end session
         handleEmailRefusal();
       }
       return;
@@ -728,7 +747,9 @@ const GuestChat = () => {
                   sessionEnded
                     ? "Session ended"
                     : awaitingEmail
-                      ? "Type your email address, or anything else to end..."
+                      ? finalChance
+                        ? "Enter your email or close this tab..."
+                        : "Type your email address, or anything else to end..."
                       : "Share what's on your mind..."
                 }
                 className="flex-1 min-h-[48px] max-h-32 resize-none rounded-xl px-4 py-3 text-base outline-none transition-colors"
@@ -780,6 +801,7 @@ const GuestChat = () => {
                       sessionStorage.removeItem("guest_onboarding_complete");
                       sessionStorage.removeItem("guest_email");
                       sessionStorage.removeItem("sh_awaiting_email");
+                      sessionStorage.removeItem("sh_final_chance");
                       navigate("/");
                     }}
                     className="text-xs transition-colors py-1 min-h-[44px] flex items-center"
