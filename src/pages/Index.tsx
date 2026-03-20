@@ -57,9 +57,8 @@ const Index = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    trackEvent('homepage_viewed');
+    trackEvent("homepage_viewed");
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
 
   // Check if already accepted this session
   useEffect(() => {
@@ -135,7 +134,6 @@ const Index = () => {
     }
   };
 
-
   const handleDisclosureAccept = () => {
     sessionStorage.setItem("sh_disclosure_accepted", "true");
     setDisclosureAccepted(true);
@@ -176,7 +174,10 @@ const Index = () => {
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
-          <a href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
+          <a
+            href="/blog"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+          >
             Blog
           </a>
           {!loading &&
@@ -187,7 +188,7 @@ const Index = () => {
                 </Button>
               </Link>
             ) : (
-              <Link to="/auth" onClick={() => trackEvent('login_from_homepage')}>
+              <Link to="/auth" onClick={() => trackEvent("login_from_homepage")}>
                 <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
                   Log in
                 </Button>
@@ -270,21 +271,25 @@ const Index = () => {
                       e.currentTarget.form?.requestSubmit();
                     }
                   }}
-                  placeholder="When you're ready, what's been on your mind?…"
+                  placeholder="What's been on your mind? First 2 sessions are free."
                   rows={3}
-                  className="w-full resize-none rounded-2xl border border-white/60 bg-white/70 backdrop-blur-sm px-5 py-4 pr-14 text-base text-[#3d3a35] placeholder:text-[#3d3a35]/40 focus:outline-none focus:ring-2 focus:ring-[#4a7a4f]/30 focus:border-[#4a7a4f]/40 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white/80"
+                  className="w-full resize-none rounded-2xl border-2 border-[#4a7a4f]/40 bg-white/80 backdrop-blur-sm px-5 py-4 pr-14 text-base text-[#3d3a35] placeholder:text-[#3d3a35]/60 focus:outline-none focus:ring-4 focus:ring-[#4a7a4f]/20 focus:border-[#4a7a4f]/60 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white"
                 />
                 <button
                   type="submit"
                   disabled={!heroInput.trim()}
-                  className="absolute right-3 bottom-3 p-2.5 rounded-xl bg-[#4a7a4f] hover:bg-[#3d6542] text-white shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="absolute right-3 bottom-3 p-3.5 rounded-xl bg-[#4a7a4f] hover:bg-[#3d6542] text-white shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4" />
                 </button>
               </form>
               <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
                 Try 2 sessions free ·{" "}
-                <Link to="/auth" className="underline hover:text-[#3d3a35]/80 transition-colors" onClick={() => trackEvent('login_from_homepage')}>
+                <Link
+                  to="/auth"
+                  className="underline hover:text-[#3d3a35]/80 transition-colors"
+                  onClick={() => trackEvent("login_from_homepage")}
+                >
                   Have an account? Log in
                 </Link>
               </p>
@@ -546,7 +551,8 @@ const Index = () => {
               Pay only for the space you use.
             </h2>
             <p className="text-[#5f5a53] leading-relaxed">
-              Start for free. Sign up to save your conversation. Your first 2 sessions are on us — after that, sessions start from just £2.
+              Start for free. Sign up to save your conversation. Your first 2 sessions are on us — after that, sessions
+              start from just £2.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <div className="px-6 py-4 bg-white/70 backdrop-blur rounded-2xl border border-white/60 shadow-sm text-center">
