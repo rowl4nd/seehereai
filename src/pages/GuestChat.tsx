@@ -466,7 +466,22 @@ const GuestChat = () => {
       if (emailRegex.test(text.trim())) {
         sessionStorage.setItem("guest_email", text.trim());
         await handleEmailSignup(text.trim());
+      } else if (!finalChance) {
+        // First refusal — offer last chance
+        setFinalChance(true);
+        sessionStorage.setItem("sh_final_chance", "true");
+        const lastChanceMsg: Message = {
+          id: "last-chance-" + Date.now(),
+          role: "assistant",
+          content: "No problem at all. If you change your mind, just type your email address below — otherwise feel free to close this tab whenever you're ready.",
+        };
+        setMessages((prev) => {
+          const updated = [...prev, lastChanceMsg];
+          sessionStorage.setItem("guest_messages", JSON.stringify(updated));
+          return updated;
+        });
       } else {
+        // Second refusal — end session
         handleEmailRefusal();
       }
       return;
