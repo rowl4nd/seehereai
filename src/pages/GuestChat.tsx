@@ -85,6 +85,11 @@ const GuestChat = () => {
   const [guestLimitReached, setGuestLimitReached] = useState(false);
   const [awaitingEmail, setAwaitingEmail] = useState(false);
   const [finalChance, setFinalChance] = useState(() => sessionStorage.getItem("sh_final_chance") === "true");
+  const [heldResponse, setHeldResponse] = useState<Message | null>(() => {
+    const stored = sessionStorage.getItem("sh_held_response");
+    if (stored) { try { return JSON.parse(stored); } catch { return null; } }
+    return null;
+  });
 
   // Authenticated session state (post-signup)
   const [authenticated, setAuthenticated] = useState(false);
