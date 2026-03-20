@@ -189,9 +189,9 @@ const Index = () => {
               </Link>
             ) : (
               <Link to="/auth" onClick={() => trackEvent("login_from_homepage")}>
-                <Button size="sm" className="text-sm bg-[#4a7a4f] hover:bg-[#3d6542] text-white">
+                <button className="px-5 py-2 bg-[#4a7a4f]/10 rounded-2xl border border-[#4a7a4f]/20 shadow-sm text-[#3d3a35] text-sm font-medium hover:bg-[#4a7a4f]/20 transition-all duration-200">
                   Log in
-                </Button>
+                </button>
               </Link>
             ))}
         </div>
