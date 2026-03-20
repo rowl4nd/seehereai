@@ -457,8 +457,10 @@ const GuestChat = () => {
     setSessionEnded(true);
     setAwaitingEmail(false);
     setFinalChance(false);
+    setHeldResponse(null);
     sessionStorage.removeItem("sh_awaiting_email");
     sessionStorage.removeItem("sh_final_chance");
+    sessionStorage.removeItem("sh_held_response");
     // Clean up after a moment
     setTimeout(() => {
       sessionStorage.removeItem("guest_messages");
