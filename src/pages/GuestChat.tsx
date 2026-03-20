@@ -562,27 +562,32 @@ const GuestChat = () => {
       };
 
       const updatedWithAssistant = [...updatedWithUser, assistantMessage];
-      setMessages(updatedWithAssistant);
 
       if (!authenticated) {
-        sessionStorage.setItem("guest_messages", JSON.stringify(updatedWithAssistant));
         const userCount = updatedWithAssistant.filter((m) => m.role === "user").length;
         if (userCount >= MAX_GUEST_MESSAGES) {
+          // Hold AI response — don't show it yet
+          setHeldResponse(assistantMessage);
+          sessionStorage.setItem("sh_held_response", JSON.stringify(assistantMessage));
+
           setGuestLimitReached(true);
 
-          // Inject email collection message
+          // Inject email collection message (without the AI response)
           const emailPrompt: Message = {
             id: "email-prompt-" + Date.now(),
             role: "assistant",
             content:
               "You've shared some really meaningful things. I'd love for you to be able to come back and continue. If you'd like to save this conversation and unlock your 2nd free session, just type your email address below. If you'd prefer not to, that's completely okay — but I won't be able to save what we've talked about, and our conversation will end here.",
           };
-          const withPrompt = [...updatedWithAssistant, emailPrompt];
+          const withPrompt = [...updatedWithUser, emailPrompt];
           setMessages(withPrompt);
           sessionStorage.setItem("guest_messages", JSON.stringify(withPrompt));
           setAwaitingEmail(true);
           sessionStorage.setItem("sh_awaiting_email", "true");
           trackEvent("signup_prompt_shown", { message_count: userCount });
+        } else {
+          setMessages(updatedWithAssistant);
+          sessionStorage.setItem("guest_messages", JSON.stringify(updatedWithAssistant));
         }
       } else {
         saveMessagesToDb(updatedWithAssistant);
