@@ -746,7 +746,9 @@ const GuestChat = () => {
                   sessionEnded
                     ? "Session ended"
                     : awaitingEmail
-                      ? "Type your email address, or anything else to end..."
+                      ? finalChance
+                        ? "Enter your email or close this tab..."
+                        : "Type your email address, or anything else to end..."
                       : "Share what's on your mind..."
                 }
                 className="flex-1 min-h-[48px] max-h-32 resize-none rounded-xl px-4 py-3 text-base outline-none transition-colors"
