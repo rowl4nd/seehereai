@@ -85,6 +85,11 @@ const GuestChat = () => {
   const [guestLimitReached, setGuestLimitReached] = useState(false);
   const [awaitingEmail, setAwaitingEmail] = useState(false);
   const [finalChance, setFinalChance] = useState(() => sessionStorage.getItem("sh_final_chance") === "true");
+  const [heldResponse, setHeldResponse] = useState<Message | null>(() => {
+    const stored = sessionStorage.getItem("sh_held_response");
+    if (stored) { try { return JSON.parse(stored); } catch { return null; } }
+    return null;
+  });
 
   // Authenticated session state (post-signup)
   const [authenticated, setAuthenticated] = useState(false);
@@ -314,13 +319,20 @@ const GuestChat = () => {
         setGuestLimitReached(false);
         setAwaitingEmail(false);
 
-        // Inject confirmation message
+        // Inject confirmation message + held AI response
         const confirmMsg: Message = {
           id: "account-confirmed-" + Date.now(),
           role: "assistant",
           content: `Your session is saved. I've sent a welcome email to ${user.email} — you can set your password there anytime. Let's keep going.`,
         };
-        setMessages((prev) => [...prev, confirmMsg]);
+        const held = heldResponse;
+        if (held) {
+          setMessages((prev) => [...prev, confirmMsg, held]);
+          setHeldResponse(null);
+          sessionStorage.removeItem("sh_held_response");
+        } else {
+          setMessages((prev) => [...prev, confirmMsg]);
+        }
 
         toast.success("Session secured — you can continue chatting.");
       } catch (err) {
@@ -445,8 +457,10 @@ const GuestChat = () => {
     setSessionEnded(true);
     setAwaitingEmail(false);
     setFinalChance(false);
+    setHeldResponse(null);
     sessionStorage.removeItem("sh_awaiting_email");
     sessionStorage.removeItem("sh_final_chance");
+    sessionStorage.removeItem("sh_held_response");
     // Clean up after a moment
     setTimeout(() => {
       sessionStorage.removeItem("guest_messages");
@@ -557,27 +571,32 @@ const GuestChat = () => {
       };
 
       const updatedWithAssistant = [...updatedWithUser, assistantMessage];
-      setMessages(updatedWithAssistant);
 
       if (!authenticated) {
-        sessionStorage.setItem("guest_messages", JSON.stringify(updatedWithAssistant));
         const userCount = updatedWithAssistant.filter((m) => m.role === "user").length;
         if (userCount >= MAX_GUEST_MESSAGES) {
+          // Hold AI response — don't show it yet
+          setHeldResponse(assistantMessage);
+          sessionStorage.setItem("sh_held_response", JSON.stringify(assistantMessage));
+
           setGuestLimitReached(true);
 
-          // Inject email collection message
+          // Inject email collection message (without the AI response)
           const emailPrompt: Message = {
             id: "email-prompt-" + Date.now(),
             role: "assistant",
             content:
               "You've shared some really meaningful things. I'd love for you to be able to come back and continue. If you'd like to save this conversation and unlock your 2nd free session, just type your email address below. If you'd prefer not to, that's completely okay — but I won't be able to save what we've talked about, and our conversation will end here.",
           };
-          const withPrompt = [...updatedWithAssistant, emailPrompt];
+          const withPrompt = [...updatedWithUser, emailPrompt];
           setMessages(withPrompt);
           sessionStorage.setItem("guest_messages", JSON.stringify(withPrompt));
           setAwaitingEmail(true);
           sessionStorage.setItem("sh_awaiting_email", "true");
           trackEvent("signup_prompt_shown", { message_count: userCount });
+        } else {
+          setMessages(updatedWithAssistant);
+          sessionStorage.setItem("guest_messages", JSON.stringify(updatedWithAssistant));
         }
       } else {
         saveMessagesToDb(updatedWithAssistant);
