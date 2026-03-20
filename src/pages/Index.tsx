@@ -67,6 +67,15 @@ const Index = () => {
     }
   };
 
+  const handleTryForFree = () => {
+    trackEvent("try_for_free_click");
+    if (user) {
+      navigate("/dashboard");
+    } else {
+      navigate("/try");
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
       {/* Header with "Pricing Card Style" Login */}
@@ -126,10 +135,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-      {/* ... (rest of the page) */}
-    </div>
-  );
-};
 
       {/* ── Missing middle ── */}
       <section className="py-20 px-6 bg-[#f4eadf]/30 text-center">
@@ -499,7 +504,7 @@ const Index = () => {
             See Here is committed to digital accessibility (WCAG 2.1 AA). If you experience any barriers, contact{" "}
             <a href="mailto:hello@seehere.ai" className="underline hover:text-[#3d3a35] transition-colors">
               hello@seehere.ai
-            </a>
+            </a>.
           </p>
         </div>
       </footer>
