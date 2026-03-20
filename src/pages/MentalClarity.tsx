@@ -1,9 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
+import DisclosureModal from "@/components/DisclosureModal";
 
 const MentalClarity = () => {
   const navigate = useNavigate();
+  const [showDisclosure, setShowDisclosure] = useState(false);
+
+  const handleDisclosureAccept = () => {
+    sessionStorage.setItem("sh_disclosure_accepted", "true");
+    setShowDisclosure(false);
+    navigate("/try");
+  };
 
   useEffect(() => {
     const prevTitle = document.title;
@@ -23,6 +31,7 @@ const MentalClarity = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8f6f3" }}>
+      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} />
       <header
         className="sticky top-0 z-50 border-b px-4 py-2 md:px-8 flex items-center justify-between"
         style={{ backgroundColor: "#f8f6f3", borderColor: "#e8e1d9" }}
@@ -123,7 +132,7 @@ const MentalClarity = () => {
               Two free sessions. No account needed.
             </p>
             <button
-              onClick={() => navigate("/try")}
+              onClick={() => setShowDisclosure(true)}
               className="inline-block px-10 py-4 rounded-2xl text-sm font-medium text-white shadow-md transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
               style={{ backgroundColor: "#4a7a4f" }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#3d6542")}

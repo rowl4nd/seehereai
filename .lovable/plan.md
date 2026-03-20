@@ -1,49 +1,55 @@
 
+# Show Disclosure Modal on All "Try for Free" Buttons
 
-## Plan: Hold AI response until after email decision
+## Problem
+The legal disclosure modal only appears when tapping the chat textarea in the hero section. The several "Try for Free" buttons on the page bypass this check and navigate directly to `/try` without showing the disclosure first.
 
-### Change
+## Solution
+Update `handleTryForFree` to check whether the disclosure has been accepted. If it hasn't (and the user isn't logged in), show the disclosure modal instead of navigating. Once accepted, navigate to `/try`.
 
-When the 5th user message is sent and the guest limit is reached, **don't show the AI's response yet**. Instead, store it in state and only show the email prompt. After the user provides their email (or refuses twice), inject the held AI response back into the conversation before continuing.
+## Technical Detail
 
-### Technical detail
+### Index.tsx -- Update `handleTryForFree`
 
-**File:** `src/pages/GuestChat.tsx`
+Change the function (around line 172) from:
+```typescript
+const handleTryForFree = () => {
+  if (user) navigate("/dashboard");
+  else navigate("/try");
+};
+```
 
-1. **Add state:** `const [heldResponse, setHeldResponse] = useState<Message | null>(null)` (+ persist in sessionStorage as `sh_held_response`)
+To:
+```typescript
+const handleTryForFree = () => {
+  if (user) {
+    navigate("/dashboard");
+  } else if (!disclosureAccepted) {
+    setShowDisclosure(true);
+  } else {
+    navigate("/try");
+  }
+};
+```
 
-2. **At 5-message limit (lines 562–581):** Instead of adding `assistantMessage` to messages, store it:
-   ```
-   if (userCount >= MAX_GUEST_MESSAGES) {
-     // Don't show AI response yet — hold it
-     setHeldResponse(assistantMessage);
-     sessionStorage.setItem("sh_held_response", JSON.stringify(assistantMessage));
-     
-     // Show only the email prompt (without the AI response)
-     const withPrompt = [...updatedWithUser, emailPrompt];
-     setMessages(withPrompt);
-     ...
-   }
-   ```
+### Index.tsx -- Update `handleDisclosureAccept`
 
-3. **On successful email signup:** Before continuing the chat, inject the held response:
-   ```
-   const held = heldResponse;
-   if (held) {
-     setMessages(prev => [...prev, successMessage, held]);
-     setHeldResponse(null);
-     sessionStorage.removeItem("sh_held_response");
-   }
-   ```
+Modify the accept handler (around line 183) so that after accepting, if the textarea doesn't have a value typed in, navigate to `/try` instead of just focusing the textarea. This handles the case where the user clicked a "Try for Free" button:
 
-4. **On final refusal (handleEmailRefusal):** Discard the held response (it's lost with the session anyway):
-   ```
-   setHeldResponse(null);
-   sessionStorage.removeItem("sh_held_response");
-   ```
+```typescript
+const handleDisclosureAccept = () => {
+  sessionStorage.setItem("sh_disclosure_accepted", "true");
+  setDisclosureAccepted(true);
+  setShowDisclosure(false);
 
-5. **On init:** Restore `heldResponse` from sessionStorage if page is refreshed mid-prompt.
+  // If the user was typing in the hero input, focus it
+  // Otherwise (clicked a Try for Free button), navigate to /try
+  if (document.activeElement === textareaRef.current || heroInput.trim()) {
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  } else {
+    navigate("/try");
+  }
+};
+```
 
-### Files
-- `src/pages/GuestChat.tsx` — only file changed
-
+This ensures all three "Try for Free" buttons and the chat textarea all go through the same disclosure gate, with no other changes needed.
