@@ -44,9 +44,9 @@ const DisclosureModal = ({ open, onAccept }: DisclosureModalProps) => {
         >
           I understand — continue
         </Button>
-        <div className="text-center">
-          <Link to="/auth" className="text-sm text-[#3d3a35]/70 hover:text-[#4a7a4f] transition-colors">
-            Already have an account? <span className="underline font-medium">Log in</span>
+        <div className="bg-[#e8e0f0] rounded-2xl px-5 py-4 text-center">
+          <Link to="/auth" className="text-sm text-[#3d3a35] hover:text-[#4a7a4f] transition-colors">
+            Already have an account? <span className="underline font-semibold">Log in</span>
           </Link>
         </div>
       </div>
