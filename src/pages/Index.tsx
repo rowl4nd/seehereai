@@ -499,7 +499,7 @@ const Index = () => {
             See Here is committed to digital accessibility (WCAG 2.1 AA). If you experience any barriers, contact{" "}
             <a href="mailto:hello@seehere.ai" className="underline hover:text-[#3d3a35] transition-colors">
               hello@seehere.ai
-            </a>
+            </a>.
           </p>
         </div>
       </footer>
