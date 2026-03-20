@@ -84,6 +84,7 @@ const GuestChat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [guestLimitReached, setGuestLimitReached] = useState(false);
   const [awaitingEmail, setAwaitingEmail] = useState(false);
+  const [finalChance, setFinalChance] = useState(() => sessionStorage.getItem("sh_final_chance") === "true");
 
   // Authenticated session state (post-signup)
   const [authenticated, setAuthenticated] = useState(false);
