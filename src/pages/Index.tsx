@@ -126,10 +126,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-      {/* ... (rest of the page) */}
-    </div>
-  );
-};
 
       {/* ── Missing middle ── */}
       <section className="py-20 px-6 bg-[#f4eadf]/30 text-center">
