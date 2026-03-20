@@ -43,265 +43,93 @@ const ScrollSection = ({
   );
 };
 
-// ─── Disclosure modal (shared component) ──────────────────────────────────────
-import DisclosureModalComponent from "@/components/DisclosureModal";
+// ... (imports remain the same)
 
-// ─── Main page ────────────────────────────────────────────────────────────────
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
   const [heroInput, setHeroInput] = useState("");
-  const [showDisclosure, setShowDisclosure] = useState(false);
-  const [disclosureAccepted, setDisclosureAccepted] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    trackEvent("homepage_viewed");
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Check if already accepted this session
-  useEffect(() => {
-    const accepted = sessionStorage.getItem("sh_disclosure_accepted");
-    if (accepted) setDisclosureAccepted(true);
-  }, []);
-
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.textContent = JSON.stringify([
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        name: "SeeHere",
-        url: "https://seehere.ai",
-        logo: "https://seehere.ai/og-image.png",
-        sameAs: ["https://www.instagram.com/seehere.ai", "https://www.facebook.com/profile.php?id=61588016676425"],
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: [
-          {
-            "@type": "Question",
-            name: "Why SeeHere?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "SeeHere exists for the 'Missing Middle' of mental health. Traditional therapy is a big leap, and wellness apps often feel like homework. We offer a quiet, reflective space for when you aren't in crisis, but you're also not okay.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "How much does it cost?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "You can start a session immediately — no sign-up needed. After 5 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. After that, sessions are available in 'Presence Packs' starting from just £2 per session. No subscriptions, no auto-renewals.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Is SeeHere.ai therapy?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "No. SeeHere is a reflective space grounded in person-centred principles, not a substitute for professional therapy.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Are my conversations confidential?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Yes. Your conversations are encrypted and private. We do not share your data with third parties.",
-            },
-          },
-        ],
-      },
-    ]);
-    document.head.appendChild(script);
-    return () => {
-      if (document.head.contains(script)) document.head.removeChild(script);
-    };
-  }, []);
-
-  const handleTryForFree = () => {
-    if (user) {
-      navigate("/dashboard");
-    } else if (!disclosureAccepted) {
-      trackEvent("disclosure_shown", { trigger: "cta_button" });
-      setShowDisclosure(true);
-    } else {
-      navigate("/try");
-    }
-  };
-
-  const handleDisclosureAccept = () => {
-    sessionStorage.setItem("sh_disclosure_accepted", "true");
-    setDisclosureAccepted(true);
-    setShowDisclosure(false);
-    trackEvent("disclosure_accepted");
-
-    const val = heroInput.trim();
-    if (val) {
-      navigate("/try", { state: { initialMessage: val } });
-    } else {
-      navigate("/try");
-    }
-  };
-
+  // 1. Simplified Submit Logic: No Modal, straight to /try
   const handleHeroSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const val = heroInput.trim();
     if (!val) return;
+    
     if (user) {
       navigate("/dashboard");
-    } else if (!disclosureAccepted) {
-      trackEvent("disclosure_shown", { trigger: "hero_submit" });
-      setShowDisclosure(true);
     } else {
+      // Pass the message to the chat page immediately
+      trackEvent("hero_submit_to_try");
       navigate("/try", { state: { initialMessage: val } });
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-x-clip">
-      {/* ── Disclosure modal ── */}
-      {showDisclosure && <DisclosureModalComponent open={showDisclosure} onAccept={handleDisclosureAccept} />}
-
-      {/* ── Header ── */}
+      {/* Header with "Pricing Card Style" Login */}
       <header className="sticky top-0 z-40 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">
         <Logo />
         <div className="flex items-center gap-4">
-          <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
-            FAQs
-          </a>
-          <a
-            href="/blog"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-          >
-            Blog
-          </a>
-          {!loading &&
-            (user ? (
-              <Link to="/dashboard">
-                <Button variant="ghost" size="sm" className="text-sm">
-                  Dashboard
-                </Button>
-              </Link>
+          <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground">FAQs</a>
+          {!loading && (
+            user ? (
+              <Link to="/dashboard"><Button variant="ghost" size="sm">Dashboard</Button></Link>
             ) : (
-              <Link to="/auth" onClick={() => trackEvent("login_from_homepage")}>
-                <button className="px-5 py-2 bg-[#4a7a4f]/10 rounded-2xl border border-[#4a7a4f]/20 shadow-sm text-[#3d3a35] text-sm font-medium hover:bg-[#4a7a4f]/20 transition-all duration-200">
+              <Link to="/auth">
+                {/* Your Exact Pricing Card Style for Login */}
+                <button className="px-5 py-2 bg-[#4a7a4f]/10 rounded-2xl border border-[#4a7a4f]/20 shadow-sm text-[#3d3a35] text-sm font-medium hover:bg-[#4a7a4f]/20 transition-all">
                   Log in
                 </button>
               </Link>
-            ))}
+            )
+          )}
         </div>
       </header>
 
-      {/* ── Hero ── */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#cbb7ef]/20 via-[#f4eadf]/30 to-[#b1cfac]/20">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full bg-[#cbb7ef]/10 blur-[140px]" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[#b1cfac]/12 blur-[120px]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-[#f4eadf]/30 blur-[100px]" />
-        </div>
-
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute left-0 top-0 bottom-0 w-1/3">
-            <img
-              src={heroBgLeft}
-              alt=""
-              className="absolute left-0 top-0 h-full w-full object-cover opacity-[0.12]"
-              style={{
-                maskImage: "linear-gradient(to left, transparent 0%, black 70%)",
-                WebkitMaskImage: "linear-gradient(to left, transparent 0%, black 70%)",
-              }}
-            />
-          </div>
-        </div>
-
+      {/* Hero Section */}
+      <section className="...">
+        {/* ... (background divs) */}
         <div className="relative z-10 w-full max-w-2xl mx-auto px-6 py-16 flex flex-col items-center space-y-8">
-          <div className="text-center space-y-4">
-            <img src={heroLogo} alt="SeeHere" className="h-20 md:h-28 w-auto mx-auto" />
-            <h1 className="font-serif font-light text-[#3d3a35] leading-[1.1] tracking-tight">
-              <span className="block text-3xl md:text-5xl">A quiet place to be heard.</span>
-              <span className="block text-base md:text-xl mt-2 text-[#5f5a53] font-light">
-                Built by therapists. Powered by AI.
-              </span>
-            </h1>
-          </div>
+          {/* ... (logo and headlines) */}
 
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[#5f5a53]">
-            <span className="flex items-center gap-1.5">
-              <Check className="w-3 h-3 text-[#4a7a4f]" /> Fully confidential
-            </span>
-            <span className="w-px h-3 bg-[#3d3a35]/20 hidden sm:block" />
-            <span className="flex items-center gap-1.5">
-              <Check className="w-3 h-3 text-[#4a7a4f]" /> Available 24/7
-            </span>
-            <span className="w-px h-3 bg-[#3d3a35]/20 hidden sm:block" />
-            <span className="flex items-center gap-1.5">
-              <Check className="w-3 h-3 text-[#4a7a4f]" /> No waitlist
-            </span>
-            <span className="w-px h-3 bg-[#3d3a35]/20 hidden sm:block" />
-            <span className="flex items-center gap-1.5">
-              <Check className="w-3 h-3 text-[#4a7a4f]" /> No subscriptions
-            </span>
-          </div>
-
-          {user ? (
-            <div className="w-full text-center space-y-4">
-              <p className="text-[#5f5a53]">Welcome back. Your space is waiting.</p>
-              <Button
-                onClick={() => navigate("/dashboard")}
-                className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-10 py-6 rounded-2xl text-base font-medium shadow-lg"
+          <div className="w-full max-w-2xl mx-auto">
+            <form onSubmit={handleHeroSubmit} className="relative group">
+              <textarea
+                ref={textareaRef}
+                value={heroInput}
+                onChange={(e) => setHeroInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    e.currentTarget.form?.requestSubmit();
+                  }
+                }}
+                placeholder="What's been on your mind? First 2 sessions are free."
+                rows={3}
+                className="w-full resize-none rounded-2xl border-2 border-[#4a7a4f] bg-white/90 backdrop-blur-sm px-5 py-4 pr-14 text-base text-[#3d3a35] placeholder:text-[#3d3a35]/60 focus:outline-none focus:ring-4 focus:ring-[#4a7a4f]/20 shadow-2xl transition-all duration-300"
+              />
+              <button
+                type="submit"
+                disabled={!heroInput.trim()}
+                className="absolute right-3 bottom-3 p-3.5 rounded-xl bg-[#4a7a4f] hover:bg-[#3d6542] text-white shadow-md transition-all"
               >
-                Continue your session
-              </Button>
-            </div>
-          ) : (
-            <div className="w-full max-w-2xl mx-auto">
-              <form onSubmit={handleHeroSubmit} className="relative group">
-                <textarea
-                  ref={textareaRef}
-                  value={heroInput}
-                  onChange={(e) => setHeroInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      e.currentTarget.form?.requestSubmit();
-                    }
-                  }}
-                  placeholder="What's been on your mind? First 2 sessions are free."
-                  rows={3}
-                  className="w-full resize-none rounded-2xl border-2 border-[#4a7a4f]/40 bg-white/80 backdrop-blur-sm px-5 py-4 pr-14 text-base text-[#3d3a35] placeholder:text-[#3d3a35]/60 focus:outline-none focus:ring-4 focus:ring-[#4a7a4f]/20 focus:border-[#4a7a4f]/60 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white"
-                />
-                <button
-                  type="submit"
-                  disabled={!heroInput.trim()}
-                  className="absolute right-3 bottom-3 p-3.5 rounded-xl bg-[#4a7a4f] hover:bg-[#3d6542] text-white shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </form>
-              <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
-                ·{" "}
-                <Link
-                  to="/auth"
-                  className="underline hover:text-[#3d3a35]/80 transition-colors"
-                  onClick={() => trackEvent("login_from_homepage")}
-                >
-                  Have an account? Log in
-                </Link>
-              </p>
-            </div>
-          )}
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#3d3a35]">Discover more</span>
-          <div className="w-px h-10 bg-[#3d3a35]/30" />
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
+            {/* Minimal footer text for extra legal coverage */}
+            <p className="mt-3 text-[10px] text-[#3d3a35]/40 text-center italic">
+              By sending a message you agree to our Terms & Privacy Policy.
+            </p>
+          </div>
         </div>
       </section>
+      {/* ... (rest of the page) */}
+    </div>
+  );
+};
 
       {/* ── Missing middle ── */}
       <section className="py-20 px-6 bg-[#f4eadf]/30 text-center">
