@@ -1,26 +1,48 @@
 
 
-## Plan: Two-stage email refusal in GuestChat
+## Plan: Hold AI response until after email decision
 
 ### Change
 
-In `src/pages/GuestChat.tsx`, replace the current single-refusal-then-disable flow with a two-stage approach:
-
-**First refusal** — Instead of ending the session, inject a "last chance" assistant message:
-> "No problem at all. If you change your mind, just type your email address below — otherwise feel free to close this tab whenever you're ready."
-
-Keep `awaitingEmail = true` and add a new state `finalChance = true`. The input stays enabled and only accepts email addresses.
-
-**Second refusal** (non-email typed while `finalChance` is true) — Now end the session with the existing warm closing message and disable input.
+When the 5th user message is sent and the guest limit is reached, **don't show the AI's response yet**. Instead, store it in state and only show the email prompt. After the user provides their email (or refuses twice), inject the held AI response back into the conversation before continuing.
 
 ### Technical detail
 
-- Add `const [finalChance, setFinalChance] = useState(false)` (+ persist in sessionStorage like `awaitingEmail`)
-- In `handleSend`, when `awaitingEmail && !authenticated`:
-  - If email → signup (unchanged)
-  - If not email AND `!finalChance` → inject last-chance message, set `finalChance = true`, keep `awaitingEmail = true`
-  - If not email AND `finalChance` → call existing `handleEmailRefusal()` to end session
-- Update placeholder text for `finalChance` state: "Enter your email address or type to close..."
+**File:** `src/pages/GuestChat.tsx`
+
+1. **Add state:** `const [heldResponse, setHeldResponse] = useState<Message | null>(null)` (+ persist in sessionStorage as `sh_held_response`)
+
+2. **At 5-message limit (lines 562–581):** Instead of adding `assistantMessage` to messages, store it:
+   ```
+   if (userCount >= MAX_GUEST_MESSAGES) {
+     // Don't show AI response yet — hold it
+     setHeldResponse(assistantMessage);
+     sessionStorage.setItem("sh_held_response", JSON.stringify(assistantMessage));
+     
+     // Show only the email prompt (without the AI response)
+     const withPrompt = [...updatedWithUser, emailPrompt];
+     setMessages(withPrompt);
+     ...
+   }
+   ```
+
+3. **On successful email signup:** Before continuing the chat, inject the held response:
+   ```
+   const held = heldResponse;
+   if (held) {
+     setMessages(prev => [...prev, successMessage, held]);
+     setHeldResponse(null);
+     sessionStorage.removeItem("sh_held_response");
+   }
+   ```
+
+4. **On final refusal (handleEmailRefusal):** Discard the held response (it's lost with the session anyway):
+   ```
+   setHeldResponse(null);
+   sessionStorage.removeItem("sh_held_response");
+   ```
+
+5. **On init:** Restore `heldResponse` from sessionStorage if page is refreshed mid-prompt.
 
 ### Files
 - `src/pages/GuestChat.tsx` — only file changed
