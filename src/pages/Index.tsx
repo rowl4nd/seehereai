@@ -45,8 +45,17 @@ const ScrollSection = ({
 
 
 // ─── Main page ────────────────────────────────────────────────────────────────
+const Index = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const { trackEvent } = useAnalytics();
+  const [heroInput, setHeroInput] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    trackEvent("homepage_viewed");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
     const script = document.createElement("script");
     script.type = "application/ld+json";
     script.textContent = JSON.stringify([
