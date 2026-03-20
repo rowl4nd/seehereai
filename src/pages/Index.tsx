@@ -43,28 +43,8 @@ const ScrollSection = ({
   );
 };
 
-// ─── Disclosure modal (shared component) ──────────────────────────────────────
-import DisclosureModalComponent from "@/components/DisclosureModal";
 
 // ─── Main page ────────────────────────────────────────────────────────────────
-const Index = () => {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
-  const { trackEvent } = useAnalytics();
-  const [heroInput, setHeroInput] = useState("");
-  const [showDisclosure, setShowDisclosure] = useState(false);
-  const [disclosureAccepted, setDisclosureAccepted] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    trackEvent("homepage_viewed");
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Check if already accepted this session
-  useEffect(() => {
-    const accepted = sessionStorage.getItem("sh_disclosure_accepted");
-    if (accepted) setDisclosureAccepted(true);
-  }, []);
 
   useEffect(() => {
     const script = document.createElement("script");
