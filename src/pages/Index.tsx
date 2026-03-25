@@ -247,6 +247,8 @@ const Index = () => {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[#5f5a53]">
+            <span className="font-bold text-[#3d3a35]">Two free sessions</span>
+            <span className="w-px h-3 bg-[#3d3a35]/20 hidden sm:block" />
             <span className="flex items-center gap-1.5">
               <Check className="w-3 h-3 text-[#4a7a4f]" /> Encrypted &amp; private
             </span>
