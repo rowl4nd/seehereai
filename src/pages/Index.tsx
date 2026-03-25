@@ -246,7 +246,7 @@ const Index = () => {
             </h1>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[#5f5a53] font-bold">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[#5f5a53] font-bold bg-[#e8e0f0]/60 backdrop-blur-sm rounded-full px-6 py-3">
 <span className="flex items-center gap-1.5">
                   <Check className="w-3 h-3 text-[#4a7a4f]" /> Two free sessions
                 </span>
