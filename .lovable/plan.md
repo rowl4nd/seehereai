@@ -1,20 +1,16 @@
 
 
-## Plan: Style "Two free sessions" to match other hero badges
+## Plan: Update copy in SecureSessionModal
 
-**File:** `src/pages/Index.tsx`, line 250
+**File:** `src/components/SecureSessionModal.tsx`
 
-Change:
-```tsx
-<span className="font-bold text-[#3d3a35]">Two free sessions</span>
-```
+Five text-only changes:
 
-To:
-```tsx
-<span className="flex items-center gap-1.5">
-  <Check className="w-3 h-3 text-[#4a7a4f]" /> Two free sessions
-</span>
-```
+1. **Line ~68 DialogTitle:** "Secure Your Session" → "Save Your Conversation"
+2. **Line ~69 DialogDescription:** Update to "You've started a meaningful reflection. Create a free account to save your conversation and unlock your two free sessions."
+3. **Line ~73 small paragraph:** Update to "Your two free sessions begin once you create an account. If you choose not to, this conversation won't be saved."
+4. **Line ~101 submit button:** Loading: "Creating your vault..." → "Setting up..." / Default: "Create Account" → "Create Free Account"
+5. **Line ~148 discard button:** "Not Now (Discard Session)" → "Not right now"
 
-This gives it the same green tick icon, flex layout, and default text weight as the other three badges.
+No other changes.
 
