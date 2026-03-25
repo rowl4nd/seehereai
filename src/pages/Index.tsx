@@ -279,7 +279,7 @@ const Index = () => {
                       e.currentTarget.form?.requestSubmit();
                     }
                   }}
-                  placeholder="What's been on your mind? First 2 sessions are free."
+                  placeholder={HERO_PLACEHOLDERS[placeholderIndex]}
                   rows={3}
                   className="w-full resize-none rounded-2xl border-2 border-[#4a7a4f]/40 bg-white/80 backdrop-blur-sm px-5 py-4 pr-14 text-base text-[#3d3a35] placeholder:text-[#3d3a35]/60 focus:outline-none focus:ring-4 focus:ring-[#4a7a4f]/20 focus:border-[#4a7a4f]/60 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white"
                 />
