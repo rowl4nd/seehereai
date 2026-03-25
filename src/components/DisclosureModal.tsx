@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface DisclosureModalProps {
   open: boolean;
