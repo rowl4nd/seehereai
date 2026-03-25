@@ -64,10 +64,9 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-hidden [&>button]:hidden" onPointerDownOutside={(e) => e.preventDefault()}>
         <div className="overflow-y-auto max-h-[75vh] pr-1 space-y-4">
         <DialogHeader className="space-y-3">
-          <DialogTitle className="text-2xl font-serif font-light text-center">Secure Your Session</DialogTitle>
+          <DialogTitle className="text-2xl font-serif font-light text-center">Save Your Conversation</DialogTitle>
           <DialogDescription className="text-center leading-relaxed">
-            You've started a meaningful reflection. To protect your privacy and continue this session with your 2 free
-            credits, please create your secure vault.
+            You've started a meaningful reflection. Create a free account to save your conversation and unlock your two free sessions.
           </DialogDescription>
         </DialogHeader>
 
