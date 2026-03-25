@@ -110,7 +110,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
             disabled={isSubmitting}
             className="w-full bg-[#b9a3e0] hover:bg-[#a48fd0] text-white"
           >
-            {isSubmitting ? "Creating your vault..." : "Create Account"}
+            {isSubmitting ? "Setting up..." : "Create Free Account"}
           </Button>
         </form>
 
