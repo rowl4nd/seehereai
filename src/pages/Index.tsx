@@ -46,6 +46,13 @@ const ScrollSection = ({
 // ─── Disclosure modal (shared component) ──────────────────────────────────────
 import DisclosureModalComponent from "@/components/DisclosureModal";
 
+const HERO_PLACEHOLDERS = [
+  "I keep replaying a conversation in my head...",
+  "I'm feeling overwhelmed and can't switch off...",
+  "Something happened and I need to talk it through...",
+  "I feel stuck and don't know where to start...",
+];
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 const Index = () => {
   const { user, loading } = useAuth();
@@ -54,6 +61,7 @@ const Index = () => {
   const [heroInput, setHeroInput] = useState("");
   const [showDisclosure, setShowDisclosure] = useState(false);
   const [disclosureAccepted, setDisclosureAccepted] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -64,6 +72,14 @@ const Index = () => {
   useEffect(() => {
     const accepted = sessionStorage.getItem("sh_disclosure_accepted");
     if (accepted) setDisclosureAccepted(true);
+  }, []);
+
+  // Rotate hero placeholder every 4s
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPlaceholderIndex((i) => (i + 1) % HERO_PLACEHOLDERS.length);
+    }, 4000);
+    return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
@@ -271,7 +287,7 @@ const Index = () => {
                       e.currentTarget.form?.requestSubmit();
                     }
                   }}
-                  placeholder="What's been on your mind? First 2 sessions are free."
+                  placeholder={HERO_PLACEHOLDERS[placeholderIndex]}
                   rows={3}
                   className="w-full resize-none rounded-2xl border-2 border-[#4a7a4f]/40 bg-white/80 backdrop-blur-sm px-5 py-4 pr-14 text-base text-[#3d3a35] placeholder:text-[#3d3a35]/60 focus:outline-none focus:ring-4 focus:ring-[#4a7a4f]/20 focus:border-[#4a7a4f]/60 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:bg-white"
                 />
