@@ -74,6 +74,14 @@ const Index = () => {
     if (accepted) setDisclosureAccepted(true);
   }, []);
 
+  // Rotate hero placeholder every 4s
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPlaceholderIndex((i) => (i + 1) % HERO_PLACEHOLDERS.length);
+    }, 4000);
+    return () => clearInterval(id);
+  }, []);
+
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "application/ld+json";
