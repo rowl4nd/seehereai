@@ -171,7 +171,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
           onClick={handleDiscard}
           className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
         >
-          Not Now (Discard Session)
+          Not right now
         </button>
         </div>
       </DialogContent>
