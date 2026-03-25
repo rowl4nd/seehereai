@@ -64,16 +64,14 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-hidden [&>button]:hidden" onPointerDownOutside={(e) => e.preventDefault()}>
         <div className="overflow-y-auto max-h-[75vh] pr-1 space-y-4">
         <DialogHeader className="space-y-3">
-          <DialogTitle className="text-2xl font-serif font-light text-center">Secure Your Session</DialogTitle>
+          <DialogTitle className="text-2xl font-serif font-light text-center">Save Your Conversation</DialogTitle>
           <DialogDescription className="text-center leading-relaxed">
-            You've started a meaningful reflection. To protect your privacy and continue this session with your 2 free
-            credits, please create your secure vault.
+            You've started a meaningful reflection. Create a free account to save your conversation and unlock your two free sessions.
           </DialogDescription>
         </DialogHeader>
 
         <p className="text-xs text-muted-foreground text-center leading-relaxed">
-          Your 2 free credits will only begin after account creation. If you choose not to create an account, this guest
-          data will be permanently discarded for your privacy.
+          Your two free sessions begin once you create an account. If you choose not to, this conversation won't be saved.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -112,7 +110,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
             disabled={isSubmitting}
             className="w-full bg-[#b9a3e0] hover:bg-[#a48fd0] text-white"
           >
-            {isSubmitting ? "Creating your vault..." : "Create Account"}
+            {isSubmitting ? "Setting up..." : "Create Free Account"}
           </Button>
         </form>
 
@@ -173,7 +171,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
           onClick={handleDiscard}
           className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
         >
-          Not Now (Discard Session)
+          Not right now
         </button>
         </div>
       </DialogContent>
