@@ -55,9 +55,11 @@ const DisclosureModal = ({ open, onAccept, onClose }: DisclosureModalProps) => {
         >
           I understand — continue
         </Button>
-        <div className="bg-[#e8e0f0] rounded-2xl px-5 py-4 text-center">
+        <div className="bg-[#e8e0f0] rounded-2xl px-5 py-4 flex items-center justify-center gap-3">
+          <span className="text-sm font-bold text-[#3d3a35]">Two free sessions</span>
+          <span className="text-[#3d3a35]/30">|</span>
           <Link to="/auth" className="text-sm text-[#3d3a35] hover:text-[#4a7a4f] transition-colors">
-            Already have an account? <span className="underline font-semibold">Log in</span>
+            Have an account? <span className="underline font-semibold">Log in</span>
           </Link>
         </div>
       </div>
