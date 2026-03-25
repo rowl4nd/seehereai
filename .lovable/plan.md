@@ -1,26 +1,12 @@
 
 
-## Plan: Rotating placeholder prompts in hero textarea
+## Plan: Move "Two free sessions" label to hero section, revert disclosure modal
 
-**File:** `src/pages/Index.tsx`
+### 1. Revert disclosure modal (`src/components/DisclosureModal.tsx`)
+Remove the "Two free sessions" label, divider, and flex wrapper from the lavender box. Restore it to just the "Have an account? Log in" link with the lavender background styling.
 
-### Changes
+### 2. Add "Two free sessions" to hero badges (`src/pages/Index.tsx`)
+Insert a bold "Two free sessions" label to the left of the existing badge row (lines 249–261), separated by the same vertical divider style already used between badges. The label will use `font-bold` to stand out while matching the existing `text-xs text-[#5f5a53]` style of the row.
 
-1. **Add `HERO_PLACEHOLDERS` array** above the `Index` component (after imports):
-```ts
-const HERO_PLACEHOLDERS = [
-  "I keep replaying a conversation in my head...",
-  "I'm feeling overwhelmed and can't switch off...",
-  "Something happened and I need to talk it through...",
-  "I feel stuck and don't know where to start...",
-];
-```
-
-2. **Add state and effect** inside the `Index` component:
-   - `const [placeholderIndex, setPlaceholderIndex] = useState(0);`
-   - `useEffect` with `setInterval` cycling every 4000ms, cleared on unmount
-
-3. **Update textarea** (line 274): change `placeholder="What's been on your mind?..."` to `placeholder={HERO_PLACEHOLDERS[placeholderIndex]}`
-
-No other changes to styling, form logic, or page structure.
+Result: the badges row reads **Two free sessions** | Encrypted & private | Available 24/7 | No subscriptions.
 
