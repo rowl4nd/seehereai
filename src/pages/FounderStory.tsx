@@ -28,7 +28,7 @@ const FounderStory = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8f6f3" }}>
-      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} />
+      <DisclosureModal open={showDisclosure} onAccept={handleDisclosureAccept} onClose={() => setShowDisclosure(false)} />
 
       {/* Header */}
       <header
