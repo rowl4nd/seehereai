@@ -46,6 +46,13 @@ const ScrollSection = ({
 // ─── Disclosure modal (shared component) ──────────────────────────────────────
 import DisclosureModalComponent from "@/components/DisclosureModal";
 
+const HERO_PLACEHOLDERS = [
+  "I keep replaying a conversation in my head...",
+  "I'm feeling overwhelmed and can't switch off...",
+  "Something happened and I need to talk it through...",
+  "I feel stuck and don't know where to start...",
+];
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 const Index = () => {
   const { user, loading } = useAuth();
@@ -54,6 +61,7 @@ const Index = () => {
   const [heroInput, setHeroInput] = useState("");
   const [showDisclosure, setShowDisclosure] = useState(false);
   const [disclosureAccepted, setDisclosureAccepted] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
