@@ -71,8 +71,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
         </DialogHeader>
 
         <p className="text-xs text-muted-foreground text-center leading-relaxed">
-          Your 2 free credits will only begin after account creation. If you choose not to create an account, this guest
-          data will be permanently discarded for your privacy.
+          Your two free sessions begin once you create an account. If you choose not to, this conversation won't be saved.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
