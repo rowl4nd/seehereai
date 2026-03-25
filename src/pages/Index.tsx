@@ -239,7 +239,7 @@ const Index = () => {
           <div className="text-center space-y-4">
             <img src={heroLogo} alt="SeeHere" className="h-20 md:h-28 w-auto mx-auto" />
             <h1 className="font-serif font-light text-[#3d3a35] leading-[1.1] tracking-tight">
-              <span className="block text-3xl md:text-5xl">Talk. It. Through.</span>
+              <span className="block text-3xl md:text-5xl">A private space to talk.</span>
               <span className="block text-base md:text-xl mt-2 text-[#5f5a53] font-light">
                 Your private space to think out loud - Built by therapists. Powered by AI.
               </span>
