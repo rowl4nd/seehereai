@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
 
       <p>Most people find that talking freely more often is when things start to shift. Not because anything is fixed, but because it gives you time to reflect on your thoughts and feelings.</p>
 
-      <p>Your next session is waiting whenever you're ready.</p>
+      <p>Your next session will be available after a short period of self-reflection.</p>
 
       <div class="cta-wrap">
         <a href="https://seehere.ai/auth" class="cta-button">Start your next session &rarr;</a>
