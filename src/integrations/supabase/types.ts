@@ -135,6 +135,7 @@ export type Database = {
         Row: {
           created_at: string
           display_name: string | null
+          free_sessions_ended_email_sent: boolean
           free_sessions_used: number
           has_acknowledged_ai_disclosure: boolean
           has_acknowledged_privacy_policy: boolean
@@ -149,6 +150,7 @@ export type Database = {
         Insert: {
           created_at?: string
           display_name?: string | null
+          free_sessions_ended_email_sent?: boolean
           free_sessions_used?: number
           has_acknowledged_ai_disclosure?: boolean
           has_acknowledged_privacy_policy?: boolean
@@ -163,6 +165,7 @@ export type Database = {
         Update: {
           created_at?: string
           display_name?: string | null
+          free_sessions_ended_email_sent?: boolean
           free_sessions_used?: number
           has_acknowledged_ai_disclosure?: boolean
           has_acknowledged_privacy_policy?: boolean
