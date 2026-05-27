@@ -148,8 +148,42 @@ export function useSessions() {
     setCanStartSession(false);
     setNextSessionTime(new Date(endedAt.getTime() + 12 * 60 * 60 * 1000).toISOString());
 
+    // If user just finished their 2nd (final) free session, send the "free sessions complete" email once
+    if (session.session_type === "free") {
+      try {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("free_sessions_used, free_sessions_ended_email_sent")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (
+          profile &&
+          (profile.free_sessions_used ?? 0) >= 2 &&
+          !profile.free_sessions_ended_email_sent &&
+          user.email
+        ) {
+          const { error: emailErr } = await supabase.functions.invoke(
+            "send-free-sessions-ended-email",
+            { body: { email: user.email } }
+          );
+          if (!emailErr) {
+            await supabase
+              .from("profiles")
+              .update({ free_sessions_ended_email_sent: true })
+              .eq("user_id", user.id);
+          } else {
+            console.error("Failed to send free-sessions-ended email:", emailErr);
+          }
+        }
+      } catch (e) {
+        console.error("Error in free-sessions-ended email flow:", e);
+      }
+    }
+
     return { error: null };
   };
+
 
   const deleteSession = async (sessionId: string) => {
     if (!user) return { error: new Error("Not authenticated") };
