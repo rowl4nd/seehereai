@@ -220,6 +220,25 @@ const GuestChat = () => {
           onboarding_completed_at: new Date().toISOString(),
         });
 
+        // Redeem an access code entered at sign-up (before starting the session)
+        const pendingCode = sessionStorage.getItem("pending_access_code");
+        if (pendingCode) {
+          sessionStorage.removeItem("pending_access_code");
+          try {
+            const { data: redeemData } = await supabase.rpc("redeem_access_code", {
+              _code: pendingCode,
+            });
+            const redeemResult = redeemData?.[0];
+            if (redeemResult?.success) {
+              toast.success(redeemResult.message || "Organisation access unlocked");
+            } else if (redeemResult?.message) {
+              toast.error(redeemResult.message);
+            }
+          } catch {
+            toast.error("Could not redeem access code. You can try again later.");
+          }
+        }
+
         const { data: rpcResult, error: rpcError } = await supabase.rpc("start_paid_session", {
           _session_type: "free",
         });

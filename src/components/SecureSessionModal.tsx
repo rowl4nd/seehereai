@@ -20,7 +20,17 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
   const { trackEvent } = useAnalytics();
   const [email, setEmail] = useState(() => sessionStorage.getItem("guest_email") || "");
   const [password, setPassword] = useState("");
+  const [accessCode, setAccessCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const stashAccessCode = () => {
+    const trimmed = accessCode.trim();
+    if (trimmed) {
+      sessionStorage.setItem("pending_access_code", trimmed.slice(0, 64));
+    } else {
+      sessionStorage.removeItem("pending_access_code");
+    }
+  };
 
   const handleDiscard = () => {
     trackEvent("signup_modal_dismissed");
@@ -28,12 +38,14 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
     sessionStorage.removeItem("guest_onboarding_complete");
     sessionStorage.removeItem("guest_email");
     sessionStorage.removeItem("sh_disclosure_accepted");
+    sessionStorage.removeItem("pending_access_code");
     navigate("/");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    stashAccessCode();
 
     try {
       const { error } = await supabase.auth.signUp({
@@ -104,6 +116,23 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
               className="bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
             />
           </div>
+          <div className="space-y-1">
+            <Label htmlFor="modal-access-code" className="text-sm font-normal text-muted-foreground">
+              Access code <span className="text-muted-foreground/50">(optional)</span>
+            </Label>
+            <Input
+              id="modal-access-code"
+              type="text"
+              value={accessCode}
+              onChange={(e) => setAccessCode(e.target.value)}
+              maxLength={64}
+              placeholder="Organisation code"
+              className="bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
+            />
+            <p className="text-xs text-muted-foreground/70">
+              Have an organisation code? Enter it to unlock unlimited access.
+            </p>
+          </div>
 
           <Button
             type="submit"
@@ -124,6 +153,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
         <Button
           type="button"
           onClick={async () => {
+            stashAccessCode();
             const { error } = await lovable.auth.signInWithOAuth("google", {
               redirect_uri: window.location.origin + "/try",
             });
@@ -148,6 +178,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
         <Button
           type="button"
           onClick={async () => {
+            stashAccessCode();
             const { error } = await lovable.auth.signInWithOAuth("apple", {
               redirect_uri: window.location.origin + "/try",
             });
