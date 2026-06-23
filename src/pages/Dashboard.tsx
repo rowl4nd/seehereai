@@ -12,6 +12,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
+import AccessCodeRedeem from "@/components/AccessCodeRedeem";
 
 const Dashboard = () => {
   const {
