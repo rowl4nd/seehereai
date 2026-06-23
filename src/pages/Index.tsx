@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -59,6 +60,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
   const [heroInput, setHeroInput] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showDisclosure, setShowDisclosure] = useState(false);
   const [disclosureAccepted, setDisclosureAccepted] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -67,6 +69,20 @@ const Index = () => {
   useEffect(() => {
     trackEvent("homepage_viewed");
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Show Admin link only for admin accounts
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(false);
+      return;
+    }
+    supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
 
   // Check if already accepted this session
   useEffect(() => {
@@ -196,6 +212,14 @@ const Index = () => {
           >
             Blog
           </a>
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+            >
+              Admin
+            </Link>
+          )}
           {!loading &&
             (user ? (
               <Link to="/dashboard">
