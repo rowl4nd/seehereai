@@ -128,7 +128,9 @@ const Dashboard = () => {
             <CardHeader className="text-center pb-4">
               <CardTitle className="font-serif font-light text-xl">Sessions</CardTitle>
               <CardDescription>
-                {isLoading ? <Skeleton className="h-4 w-32 mx-auto" /> : <>
+                {isLoading ? <Skeleton className="h-4 w-32 mx-auto" /> : isOrg ? (
+                  <span className="block">Organisation access — unlimited sessions</span>
+                ) : <>
                     {totalAvailable} session{totalAvailable !== 1 ? "s" : ""} available
                     {freeSessionsRemaining > 0 && <span className="block text-xs mt-1">
                         ({freeSessionsRemaining} free remaining)
@@ -146,7 +148,7 @@ const Dashboard = () => {
                     Resume session
                   </Button>
                 </div>
-              ) : canStartSession ? totalAvailable > 0 ? <Button onClick={handleStartSession} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+              ) : canStartSession ? (isOrg || totalAvailable > 0) ? <Button onClick={handleStartSession} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                     Begin a session
                   </Button> : <div className="text-center space-y-4">
                     <p className="text-sm text-muted-foreground">
@@ -170,12 +172,16 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Purchase credits button */}
-          <Link to="/credits" className="block">
-            <Button className="w-full text-[#3d2b5a]" style={{ backgroundColor: '#af9cd3' }}>
-              Purchase sessions
-            </Button>
-          </Link>
+          {/* Purchase credits button / access code entry */}
+          {!isOrg && (
+            <Link to="/credits" className="block">
+              <Button className="w-full text-[#3d2b5a]" style={{ backgroundColor: '#af9cd3' }}>
+                Purchase sessions
+              </Button>
+            </Link>
+          )}
+
+          {!isOrg && !isLoading && <AccessCodeRedeem onRedeemed={() => window.location.reload()} />}
 
           {/* Past Sessions */}
           <Card className="bg-card/50 border-border/50">
