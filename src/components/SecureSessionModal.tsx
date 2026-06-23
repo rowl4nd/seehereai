@@ -20,7 +20,17 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
   const { trackEvent } = useAnalytics();
   const [email, setEmail] = useState(() => sessionStorage.getItem("guest_email") || "");
   const [password, setPassword] = useState("");
+  const [accessCode, setAccessCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const stashAccessCode = () => {
+    const trimmed = accessCode.trim();
+    if (trimmed) {
+      sessionStorage.setItem("pending_access_code", trimmed.slice(0, 64));
+    } else {
+      sessionStorage.removeItem("pending_access_code");
+    }
+  };
 
   const handleDiscard = () => {
     trackEvent("signup_modal_dismissed");
@@ -28,12 +38,14 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
     sessionStorage.removeItem("guest_onboarding_complete");
     sessionStorage.removeItem("guest_email");
     sessionStorage.removeItem("sh_disclosure_accepted");
+    sessionStorage.removeItem("pending_access_code");
     navigate("/");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    stashAccessCode();
 
     try {
       const { error } = await supabase.auth.signUp({

@@ -1,43 +1,39 @@
-# Fix admin access + add Access Codes admin tab + header link
+# Add access code entry to the sign-up modal
 
-## Why the admin page bounces to the homepage
+## Goal
+Let people enter their access code while signing up — right inside the "Save Your Conversation" modal — so org access is unlocked immediately, instead of finding the code field later on the dashboard. The field stays **optional**: anyone can still sign up without a code.
 
-The admin page isn't broken — it's an **access check**. On load it looks up your account in the `admin_users` list and, if it's not there, redirects to the homepage.
+## How it works today
+- The guest tries the chat, then sees the **Save Your Conversation** modal (`SecureSessionModal`) to create an account (email/password, Google, or Apple).
+- After sign-up, `GuestChat` detects the new signed-in user and runs its migration step: marks onboarding done, starts a session, saves the conversation, sends the welcome email.
+- Access codes are redeemed **only afterwards**, from the Dashboard, via the secure `redeem_access_code` backend function (which needs the user to be signed in).
 
-Right now the only admin account is **rowland.jack@outlook.com**. You're currently signed in as **rowland101@hotmail.co.uk**, which isn't on the admin list — so it bounces you home every time.
+## What changes
 
-Two ways to fix, and I'll do whichever you prefer:
-- **Add `rowland101@hotmail.co.uk` as an admin too** (so both accounts work), or
-- Leave it as-is and you sign in with `rowland.jack@outlook.com` to reach `/admin`.
+### 1. Add an optional access code field to the sign-up modal
+In `SecureSessionModal.tsx`:
+- Add a small, optional "Access code (optional)" input near the bottom of the form, with a short helper line like "Have an organisation code? Enter it to unlock unlimited access."
+- Keep it visually quiet so it doesn't distract regular sign-ups — it's a secondary field.
+- Trim and lightly validate the value (non-empty after trim, reasonable max length); never block sign-up if it's empty.
 
-My default for this plan: **add `rowland101@hotmail.co.uk` to the admin list** so the account you're using works.
+### 2. Remember the code through sign-up
+Because Google/Apple sign-up redirects the page (losing in-memory state), the code is stored in `sessionStorage` (`pending_access_code`) the moment the user submits — before the sign-up call. This works for email, Google, and Apple alike.
 
-## What gets built
+### 3. Redeem the code once signed in
+In `GuestChat`'s post-sign-up migration step (the effect that runs when the new user appears):
+- If a `pending_access_code` exists, call the existing `redeem_access_code` backend function **first**, before starting the session.
+- On success: clear the stored code and show a brief confirmation ("Organisation access unlocked"). The session that then starts will already be an org (unlimited) session.
+- On failure (invalid/expired/limit reached): clear the stored code, show a gentle message, and continue the normal free sign-up — they're not blocked, they just don't get org access. They can still try again later from the dashboard.
 
-### 1. Restore admin access
-- Add `rowland101@hotmail.co.uk` to the `admin_users` list (data change). After this, `/admin` loads for that account.
-
-### 2. Access Codes tab on the Admin page
-The Admin page becomes tabbed: **Analytics** (everything that's there today) and **Access Codes** (new).
-
-The Access Codes tab lets you:
-- See every code in a table — code, label, used / max (e.g. "3 / 10"), active status, and expiry if set.
-- See how many people redeemed each one.
-- **Create a new code** — enter a label (e.g. "Rasa staff pilot"), a max number of redemptions, and an optional expiry date. Code text can be typed or auto-suggested.
-- **Turn a code on/off** with a toggle, without deleting it.
-
-Because access codes are deliberately backend-only (no direct client access, so the redemption cap can't be tampered with), this tab talks to a new secure admin-only backend function that verifies you're an admin before reading or changing any codes.
-
-### 3. "Admin" link in the top-right header
-- Add an **Admin** link next to **FAQs / Blog** in the homepage header.
-- It only appears for admin accounts — regular users and logged-out visitors never see it. It links to `/admin`.
+### 4. Keep the dashboard entry as a fallback
+The existing `AccessCodeRedeem` on the Dashboard stays, so anyone who didn't enter a code at sign-up (or mistyped it) can still redeem later. No change to its behaviour.
 
 ## Out of scope
-- No change to how staff redeem codes or to the unlimited-access behaviour already shipped.
-- No public-facing UI changes beyond the admin-only header link.
+- No change to the `redeem_access_code` logic, the one-code-per-user rule, or unlimited-access behaviour.
+- No change to the login page or admin tooling.
+- No new database changes.
 
 ## Technical notes
-- Root cause confirmed via the `admin_users` table: it contains only `rowland.jack@outlook.com` (id `65f0a12b…`), while the active session is `rowland101@hotmail.co.uk` (id `3185233f…`). The redirect in `Admin.tsx` fires because the `admin_users` lookup returns no row.
-- New edge function `admin-access-codes`: validates the caller's JWT, confirms membership in `admin_users` server-side, then performs list/create/toggle against `access_codes` (and a redemption count per code) using the service role. Mirrors the existing `admin-analytics` admin-gating pattern. Keeps `access_codes` free of client-facing RLS policies.
-- Header link: `Index.tsx` runs a lightweight `admin_users` self-check (RLS already allows a user to read their own row) and conditionally renders the Admin link. The same check can power showing/hiding the link without exposing anything to non-admins.
-- `Admin.tsx` refactor: wrap current content in a Tabs component; the existing analytics stays in the first tab unchanged.
+- `SecureSessionModal.tsx`: new controlled `accessCode` state; write `sessionStorage.setItem("pending_access_code", code.trim())` in all three submit paths (email, Google, Apple) right before the auth call; clear it on the modal's "discard" path alongside the other guest keys.
+- `GuestChat.tsx` `migrateGuestData`: at the top, read `pending_access_code`; if present, `await supabase.rpc("redeem_access_code", { _code })`, branch on `data?.[0]?.success`, then `sessionStorage.removeItem("pending_access_code")`. Run this before `start_paid_session` so an org account starts a full org session.
+- No edge function or schema work needed — `redeem_access_code` already runs as the signed-in user.
