@@ -1,56 +1,43 @@
-# Organisation access via a shared promo code
+# Fix admin access + add Access Codes admin tab + header link
 
-Goal: let an organisation (e.g. the local charity) hand a single shared code to their staff. Each staff member creates their own normal account, enters the code once, and from then on gets **free, unlimited** access. The code stops working after 10 people have redeemed it.
+## Why the admin page bounces to the homepage
 
-This sits alongside the existing private-user flow (free trial → paid credits) without changing it.
+The admin page isn't broken — it's an **access check**. On load it looks up your account in the `admin_users` list and, if it's not there, redirects to the homepage.
 
-## How it works for the charity's staff
+Right now the only admin account is **rowland.jack@outlook.com**. You're currently signed in as **rowland101@hotmail.co.uk**, which isn't on the admin list — so it bounces you home every time.
 
-```text
-1. Staff member signs up / logs in as normal
-2. Goes to a "Have an access code?" entry on the dashboard
-3. Enters the shared code  ──►  validated server-side
-4. If valid AND fewer than 10 redemptions used:
-      • their account is marked as "organisation access"
-      • the code's redemption count goes up by 1
-5. From now on that account has free, unlimited sessions
-```
+Two ways to fix, and I'll do whichever you prefer:
+- **Add `rowland101@hotmail.co.uk` as an admin too** (so both accounts work), or
+- Leave it as-is and you sign in with `rowland.jack@outlook.com` to reach `/admin`.
 
-The 11th person to try the code is politely told it has reached its limit.
-
-## Decisions baked in (from your answers + earlier "free and unlimited")
-
-- **One shared code, capped at 10 redemptions.** You can create more codes later, each with its own cap.
-- **Unlimited access** — org accounts skip the 1-session-per-day cooldown so testers can run sessions back-to-back.
-- **45-minute sessions** — org users get the full-length experience (same length as paid).
-- **No charge** — sessions never touch credits or the free-session counter.
-- **Manual control** — codes stay active until you switch them off (an optional expiry date field is included so you can set one later if wanted).
-
-If any of these four aren't what you want, tell me and I'll adjust before building.
+My default for this plan: **add `rowland101@hotmail.co.uk` to the admin list** so the account you're using works.
 
 ## What gets built
 
-### 1. Database (migration)
-- New table `access_codes`: the code text, a label (e.g. "Charity name – staff test"), max redemptions (default 10), how many have been used, active flag, optional expiry date.
-- New table `code_redemptions`: records which user redeemed which code and when (one redemption per user). Lets you see exactly who used the code.
-- Add `org_access` flag to `profiles` to mark an account as having organisation access.
-- A secure `redeem_access_code(code)` database function that does the whole check-and-claim atomically: verifies the code is active, not expired, and under its cap; records the redemption; bumps the count; and flips the user's `org_access` on. Returns a clear success / "code full" / "invalid code" / "already redeemed" result.
-- Update the existing session-start logic so org accounts are treated as free, unlimited, 45-minute sessions, and update the cooldown check so org accounts are never blocked by the daily limit.
-- Proper access rules: users can read their own redemption and profile; only the backend manages the codes themselves.
+### 1. Restore admin access
+- Add `rowland101@hotmail.co.uk` to the `admin_users` list (data change). After this, `/admin` loads for that account.
 
-### 2. Frontend
-- A small "Have an access code?" section on the **Dashboard** (and reuse it on the Credits page) with an input + redeem button, showing success/error toasts.
-- Once redeemed, the dashboard shows an "Organisation access — unlimited sessions" state instead of the credits/quota messaging, and always offers "Begin a session".
-- Hide the purchase / "out of sessions" prompts for org accounts.
+### 2. Access Codes tab on the Admin page
+The Admin page becomes tabbed: **Analytics** (everything that's there today) and **Access Codes** (new).
 
-### 3. Creating codes (admin)
-- Codes are created directly in the database (I'll insert your first charity code as part of setup, or generate it on request). Since you already have an Admin page, I can optionally add a simple "Access codes" panel there in a follow-up so you can create and monitor codes yourself without me — say the word and I'll fold it in.
+The Access Codes tab lets you:
+- See every code in a table — code, label, used / max (e.g. "3 / 10"), active status, and expiry if set.
+- See how many people redeemed each one.
+- **Create a new code** — enter a label (e.g. "Rasa staff pilot"), a max number of redemptions, and an optional expiry date. Code text can be typed or auto-suggested.
+- **Turn a code on/off** with a toggle, without deleting it.
 
-## Out of scope (for now)
-- A full multi-tenant "organisation dashboard" where the charity logs in to manage their own staff and see usage. This plan is the lightweight version that gets the charity testing quickly. We can grow into per-org admin accounts later if the pilot goes well.
-- No changes to pricing, the private free-trial flow, or existing paid sessions.
+Because access codes are deliberately backend-only (no direct client access, so the redemption cap can't be tampered with), this tab talks to a new secure admin-only backend function that verifies you're an admin before reading or changing any codes.
+
+### 3. "Admin" link in the top-right header
+- Add an **Admin** link next to **FAQs / Blog** in the homepage header.
+- It only appears for admin accounts — regular users and logged-out visitors never see it. It links to `/admin`.
+
+## Out of scope
+- No change to how staff redeem codes or to the unlimited-access behaviour already shipped.
+- No public-facing UI changes beyond the admin-only header link.
 
 ## Technical notes
-- `sessions.session_type` keeps its existing `'free' | 'paid'` constraint; org sessions are stored as `'paid'` (so they get the 45-min length everywhere that already checks for `'paid'`) but are created through the org branch that charges nothing.
-- Redemption and all validation happen in a `SECURITY DEFINER` function so the cap can't be bypassed from the client; the count increment is atomic to prevent two people slipping past the 10-user limit at once.
-- Session creation continues to flow through the `start_paid_session` RPC, extended with an org branch (free, no credit deduction, no free-counter increment).
+- Root cause confirmed via the `admin_users` table: it contains only `rowland.jack@outlook.com` (id `65f0a12b…`), while the active session is `rowland101@hotmail.co.uk` (id `3185233f…`). The redirect in `Admin.tsx` fires because the `admin_users` lookup returns no row.
+- New edge function `admin-access-codes`: validates the caller's JWT, confirms membership in `admin_users` server-side, then performs list/create/toggle against `access_codes` (and a redemption count per code) using the service role. Mirrors the existing `admin-analytics` admin-gating pattern. Keeps `access_codes` free of client-facing RLS policies.
+- Header link: `Index.tsx` runs a lightweight `admin_users` self-check (RLS already allows a user to read their own row) and conditionally renders the Admin link. The same check can power showing/hiding the link without exposing anything to non-admins.
+- `Admin.tsx` refactor: wrap current content in a Tabs component; the existing analytics stays in the first tab unchanged.
