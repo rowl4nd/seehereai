@@ -116,6 +116,23 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
               className="bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
             />
           </div>
+          <div className="space-y-1">
+            <Label htmlFor="modal-access-code" className="text-sm font-normal text-muted-foreground">
+              Access code <span className="text-muted-foreground/50">(optional)</span>
+            </Label>
+            <Input
+              id="modal-access-code"
+              type="text"
+              value={accessCode}
+              onChange={(e) => setAccessCode(e.target.value)}
+              maxLength={64}
+              placeholder="Organisation code"
+              className="bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
+            />
+            <p className="text-xs text-muted-foreground/70">
+              Have an organisation code? Enter it to unlock unlimited access.
+            </p>
+          </div>
 
           <Button
             type="submit"
