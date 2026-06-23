@@ -59,6 +59,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
   const [heroInput, setHeroInput] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showDisclosure, setShowDisclosure] = useState(false);
   const [disclosureAccepted, setDisclosureAccepted] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
