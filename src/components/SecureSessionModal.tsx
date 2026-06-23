@@ -178,6 +178,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
         <Button
           type="button"
           onClick={async () => {
+            stashAccessCode();
             const { error } = await lovable.auth.signInWithOAuth("apple", {
               redirect_uri: window.location.origin + "/try",
             });
