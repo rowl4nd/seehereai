@@ -153,6 +153,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
         <Button
           type="button"
           onClick={async () => {
+            stashAccessCode();
             const { error } = await lovable.auth.signInWithOAuth("google", {
               redirect_uri: window.location.origin + "/try",
             });
