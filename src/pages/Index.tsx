@@ -212,6 +212,14 @@ const Index = () => {
           >
             Blog
           </a>
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+            >
+              Admin
+            </Link>
+          )}
           {!loading &&
             (user ? (
               <Link to="/dashboard">
