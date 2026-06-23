@@ -171,16 +171,25 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-background p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Analytics Dashboard</h1>
-        <div className="flex items-center gap-2">
-          <DatePicker label="From" date={startDate} onSelect={setStartDate} />
-          <DatePicker label="To" date={endDate} onSelect={setEndDate} />
-          <Button onClick={fetchData} disabled={fetching} size="sm">
-            {fetching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Refresh"}
-          </Button>
-        </div>
-      </div>
+      <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
+
+      <Tabs defaultValue="analytics" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="codes">Access Codes</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="analytics" className="space-y-6">
+          <div className="flex items-center justify-end">
+            <div className="flex items-center gap-2">
+              <DatePicker label="From" date={startDate} onSelect={setStartDate} />
+              <DatePicker label="To" date={endDate} onSelect={setEndDate} />
+              <Button onClick={fetchData} disabled={fetching} size="sm">
+                {fetching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Refresh"}
+              </Button>
+            </div>
+          </div>
+
 
       {/* Homepage Viewed */}
       <Card>
