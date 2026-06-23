@@ -12,6 +12,7 @@ export interface Profile {
   has_acknowledged_ai_disclosure: boolean;
   has_acknowledged_privacy_policy: boolean;
   free_sessions_used: number;
+  org_access: boolean;
   onboarding_completed_at: string | null;
   created_at: string;
   updated_at: string;
