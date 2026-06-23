@@ -24,6 +24,8 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AccessCodesAdmin from "@/components/AccessCodesAdmin";
 
 const NEW_USER_STEPS = [
   "disclosure_shown",
