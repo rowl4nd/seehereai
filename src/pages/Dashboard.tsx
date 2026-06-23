@@ -91,6 +91,7 @@ const Dashboard = () => {
   const isLoading = authLoading || profileLoading || creditsLoading || sessionsLoading;
 
   // Calculate available sessions
+  const isOrg = profile?.org_access ?? false;
   const freeSessionsRemaining = profile ? Math.max(0, 2 - (profile.free_sessions_used || 0)) : 0;
   const paidSessions = credits?.balance || 0;
   const totalAvailable = freeSessionsRemaining + paidSessions;
