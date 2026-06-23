@@ -203,10 +203,11 @@ const Mirror = () => {
         return;
       }
 
+      const isOrg = profile?.org_access ?? false;
       const freeRemaining = profile ? Math.max(0, 2 - (profile.free_sessions_used || 0)) : 0;
-      const sessionType = freeRemaining > 0 ? "free" : "paid";
+      const sessionType = isOrg ? "paid" : freeRemaining > 0 ? "free" : "paid";
 
-      if (sessionType === "paid" && (!credits || credits.balance <= 0)) {
+      if (!isOrg && sessionType === "paid" && (!credits || credits.balance <= 0)) {
         toast.error("You need credits to start a session");
         navigate("/credits");
         return;
