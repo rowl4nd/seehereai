@@ -70,6 +70,20 @@ const Index = () => {
     trackEvent("homepage_viewed");
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Show Admin link only for admin accounts
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(false);
+      return;
+    }
+    supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
+
   // Check if already accepted this session
   useEffect(() => {
     const accepted = sessionStorage.getItem("sh_disclosure_accepted");
