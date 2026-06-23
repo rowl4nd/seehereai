@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_codes: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          label: string | null
+          max_redemptions: number
+          redemptions_used: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          max_redemptions?: number
+          redemptions_used?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          max_redemptions?: number
+          redemptions_used?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       admin_users: {
         Row: {
           user_id: string
@@ -52,6 +88,35 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      code_redemptions: {
+        Row: {
+          code_id: string
+          id: string
+          redeemed_at: string
+          user_id: string
+        }
+        Insert: {
+          code_id: string
+          id?: string
+          redeemed_at?: string
+          user_id: string
+        }
+        Update: {
+          code_id?: string
+          id?: string
+          redeemed_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "code_redemptions_code_id_fkey"
+            columns: ["code_id"]
+            isOneToOne: false
+            referencedRelation: "access_codes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       conversations: {
         Row: {
@@ -144,6 +209,7 @@ export type Database = {
           id: string
           name_declined: boolean
           onboarding_completed_at: string | null
+          org_access: boolean
           updated_at: string
           user_id: string
         }
@@ -159,6 +225,7 @@ export type Database = {
           id?: string
           name_declined?: boolean
           onboarding_completed_at?: string | null
+          org_access?: boolean
           updated_at?: string
           user_id: string
         }
@@ -174,6 +241,7 @@ export type Database = {
           id?: string
           name_declined?: boolean
           onboarding_completed_at?: string | null
+          org_access?: boolean
           updated_at?: string
           user_id?: string
         }
@@ -220,6 +288,13 @@ export type Database = {
       auto_end_expired_sessions: { Args: never; Returns: undefined }
       get_next_session_time: { Args: { _user_id: string }; Returns: string }
       has_cooldown_passed: { Args: { _user_id: string }; Returns: boolean }
+      redeem_access_code: {
+        Args: { _code: string }
+        Returns: {
+          message: string
+          success: boolean
+        }[]
+      }
       start_paid_session:
         | {
             Args: never
