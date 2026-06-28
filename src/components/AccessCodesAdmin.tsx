@@ -61,6 +61,8 @@ export default function AccessCodesAdmin() {
   const [codes, setCodes] = useState<AccessCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<AccessCode | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [label, setLabel] = useState("");
   const [code, setCode] = useState("");
