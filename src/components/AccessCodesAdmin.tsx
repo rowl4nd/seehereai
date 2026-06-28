@@ -229,11 +229,22 @@ export default function AccessCodesAdmin() {
                         onCheckedChange={() => handleToggle(c)}
                       />
                     </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() => setPendingDelete(c)}
+                        aria-label="Delete code"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {codes.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
                       No access codes yet
                     </TableCell>
                   </TableRow>
