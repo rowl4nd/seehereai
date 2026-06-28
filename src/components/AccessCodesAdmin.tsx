@@ -109,7 +109,22 @@ export default function AccessCodesAdmin() {
     }
   };
 
-  const handleToggle = async (c: AccessCode) => {
+  const handleDelete = async () => {
+    if (!pendingDelete) return;
+    setDeleting(true);
+    try {
+      await callAdminCodes({ action: "delete", id: pendingDelete.id });
+      setCodes((prev) => prev.filter((x) => x.id !== pendingDelete.id));
+      toast.success("Access code deleted");
+      setPendingDelete(null);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not delete code");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+
     try {
       await callAdminCodes({ action: "toggle", id: c.id, is_active: !c.is_active });
       setCodes((prev) =>
