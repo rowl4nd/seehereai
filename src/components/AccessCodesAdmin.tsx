@@ -205,6 +205,7 @@ export default function AccessCodesAdmin() {
                   <TableHead className="text-center">Used</TableHead>
                   <TableHead>Expiry</TableHead>
                   <TableHead className="text-center">Active</TableHead>
+                  <TableHead className="text-right">Delete</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
