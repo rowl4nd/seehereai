@@ -124,7 +124,7 @@ export default function AccessCodesAdmin() {
     }
   };
 
-
+  const handleToggle = async (c: AccessCode) => {
     try {
       await callAdminCodes({ action: "toggle", id: c.id, is_active: !c.is_active });
       setCodes((prev) =>
