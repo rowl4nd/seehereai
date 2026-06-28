@@ -13,7 +13,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Loader2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface AccessCode {
@@ -51,6 +61,8 @@ export default function AccessCodesAdmin() {
   const [codes, setCodes] = useState<AccessCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<AccessCode | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [label, setLabel] = useState("");
   const [code, setCode] = useState("");
@@ -94,6 +106,21 @@ export default function AccessCodesAdmin() {
       toast.error(err instanceof Error ? err.message : "Could not create code");
     } finally {
       setCreating(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!pendingDelete) return;
+    setDeleting(true);
+    try {
+      await callAdminCodes({ action: "delete", id: pendingDelete.id });
+      setCodes((prev) => prev.filter((x) => x.id !== pendingDelete.id));
+      toast.success("Access code deleted");
+      setPendingDelete(null);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not delete code");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -178,6 +205,7 @@ export default function AccessCodesAdmin() {
                   <TableHead className="text-center">Used</TableHead>
                   <TableHead>Expiry</TableHead>
                   <TableHead className="text-center">Active</TableHead>
+                  <TableHead className="text-right">Delete</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -201,11 +229,22 @@ export default function AccessCodesAdmin() {
                         onCheckedChange={() => handleToggle(c)}
                       />
                     </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() => setPendingDelete(c)}
+                        aria-label="Delete code"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {codes.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
                       No access codes yet
                     </TableCell>
                   </TableRow>
@@ -215,6 +254,36 @@ export default function AccessCodesAdmin() {
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog
+        open={!!pendingDelete}
+        onOpenChange={(open) => !open && setPendingDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete access code?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete{" "}
+              <span className="font-mono font-medium">{pendingDelete?.code}</span>.
+              Codes that have already been redeemed can't be deleted — deactivate
+              them instead. This can't be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleDelete();
+              }}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
