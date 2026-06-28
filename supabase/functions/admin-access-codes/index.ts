@@ -109,6 +109,42 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (action === "delete") {
+      const id = body.id;
+      if (!id) {
+        return new Response(JSON.stringify({ error: "Missing id" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { count, error: countErr } = await admin
+        .from("code_redemptions")
+        .select("*", { count: "exact", head: true })
+        .eq("code_id", id);
+      if (countErr) throw countErr;
+
+      if ((count ?? 0) > 0) {
+        return new Response(
+          JSON.stringify({
+            error:
+              "This code has already been redeemed and can't be deleted — deactivate it instead.",
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
+      }
+
+      const { error } = await admin.from("access_codes").delete().eq("id", id);
+      if (error) throw error;
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (action === "toggle") {
       const id = body.id;
       if (!id) {
