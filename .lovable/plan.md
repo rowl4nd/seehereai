@@ -26,11 +26,12 @@ No visual redesign, no changes to session defaults, credits, or routing beyond t
    - `auto_end_expired_sessions()` is updated to respect `extended_until` so a server sweep cannot cut short an extended session.
    - UI: an "Add 10 more minutes" button appears in the timing-warning area once the 5-minute warning fires, and disappears after use. Plus the line "Need more time because of a disability? Email hello@seehere.ai" in the warning, matching existing signposting style.
    - Default 25/45-minute durations and daily-session rules are unchanged; the extension is purely additive.
+   - Note: guest sessions in `GuestChat.tsx` run before sign-in and have no database row, so there the extension is stored with the existing guest session state in the browser; every signed-in path uses the database column.
 
 
 ## Moderate items
 
-- Replace the low-contrast hex values where they carry meaning against light backgrounds: solid buttons and link/body text using `#af9cd3` / `#b9a3e0` become the darker `#7c68a8` (verified ≥4.5:1 on `#f8f6f3` and for white-on-purple button text), with hover one step darker. Decorative uses (blur blobs, `/10`–`/30` borders, selection highlight) and focus rings are left as-is — they are non-text and changing them would be a restyle. I will report the exact list of changed lines.
+- Contrast, re-checked properly: you were right — `#7c68a8` on `#f8f6f3` measures **4.42:1**, which fails AA for normal text. Using `#6f5c99` instead: **5.31:1** on `#f8f6f3`, and **5.73:1** for white text on the button fill. Hover state `#5f4d85` (6.74:1). Applied inline at each meaningful occurrence of `#af9cd3` / `#b9a3e0` — solid buttons and link/body text. Decorative uses (blur blobs, `/10`–`/30` borders, selection highlight) and focus rings stay as they are. I'll report the exact list of changed lines.
 - Per-route `<title>` (plus matching meta description) for `/try`, `/mirror`, `/auth`, `/dashboard`, `/credits`, `/cooldown`, following the existing per-page pattern used on the content pages.
 - Distinct `aria-label` on each of the three Purchase buttons on `/credits`.
 - Add `focus-visible` ring and make the Dashboard delete-session icon button visible on focus (not hover-only), with an `aria-label`.
