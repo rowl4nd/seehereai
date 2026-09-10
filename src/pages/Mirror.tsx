@@ -208,8 +208,8 @@ const Mirror = () => {
       const sessionType = isOrg ? "paid" : freeRemaining > 0 ? "free" : "paid";
 
       if (!isOrg && sessionType === "paid" && (!credits || credits.balance <= 0)) {
-        toast.error("You need credits to start a session");
-        navigate("/credits");
+        toast.error("You've used your free sessions — an access code is needed to continue");
+        navigate("/dashboard");
         return;
       }
 

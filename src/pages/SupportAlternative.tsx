@@ -31,7 +31,7 @@ const rows = [
   {
     label: "Cost",
     therapy: "£60–£150 per session",
-    seehere: "Free to try · from £2",
+    seehere: "Free to try · then by access code",
     ai: "~£20/month unlimited",
   },
   {
