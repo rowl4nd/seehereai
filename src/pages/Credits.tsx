@@ -47,6 +47,8 @@ const Credits = () => {
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
 
+  usePageMeta("Session credits | SeeHere", "Add session credits to your SeeHere account.");
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/auth");

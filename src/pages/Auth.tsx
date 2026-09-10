@@ -37,11 +37,13 @@ const Auth = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError(null);
 
     try {
       if (mode === "forgot") {
         const { error } = await resetPassword(email);
         if (error) {
+          setFormError(error.message);
           toast.error(error.message);
         } else {
           toast.success("Check your email for a reset link");
@@ -50,6 +52,7 @@ const Auth = () => {
       } else {
         const { error } = await signIn(email, password);
         if (error) {
+          setFormError(error.message);
           toast.error(error.message);
         } else {
           toast.success("Welcome back");
@@ -60,6 +63,7 @@ const Auth = () => {
       setIsSubmitting(false);
     }
   };
+
 
   const buttonLabel = isSubmitting ? "Please wait..." : mode === "forgot" ? "Send reset link" : "Sign in";
 
