@@ -208,8 +208,8 @@ const Mirror = () => {
       const sessionType = isOrg ? "paid" : freeRemaining > 0 ? "free" : "paid";
 
       if (!isOrg && sessionType === "paid" && (!credits || credits.balance <= 0)) {
-        toast.error("You need credits to start a session");
-        navigate("/credits");
+        toast.error("You've used your free sessions — an access code is needed to continue");
+        navigate("/dashboard");
         return;
       }
 
@@ -221,11 +221,7 @@ const Mirror = () => {
       const result = rpcResult?.[0];
       if (rpcError || result?.error_msg || !result?.session_id) {
         toast.error(result?.error_msg || "Failed to start session");
-        if (result?.error_msg === "Insufficient credits") {
-          navigate("/credits");
-        } else {
-          navigate("/dashboard");
-        }
+        navigate("/dashboard");
         return;
       }
 

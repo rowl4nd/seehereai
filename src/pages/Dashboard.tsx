@@ -150,15 +150,13 @@ const Dashboard = () => {
                 </div>
               ) : canStartSession ? (isOrg || totalAvailable > 0) ? <Button onClick={handleStartSession} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                     Begin a session
-                  </Button> : <div className="text-center space-y-4">
+                  </Button> : <div className="text-center space-y-3">
                     <p className="text-sm text-muted-foreground">
-                      You've used all your sessions
+                      You've used your free sessions
                     </p>
-                    <Link to="/credits">
-                      <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                        Get more sessions
-                      </Button>
-                    </Link>
+                    <p className="text-xs text-muted-foreground/80 leading-relaxed">
+                      Continued access comes through an organisation code, or one we arrange with you personally.
+                    </p>
                   </div> : <div className="text-center space-y-3">
                   <p className="text-sm text-muted-foreground">
                     Give yourself time to reflect
@@ -172,16 +170,18 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Purchase credits button / access code entry */}
-          {!isOrg && (
-            <Link to="/credits" className="block">
-              <Button className="w-full text-[#3d2b5a]" style={{ backgroundColor: '#af9cd3' }}>
-                Purchase sessions
-              </Button>
-            </Link>
+          {/* Access code entry / contact for personal access */}
+          {!isOrg && !isLoading && (
+            <div className="space-y-2">
+              <AccessCodeRedeem onRedeemed={() => window.location.reload()} />
+              <Link
+                to="/contact"
+                className="block w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+              >
+                Don't have a code? Contact us for personal access
+              </Link>
+            </div>
           )}
-
-          {!isOrg && !isLoading && <AccessCodeRedeem onRedeemed={() => window.location.reload()} />}
 
           {/* Past Sessions */}
           <Card className="bg-card/50 border-border/50">

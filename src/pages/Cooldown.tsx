@@ -5,6 +5,7 @@ import { useSessions } from "@/hooks/useSessions";
 import { useProfile } from "@/hooks/useProfile";
 import { formatDistanceToNow } from "date-fns";
 import Logo from "@/components/Logo";
+import AccessCodeRedeem from "@/components/AccessCodeRedeem";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Cooldown = () => {
@@ -19,8 +20,9 @@ const Cooldown = () => {
   // free_sessions_used is incremented before redirect, so:
   // 1 = just finished session 1, 2 = just finished session 2
   const freeSessions = profile?.free_sessions_used ?? 0;
-  const isPostSession1 = freeSessions === 1;
-  const isPostSession2 = freeSessions >= 2;
+  const isOrg = profile?.org_access ?? false;
+  const isPostSession1 = !isOrg && freeSessions === 1;
+  const isPostSession2 = !isOrg && freeSessions >= 2;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -117,6 +119,16 @@ const Cooldown = () => {
 
               {/* ── Context-aware nudge ── */}
 
+              {/* Organisation access: unlimited, no payment framing */}
+              {isOrg && (
+                <div className="pt-2 border-t border-[#af9cd3]/20">
+                  <p className="text-sm text-[#857f77] font-light italic">
+                    Your organisation gives you unlimited access — ready when you are.
+                  </p>
+                </div>
+              )}
+
+
               {/* Post session 1: quiet reminder of second free session */}
               {isPostSession1 && (
                 <div className="pt-2 border-t border-[#af9cd3]/20">
@@ -126,19 +138,20 @@ const Cooldown = () => {
                 </div>
               )}
 
-              {/* Post session 2: soft transition to paid */}
+              {/* Post session 2: access code or personal access */}
               {isPostSession2 && (
-                <div className="pt-4 border-t border-[#af9cd3]/20 space-y-3">
-                  <p className="text-sm text-[#857f77] font-light leading-relaxed">
+                <div className="pt-4 border-t border-[#af9cd3]/20 space-y-3 text-left">
+                  <p className="text-sm text-[#857f77] font-light leading-relaxed text-center">
                     You've completed your free sessions.
                     <br />
-                    If you'd like to continue, sessions start from <span className="text-[#3d3a35]">£2</span>.
+                    Continued access comes through an organisation code, or one we arrange with you.
                   </p>
+                  <AccessCodeRedeem onRedeemed={() => navigate("/dashboard")} />
                   <Link
-                    to="/credits"
-                    className="inline-block text-xs uppercase tracking-[0.2em] text-[#af9cd3] hover:text-[#3d3a35] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-sm"
+                    to="/contact"
+                    className="block text-center text-xs text-[#857f77] hover:text-[#3d3a35] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-sm"
                   >
-                    → See session options
+                    Don't have a code? Contact us for personal access
                   </Link>
                 </div>
               )}

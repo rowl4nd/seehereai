@@ -8,6 +8,7 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import { MessageCircle, Heart, Shield, Clock, Check, X, Send, ArrowRight } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import Logo from "@/components/Logo";
+import AccessSection from "@/components/AccessSection";
 
 import heroLogo from "@/assets/see-here-logo.png";
 import splitSafeSpace from "@/assets/split-safe-space.jpg";
@@ -127,7 +128,7 @@ const Index = () => {
             name: "How much does it cost?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "You can start a session immediately — no sign-up needed. After 5 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. After that, sessions are available in 'Presence Packs' starting from just £2 per session. No subscriptions, no auto-renewals.",
+              text: "You can start a session immediately — no sign-up needed. After 5 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. Beyond that, access is arranged through an organisation that offers SeeHere to its community, or personally with us — just get in touch. No subscriptions, no auto-renewals.",
             },
           },
           {
@@ -203,6 +204,12 @@ const Index = () => {
       <header className="sticky top-0 z-40 flex justify-between items-center px-4 py-2 md:px-8 bg-background/95 backdrop-blur-sm border-b border-border/40">
         <Logo />
         <div className="flex items-center gap-4">
+          <a
+            href="#access"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+          >
+            For organisations
+          </a>
           <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200">
             FAQs
           </a>
@@ -582,40 +589,8 @@ const Index = () => {
         </ScrollSection>
       </section>
 
-      {/* ── Pricing ── */}
-      <section className="py-20 px-6 bg-gradient-to-br from-[#cbb7ef]/15 via-[#f4eadf]/20 to-[#b1cfac]/15 text-center">
-        <ScrollSection>
-          <div className="max-w-lg mx-auto space-y-6">
-            <p className="text-xs uppercase tracking-[0.4em] text-[#4a7a4f] font-medium">Pricing</p>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-[#3d3a35]">
-              Pay only for the space you use.
-            </h2>
-            <p className="text-[#5f5a53] leading-relaxed">
-              Start for free. Sign up to save your conversation. Your first 2 sessions are on us — after that, sessions
-              start from just £2.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <div className="px-6 py-4 bg-white/70 backdrop-blur rounded-2xl border border-white/60 shadow-sm text-center">
-                <p className="text-2xl font-serif font-light text-[#3d3a35]">Free</p>
-                <p className="text-xs text-[#5f5a53] mt-1">2 free sessions</p>
-              </div>
-              <div className="flex items-center text-[#5f5a53]/50">
-                <ArrowRight size={20} />
-              </div>
-              <div className="px-6 py-4 bg-[#4a7a4f]/10 rounded-2xl border border-[#4a7a4f]/20 shadow-sm text-center">
-                <p className="text-2xl font-serif font-light text-[#3d3a35]">From £2</p>
-                <p className="text-xs text-[#5f5a53] mt-1">per session</p>
-              </div>
-            </div>
-            <Button
-              onClick={handleTryForFree}
-              className="bg-[#4a7a4f] hover:bg-[#3d6542] text-white px-10 py-6 rounded-2xl text-sm font-medium shadow-lg mt-4"
-            >
-              Try it free now
-            </Button>
-          </div>
-        </ScrollSection>
-      </section>
+      {/* ── Access ── */}
+      <AccessSection onTryForFree={handleTryForFree} />
 
       {/* ── Safety notice ── */}
       <div className="bg-[#f4eadf]/50 border-y border-border/30 py-3 px-6 text-center">
@@ -649,7 +624,7 @@ const Index = () => {
                 {
                   value: "cost",
                   q: "How much does it cost?",
-                  a: `You can start a session immediately — no sign-up needed. After 5 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. After that, sessions are available in "Presence Packs" starting from just £2 per session. No subscriptions, no auto-renewals.`,
+                  a: `You can start a session immediately — no sign-up needed. After 5 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. Beyond that, access is arranged either through an organisation that offers SeeHere to its community, or personally with us — just get in touch. No subscriptions, no auto-renewals.`,
                 },
                 {
                   value: "therapy",
