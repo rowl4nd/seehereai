@@ -221,11 +221,7 @@ const Mirror = () => {
       const result = rpcResult?.[0];
       if (rpcError || result?.error_msg || !result?.session_id) {
         toast.error(result?.error_msg || "Failed to start session");
-        if (result?.error_msg === "Insufficient credits") {
-          navigate("/credits");
-        } else {
-          navigate("/dashboard");
-        }
+        navigate("/dashboard");
         return;
       }
 
