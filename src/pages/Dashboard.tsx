@@ -170,16 +170,18 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Purchase credits button / access code entry */}
-          {!isOrg && (
-            <Link to="/credits" className="block">
-              <Button className="w-full text-[#3d2b5a]" style={{ backgroundColor: '#af9cd3' }}>
-                Purchase sessions
-              </Button>
-            </Link>
+          {/* Access code entry / contact for personal access */}
+          {!isOrg && !isLoading && (
+            <div className="space-y-2">
+              <AccessCodeRedeem onRedeemed={() => window.location.reload()} />
+              <Link
+                to="/contact"
+                className="block w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+              >
+                Don't have a code? Contact us for personal access
+              </Link>
+            </div>
           )}
-
-          {!isOrg && !isLoading && <AccessCodeRedeem onRedeemed={() => window.location.reload()} />}
 
           {/* Past Sessions */}
           <Card className="bg-card/50 border-border/50">
