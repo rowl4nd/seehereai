@@ -5,6 +5,7 @@ import { useSessions } from "@/hooks/useSessions";
 import { useProfile } from "@/hooks/useProfile";
 import { formatDistanceToNow } from "date-fns";
 import Logo from "@/components/Logo";
+import AccessCodeRedeem from "@/components/AccessCodeRedeem";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Cooldown = () => {
@@ -19,8 +20,9 @@ const Cooldown = () => {
   // free_sessions_used is incremented before redirect, so:
   // 1 = just finished session 1, 2 = just finished session 2
   const freeSessions = profile?.free_sessions_used ?? 0;
-  const isPostSession1 = freeSessions === 1;
-  const isPostSession2 = freeSessions >= 2;
+  const isOrg = profile?.org_access ?? false;
+  const isPostSession1 = !isOrg && freeSessions === 1;
+  const isPostSession2 = !isOrg && freeSessions >= 2;
 
   useEffect(() => {
     if (!authLoading && !user) {
