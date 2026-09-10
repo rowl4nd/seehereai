@@ -11,6 +11,8 @@ import SecureSessionModal from "@/components/SecureSessionModal";
 import GreetingMessage from "@/components/GreetingMessage";
 import { useEncryptedMessages } from "@/hooks/useEncryptedMessages";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { getSessionEndTime } from "@/lib/sessionTiming";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 interface Message {
   id: string;
@@ -162,9 +164,11 @@ const GuestChat = () => {
   useEffect(() => {
     if (!authenticated || !sessionStartedAt) return;
 
-    const sessionDuration = 25 * 60;
-    const startTime = new Date(sessionStartedAt).getTime();
-    const endTime = startTime + sessionDuration * 1000;
+    const endTime = getSessionEndTime({
+      session_type: "free",
+      started_at: sessionStartedAt,
+      extended_until: extendedUntil,
+    });
 
     const updateTimer = () => {
       const now = Date.now();
@@ -191,9 +195,13 @@ const GuestChat = () => {
         setSessionEnded(true);
         saveMessagesToDb(messagesRef.current);
         if (sessionId) {
+          const durationMinutes = Math.max(
+            1,
+            Math.round((Date.now() - new Date(sessionStartedAt).getTime()) / 60000),
+          );
           supabase
             .from("sessions")
-            .update({ is_active: false, ended_at: new Date().toISOString(), duration_minutes: 25 })
+            .update({ is_active: false, ended_at: new Date().toISOString(), duration_minutes: durationMinutes })
             .eq("id", sessionId)
             .then(() => {});
         }
@@ -203,7 +211,23 @@ const GuestChat = () => {
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
-  }, [authenticated, sessionStartedAt, sessionEnded, sessionId, showEndWarning]);
+  }, [authenticated, sessionStartedAt, sessionEnded, sessionId, showEndWarning, extendedUntil]);
+
+  // One-time accessibility extension (persisted server-side)
+  const handleExtendSession = async () => {
+    if (!sessionId || extendedUntil || extending) return;
+    setExtending(true);
+    const { data, error } = await supabase.rpc("extend_session", { _session_id: sessionId });
+    setExtending(false);
+    const row = Array.isArray(data) ? data[0] : data;
+    if (error || !row?.success) {
+      toast.error(row?.message || "Could not add more time");
+      return;
+    }
+    setExtendedUntil(row.extended_until as string);
+    toast.success("10 more minutes added to this session");
+  };
+
 
   // After auth state changes (user signs up), migrate guest data
   useEffect(() => {
@@ -482,7 +506,13 @@ const GuestChat = () => {
 
       {/* Messages */}
       <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-8 flex flex-col">
-        <div className="max-w-2xl mx-auto space-y-5 mt-auto w-full">
+        <div
+          className="max-w-2xl mx-auto space-y-5 mt-auto w-full"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+          aria-label="Conversation"
+        >
           {messages.map((message) => (
             <div
               key={message.id}
@@ -505,6 +535,7 @@ const GuestChat = () => {
                       }
                 }
               >
+                <span className="sr-only">{message.role === "user" ? "You said: " : "SeeHere said: "}</span>
                 {message.id === "greeting" ? (
                   <GreetingMessage />
                 ) : (
@@ -515,6 +546,7 @@ const GuestChat = () => {
               </div>
             </div>
           ))}
+
 
           {isLoading && (
             <div className="flex justify-start animate-fade-in">
