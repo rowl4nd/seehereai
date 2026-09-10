@@ -8,14 +8,18 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 import { cn } from "@/lib/utils";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const Auth = () => {
   const [mode, setMode] = useState<"login" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const { user, signIn, resetPassword } = useAuth();
   const navigate = useNavigate();
+
+  usePageMeta("Sign in | SeeHere", "Sign in to your SeeHere account.");
 
   // SEO - noindex
   useEffect(() => {
@@ -102,9 +106,12 @@ const Auth = () => {
                 <Input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  aria-invalid={!!formError}
+                  aria-describedby={formError ? "auth-form-error" : undefined}
                   className="h-8 text-sm bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
                   placeholder="you@example.com"
                 />
@@ -118,16 +125,26 @@ const Auth = () => {
                   <Input
                     id="password"
                     type="password"
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
+                    aria-invalid={!!formError}
+                    aria-describedby={formError ? "auth-form-error" : undefined}
                     className="h-8 text-sm bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
                     placeholder="••••••••"
                   />
                 </div>
               )}
+
+              {formError && (
+                <p id="auth-form-error" role="alert" className="text-xs text-destructive">
+                  {formError}
+                </p>
+              )}
             </div>
+
 
             <div className={cn("text-right -mt-1", mode !== "login" && "invisible")}>
               <button
