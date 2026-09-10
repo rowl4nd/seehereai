@@ -590,7 +590,14 @@ const GuestChat = () => {
           <div className="px-4 md:px-6 py-2" style={{ backgroundColor: "#f8f6f3", borderBottom: "1px solid #f0ece6" }}>
             <div className="max-w-2xl mx-auto space-y-2">
               <div className="flex items-center gap-3 pt-1">
-                <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ backgroundColor: "#e8e1d9" }}>
+                <div
+                  className="flex-1 h-1 rounded-full overflow-hidden"
+                  role="progressbar"
+                  aria-valuenow={timeRemaining}
+                  aria-valuemax={25 * 60}
+                  aria-label={`${formatTime(timeRemaining)} remaining`}
+                  style={{ backgroundColor: "#e8e1d9" }}
+                >
                   <div
                     className="h-full transition-all duration-1000 rounded-full"
                     style={{
@@ -603,6 +610,32 @@ const GuestChat = () => {
                   {formatTime(timeRemaining)}
                 </span>
               </div>
+
+              {showEndWarning && !sessionEnded && (
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  {!extendedUntil ? (
+                    <button
+                      onClick={handleExtendSession}
+                      disabled={extending}
+                      className="text-sm px-3 py-2 rounded-lg min-h-[44px] transition-colors underline"
+                      style={{ color: "#3d6642" }}
+                    >
+                      {extending ? "Adding time..." : "Add 10 more minutes"}
+                    </button>
+                  ) : (
+                    <span className="text-xs" style={{ color: "#8a8278" }}>
+                      10 extra minutes added to this session.
+                    </span>
+                  )}
+                  <span className="text-xs" style={{ color: "#8a8278" }}>
+                    Need more time because of a disability?{" "}
+                    <a href="mailto:hello@seehere.ai" className="underline" style={{ color: "#3d6642" }}>
+                      hello@seehere.ai
+                    </a>
+                  </span>
+                </div>
+              )}
+
               <div className="flex justify-end">
                 <button
                   onClick={sessionEnded ? () => navigate("/cooldown") : handleEndSession}
@@ -625,6 +658,7 @@ const GuestChat = () => {
             <div className="flex gap-3 items-end">
               <textarea
                 ref={textareaRef}
+                aria-label="Share what's on your mind"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
