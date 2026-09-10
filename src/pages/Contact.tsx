@@ -91,6 +91,20 @@ const Contact = () => {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="reason">What's this about?</Label>
+              <Select value={reason} onValueChange={setReason}>
+                <SelectTrigger id="reason" aria-label="What's this about?">
+                  <SelectValue placeholder="Choose one…" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="organisation">Offering SeeHere to my organisation</SelectItem>
+                  <SelectItem value="personal_access">Personal access</SelectItem>
+                  <SelectItem value="other">Something else</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
