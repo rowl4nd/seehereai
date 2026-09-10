@@ -127,7 +127,7 @@ const Index = () => {
             name: "How much does it cost?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "You can start a session immediately — no sign-up needed. After 5 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. After that, sessions are available in 'Presence Packs' starting from just £2 per session. No subscriptions, no auto-renewals.",
+              text: "You can start a session immediately — no sign-up needed. After 5 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. Beyond that, access is arranged through an organisation that offers SeeHere to its community, or personally with us — just get in touch. No subscriptions, no auto-renewals.",
             },
           },
           {
@@ -649,7 +649,7 @@ const Index = () => {
                 {
                   value: "cost",
                   q: "How much does it cost?",
-                  a: `You can start a session immediately — no sign-up needed. After 5 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. After that, sessions are available in "Presence Packs" starting from just £2 per session. No subscriptions, no auto-renewals.`,
+                  a: `You can start a session immediately — no sign-up needed. After 5 messages, we invite you to create a free account to save your conversation. You get 2 full sessions completely free. Beyond that, access is arranged either through an organisation that offers SeeHere to its community, or personally with us — just get in touch. No subscriptions, no auto-renewals.`,
                 },
                 {
                   value: "therapy",
