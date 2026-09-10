@@ -150,15 +150,13 @@ const Dashboard = () => {
                 </div>
               ) : canStartSession ? (isOrg || totalAvailable > 0) ? <Button onClick={handleStartSession} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                     Begin a session
-                  </Button> : <div className="text-center space-y-4">
+                  </Button> : <div className="text-center space-y-3">
                     <p className="text-sm text-muted-foreground">
-                      You've used all your sessions
+                      You've used your free sessions
                     </p>
-                    <Link to="/credits">
-                      <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                        Get more sessions
-                      </Button>
-                    </Link>
+                    <p className="text-xs text-muted-foreground/80 leading-relaxed">
+                      Continued access comes through an organisation code, or one we arrange with you personally.
+                    </p>
                   </div> : <div className="text-center space-y-3">
                   <p className="text-sm text-muted-foreground">
                     Give yourself time to reflect
