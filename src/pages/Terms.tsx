@@ -101,19 +101,23 @@ const Terms = () => {
             </section>
 
             <section className="space-y-2">
-              <h2 className="text-xl font-serif text-foreground">5. Sessions &amp; Credits</h2>
+              <h2 className="text-xl font-serif text-foreground">5. Sessions &amp; Access</h2>
               <p>
-                New users receive 2 free sessions. Additional sessions can be purchased using credits. Free sessions
-                last 25 minutes; paid sessions last 45 minutes. Only one session per user per day is allowed to
-                encourage a cooldown period and time for reflection.
+                New users receive 2 free sessions. Continued access beyond these is arranged by access code — either
+                through an organisation that offers SeeHere to its community, or personally by arrangement with us.
+                SeeHere is not currently sold directly to new users. Free sessions last 25 minutes; full sessions last
+                45 minutes. Only one session per user per day is allowed to encourage a cooldown period and time for
+                reflection, except where an organisation arrangement provides otherwise.
               </p>
               <p>
-                Credits are non-refundable except as required by law or in cases of technical failure on our part.
-                Credits do not expire and remain valid until used.
+                Access codes are issued at our discretion, are personal to the recipient, and may be withdrawn or
+                deactivated — for example at the end of an organisation arrangement or where these Terms are breached.
               </p>
               <p>
-                All payments are processed securely through Stripe. By purchasing credits, you agree to Stripe's terms
-                of service.
+                Where session credits were previously purchased, they remain valid and usable until spent, do not
+                expire, and are non-refundable except as required by law or in cases of technical failure on our part.
+                Any such payments were processed securely through Stripe, and Stripe's terms of service applied to
+                them.
               </p>
               <p>
                 By purchasing credits and initiating a session, you agree to the immediate delivery of digital content
