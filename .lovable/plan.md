@@ -19,11 +19,14 @@ No visual redesign, no changes to session defaults, credits, or routing beyond t
 
 **2. Disclosure modal** — refactor `DisclosureModal.tsx` to use `Dialog`/`DialogContent` from `@/components/ui/dialog`, matching `SecureSessionModal.tsx`. Keep the same copy, links, and accept/close behaviour. This gives dialog role, modal semantics, focus trap, Escape, and focus restoration for free. Add a `DialogTitle` (visually hidden if the current design has no visible heading) so the dialog has an accessible name.
 
-**3. One-time +10 minute extension (2.2.1)** — in both `Mirror.tsx` and `GuestChat.tsx`:
-   - Add local state `extensionUsed` and an extra-seconds offset applied to the countdown calculation. Default durations are untouched; the extension only shifts the end time for that one session.
-   - Surface an "Add 10 more minutes" button in the timing-warning area, shown once the 5-minute warning fires and hidden after use, announced via the existing message/aria patterns.
-   - Add to the timing warning text: "Need more time because of a disability? Email hello@seehere.ai" — matching existing signposting style.
-   - The extension is client-side for the active session only; the server-side session record and daily-session rules stay as they are.
+**3. One-time +10 minute extension (2.2.1)** — persisted server-side so it survives a refresh or dropped connection:
+   - Migration: add a nullable `extended_until timestamptz` column to `sessions`.
+   - Add a `extend_session` security-definer function that, for the caller's own active session, sets `extended_until = <normal end time> + 10 minutes` only when it is still null (one use per session).
+   - A single shared helper computes a session's effective end time: `extended_until` when set, otherwise `started_at + 45/25 minutes`. Mirror's timer, GuestChat's timer, `useSessions`, and the Dashboard auto-end effect all use that one helper instead of three separate calculations.
+   - `auto_end_expired_sessions()` is updated to respect `extended_until` so a server sweep cannot cut short an extended session.
+   - UI: an "Add 10 more minutes" button appears in the timing-warning area once the 5-minute warning fires, and disappears after use. Plus the line "Need more time because of a disability? Email hello@seehere.ai" in the warning, matching existing signposting style.
+   - Default 25/45-minute durations and daily-session rules are unchanged; the extension is purely additive.
+
 
 ## Moderate items
 
