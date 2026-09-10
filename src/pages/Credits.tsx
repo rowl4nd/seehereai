@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const creditPackages = [
   {
