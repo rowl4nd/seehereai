@@ -128,7 +128,7 @@ const GuestGuidance = () => {
                     />
                     <Label htmlFor="terms" className="text-sm text-[#5f5a53] font-light leading-relaxed cursor-pointer">
                       I have read and agree to the{" "}
-                      <Link to="/terms" target="_blank" className="underline text-[#af9cd3] hover:text-[#9d8bbd] transition-colors">
+                      <Link to="/terms" target="_blank" className="underline text-[#6f5c99] hover:text-[#5f4d85] transition-colors">
                         Terms &amp; Conditions
                       </Link>
                     </Label>
@@ -142,7 +142,7 @@ const GuestGuidance = () => {
                     />
                     <Label htmlFor="privacy" className="text-sm text-[#5f5a53] font-light leading-relaxed cursor-pointer">
                       I have read and agree to the{" "}
-                      <Link to="/privacy" target="_blank" className="underline text-[#af9cd3] hover:text-[#9d8bbd] transition-colors">
+                      <Link to="/privacy" target="_blank" className="underline text-[#6f5c99] hover:text-[#5f4d85] transition-colors">
                         Privacy Policy
                       </Link>
                     </Label>
@@ -152,7 +152,7 @@ const GuestGuidance = () => {
                 <Button
                   onClick={handleContinue}
                   disabled={!canBegin}
-                  className="bg-[#af9cd3] hover:bg-[#9d8bbd] text-white px-12 py-8 rounded-full text-lg font-light shadow-xl shadow-[#af9cd3]/10 transition-all duration-700 border-none disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="bg-[#6f5c99] hover:bg-[#5f4d85] text-white px-12 py-8 rounded-full text-lg font-light shadow-xl shadow-[#6f5c99]/10 transition-all duration-700 border-none disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Begin your reflection
                 </Button>
@@ -163,7 +163,7 @@ const GuestGuidance = () => {
                 className="group flex flex-col items-center space-y-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-md transition-all"
                 aria-label="Next guidance card"
               >
-                <span className="text-[10px] uppercase tracking-[0.5em] text-[#857f77] group-hover:text-[#af9cd3] transition-colors duration-500">
+                <span className="text-[10px] uppercase tracking-[0.5em] text-[#857f77] group-hover:text-[#6f5c99] transition-colors duration-500">
                   Continue
                 </span>
                 <div className="w-[0.5px] h-12 bg-[#e0ddd7] group-hover:bg-[#af9cd3] group-hover:h-16 transition-all duration-700" />

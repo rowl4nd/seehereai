@@ -129,7 +129,7 @@ const Guidance = () => {
             {isLastCard ? (
               <Button
                 onClick={handleContinue}
-                className="bg-[#af9cd3] hover:bg-[#9d8bbd] text-white px-12 py-8 rounded-full text-lg font-light shadow-xl shadow-[#af9cd3]/10 transition-all duration-700 animate-fade-in border-none"
+                className="bg-[#6f5c99] hover:bg-[#5f4d85] text-white px-12 py-8 rounded-full text-lg font-light shadow-xl shadow-[#6f5c99]/10 transition-all duration-700 animate-fade-in border-none"
               >
                 Enter the Mirror
               </Button>
@@ -139,7 +139,7 @@ const Guidance = () => {
                 className="group flex flex-col items-center space-y-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-md transition-all"
                 aria-label="Next guidance card"
               >
-                <span className="text-[10px] uppercase tracking-[0.5em] text-[#857f77] group-hover:text-[#af9cd3] transition-colors duration-500">
+                <span className="text-[10px] uppercase tracking-[0.5em] text-[#857f77] group-hover:text-[#6f5c99] transition-colors duration-500">
                   Continue
                 </span>
                 <div className="w-[0.5px] h-12 bg-[#e0ddd7] group-hover:bg-[#af9cd3] group-hover:h-16 transition-all duration-700" />

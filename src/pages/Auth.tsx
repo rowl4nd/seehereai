@@ -204,7 +204,7 @@ const Auth = () => {
                 <Button
                   type="button"
                   onClick={() => navigate("/try")}
-                  className="w-full h-8 text-xs text-white bg-[#b9a3e0] hover:bg-[#a48fd0]"
+                  className="w-full h-8 text-xs text-white bg-[#6f5c99] hover:bg-[#5f4d85]"
                 >
                   New here? Try for free
                 </Button>
