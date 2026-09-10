@@ -13,6 +13,9 @@ import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 import AccessCodeRedeem from "@/components/AccessCodeRedeem";
+import { getSecondsRemaining, getSessionEndTime } from "@/lib/sessionTiming";
+import { usePageMeta } from "@/hooks/usePageMeta";
+
 
 const Dashboard = () => {
   const {
@@ -40,21 +43,19 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null);
 
+  usePageMeta("Your Space | SeeHere", "Your SeeHere dashboard — start a session and revisit past conversations.");
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/auth");
     }
   }, [user, authLoading, navigate]);
 
-  // Auto-end expired active sessions
+  // Auto-end expired active sessions (honours a one-time extension stored on the session)
   useEffect(() => {
     if (!activeSession || sessionsLoading) return;
 
-    const sessionDuration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
-    const startTime = new Date(activeSession.started_at).getTime();
-    const endTime = startTime + sessionDuration * 1000;
-
-    if (Date.now() >= endTime) {
+    if (Date.now() >= getSessionEndTime(activeSession)) {
       // Session has expired while away — auto-end it
       endSession(activeSession.id);
     }
@@ -63,11 +64,9 @@ const Dashboard = () => {
   // Calculate time remaining on active session
   const getActiveSessionTimeRemaining = () => {
     if (!activeSession) return 0;
-    const sessionDuration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
-    const startTime = new Date(activeSession.started_at).getTime();
-    const endTime = startTime + sessionDuration * 1000;
-    return Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+    return getSecondsRemaining(activeSession);
   };
+
 
   const activeTimeRemaining = activeSession ? getActiveSessionTimeRemaining() : 0;
   const hasActiveResumableSession = !!activeSession && activeTimeRemaining > 0;
@@ -111,7 +110,7 @@ const Dashboard = () => {
       </header>
 
       {/* Main content */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
+      <main id="main-content" className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
         <div className="w-full max-w-md space-y-8 animate-fade-in">
           {/* Welcome message */}
           <div className="text-center space-y-2">
@@ -126,7 +125,7 @@ const Dashboard = () => {
           {/* Session Card */}
           <Card className="bg-card/50 border-border/50">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="font-serif font-light text-xl">Sessions</CardTitle>
+              <h2 className="font-serif font-light text-xl leading-none tracking-tight">Sessions</h2>
               <CardDescription>
                 {isLoading ? <Skeleton className="h-4 w-32 mx-auto" /> : isOrg ? (
                   <span className="block">Organisation access — unlimited sessions</span>
@@ -186,7 +185,7 @@ const Dashboard = () => {
           {/* Past Sessions */}
           <Card className="bg-card/50 border-border/50">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="font-serif font-light text-xl">Past Sessions</CardTitle>
+              <h2 className="font-serif font-light text-xl leading-none tracking-tight">Past Sessions</h2>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -232,7 +231,7 @@ const Dashboard = () => {
                                 toast.success("Session deleted");
                               }
                             }}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10"
+                            className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                             aria-label="Delete session"
                           >
                             <Trash2 className={`h-3.5 w-3.5 text-muted-foreground/50 hover:text-destructive transition-colors ${deletingSessionId === s.id ? 'animate-pulse' : ''}`} />

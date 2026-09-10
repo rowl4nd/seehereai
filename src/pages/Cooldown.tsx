@@ -7,6 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 import Logo from "@/components/Logo";
 import AccessCodeRedeem from "@/components/AccessCodeRedeem";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const Cooldown = () => {
   const { user, loading: authLoading } = useAuth();
@@ -15,6 +16,8 @@ const Cooldown = () => {
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
   const [timeUntilNext, setTimeUntilNext] = useState<string>("");
+
+  usePageMeta("Space between sessions | SeeHere", "A short pause before your next SeeHere session.");
 
   // Determine which session just ended
   // free_sessions_used is incremented before redirect, so:
@@ -74,7 +77,7 @@ const Cooldown = () => {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 flex items-center justify-center px-6 z-10">
+      <main id="main-content" className="flex-1 flex items-center justify-center px-6 z-10">
         <div className="w-full max-w-xl text-center space-y-12">
           {/* Glass card */}
           <div className="relative p-10 md:p-16 rounded-[60px] min-h-[280px] flex flex-col items-center justify-center">

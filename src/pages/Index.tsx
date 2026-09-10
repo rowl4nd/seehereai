@@ -245,7 +245,7 @@ const Index = () => {
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#cbb7ef]/20 via-[#f4eadf]/30 to-[#b1cfac]/20">
+      <section id="main-content" className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#cbb7ef]/20 via-[#f4eadf]/30 to-[#b1cfac]/20">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full bg-[#cbb7ef]/10 blur-[140px]" />
           <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[#b1cfac]/12 blur-[120px]" />
@@ -308,7 +308,11 @@ const Index = () => {
           ) : (
             <div className="w-full max-w-2xl mx-auto">
               <form onSubmit={handleHeroSubmit} className="relative group">
+                <label htmlFor="hero-message" className="sr-only">
+                  Share what's on your mind
+                </label>
                 <textarea
+                  id="hero-message"
                   ref={textareaRef}
                   value={heroInput}
                   onChange={(e) => setHeroInput(e.target.value)}
@@ -324,11 +328,13 @@ const Index = () => {
                 />
                 <button
                   type="submit"
+                  aria-label="Send message"
                   disabled={!heroInput.trim()}
                   className="absolute right-3 bottom-3 p-3.5 rounded-xl bg-[#4a7a4f] hover:bg-[#3d6542] text-white shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4" />
                 </button>
+
               </form>
               <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
                 ·{" "}

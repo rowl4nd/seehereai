@@ -137,7 +137,7 @@ const SecureSessionModal = ({ open, onSuccess }: SecureSessionModalProps) => {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-[#b9a3e0] hover:bg-[#a48fd0] text-white"
+            className="w-full bg-[#6f5c99] hover:bg-[#5f4d85] text-white"
           >
             {isSubmitting ? "Setting up..." : "Create Free Account"}
           </Button>

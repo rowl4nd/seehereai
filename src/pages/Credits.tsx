@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const creditPackages = [
   {
@@ -45,6 +46,8 @@ const Credits = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
+
+  usePageMeta("Session credits | SeeHere", "Add session credits to your SeeHere account.");
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -99,7 +102,7 @@ const Credits = () => {
       </header>
 
       {/* Main content */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
+      <main id="main-content" className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
         <div className="w-full max-w-3xl space-y-8 animate-fade-in">
           {/* Title */}
           <div className="text-center space-y-2">
@@ -122,7 +125,9 @@ const Credits = () => {
                   </div>
                 )}
                 <CardHeader className="text-center pb-2">
-                  <CardTitle className="font-serif font-light text-2xl">{pkg.sessions} sessions</CardTitle>
+                  <h2 className="font-serif font-light text-2xl leading-none tracking-tight">
+                    {pkg.sessions} sessions
+                  </h2>
                   <CardDescription>{pkg.pricePerSession}/session</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -132,6 +137,7 @@ const Credits = () => {
                   <Button
                     onClick={() => handlePurchase(pkg.id)}
                     disabled={purchasingId !== null}
+                    aria-label={`Purchase ${pkg.sessions} sessions for ${pkg.priceDisplay}`}
                     variant={pkg.popular ? "default" : "outline"}
                     className={`w-full ${
                       pkg.popular
@@ -142,6 +148,7 @@ const Credits = () => {
                     {purchasingId === pkg.id ? "Redirecting..." : "Purchase"}
                   </Button>
                 </CardContent>
+
               </Card>
             ))}
           </div>
@@ -155,6 +162,7 @@ const Credits = () => {
             <button
               onClick={() => handlePurchase(singleSession.id)}
               disabled={purchasingId !== null}
+              aria-label="Purchase a single session for £5"
               className="underline underline-offset-2 hover:text-muted-foreground transition-colors disabled:opacity-50"
             >
               Single session — £5

@@ -14,6 +14,8 @@ import { useVoiceMode } from "@/hooks/useVoiceMode";
 import WelcomeBackMessage from "@/components/WelcomeBackMessage";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { Mic, MicOff, Loader2 } from "lucide-react";
+import { getSessionDurationSeconds, getSessionEndTime } from "@/lib/sessionTiming";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 interface Message {
   id: string;
@@ -34,6 +36,7 @@ const Mirror = () => {
     canStartSession,
     loading: sessionsLoading,
     addSessionToState,
+    extendSession,
   } = useSessions();
   const {
     createConversation: createEncryptedConversation,
@@ -43,6 +46,8 @@ const Mirror = () => {
   } = useEncryptedMessages();
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
+
+  usePageMeta("Your session | SeeHere", "A private space to talk things through at your own pace.");
 
   // Retry wrapper for edge function calls — handles mobile connection drops
   const invokeWithRetry = async (functionName: string, body: any, retries = 1) => {
@@ -71,9 +76,13 @@ const Mirror = () => {
     Array<{ messages: Array<{ role: string; content: string }> }>
   >([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [localSession, setLocalSession] = useState<{ id: string; session_type: string; started_at: string } | null>(
-    null,
-  );
+  const [localSession, setLocalSession] = useState<{
+    id: string;
+    session_type: string;
+    started_at: string;
+    extended_until?: string | null;
+  } | null>(null);
+  const [extending, setExtending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initRef = useRef(false);
@@ -102,8 +111,23 @@ const Mirror = () => {
   // Use localSession as the source of truth, falling back to activeSession from hook
   const currentSession = localSession || activeSession;
 
-  // Determine session duration (25 min free, 45 min paid)
-  const sessionDuration = currentSession?.session_type === "paid" ? 45 * 60 : 25 * 60;
+  // Session length (25 min free / 45 min paid), plus any one-time extension
+  const sessionDuration = currentSession ? getSessionDurationSeconds(currentSession) : 25 * 60;
+  const isExtended = !!currentSession?.extended_until;
+
+  const handleExtendSession = async () => {
+    if (!currentSession || isExtended || extending) return;
+    setExtending(true);
+    const { error, extendedUntil } = await extendSession(currentSession.id);
+    setExtending(false);
+    if (error || !extendedUntil) {
+      toast.error(error?.message || "Could not add more time");
+      return;
+    }
+    setLocalSession((prev) => (prev ? { ...prev, extended_until: extendedUntil } : prev));
+    toast.success("10 more minutes added to this session");
+  };
+
 
   // SEO - noindex
   useEffect(() => {
@@ -146,10 +170,9 @@ const Mirror = () => {
           id: activeSession.id,
           session_type: activeSession.session_type,
           started_at: activeSession.started_at,
+          extended_until: activeSession.extended_until ?? null,
         });
-        const startTime = new Date(activeSession.started_at).getTime();
-        const duration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
-        const endTime = startTime + duration * 1000;
+        const endTime = getSessionEndTime(activeSession);
 
         if (Date.now() >= endTime) {
           // Session expired while away — auto-end and redirect
@@ -276,8 +299,7 @@ const Mirror = () => {
   useEffect(() => {
     if (!currentSession) return;
 
-    const startTime = new Date(currentSession.started_at).getTime();
-    const endTime = startTime + sessionDuration * 1000;
+    const endTime = getSessionEndTime(currentSession);
 
     const updateTimer = () => {
       const now = Date.now();
@@ -706,8 +728,14 @@ const Mirror = () => {
       </header>
 
       {/* Messages */}
-      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-8 flex flex-col">
-        <div className="max-w-2xl mx-auto space-y-5 mt-auto w-full">
+      <main id="main-content" className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-8 flex flex-col">
+        <div
+          className="max-w-2xl mx-auto space-y-5 mt-auto w-full"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+          aria-label="Conversation"
+        >
           {messages.map((message) => (
             <div
               key={message.id}
@@ -730,6 +758,7 @@ const Mirror = () => {
                       }
                 }
               >
+                <span className="sr-only">{message.role === "user" ? "You said: " : "SeeHere said: "}</span>
                 {message.id === "greeting" ? (
                   <WelcomeBackMessage userName={profile?.display_name} />
                 ) : (
@@ -740,6 +769,7 @@ const Mirror = () => {
               </div>
             </div>
           ))}
+
 
           {isLoading && (
             <div
@@ -783,28 +813,56 @@ const Mirror = () => {
         <div className="px-4 md:px-6 py-2" style={{ backgroundColor: "#f8f6f3", borderBottom: "1px solid #f0ece6" }}>
           <div className="max-w-2xl mx-auto space-y-2">
             {timeRemaining !== null && (
-              <div className="flex items-center gap-3 pt-1">
-                <div
-                  className="flex-1 h-1 rounded-full overflow-hidden"
-                  role="progressbar"
-                  aria-valuenow={timeRemaining}
-                  aria-valuemax={sessionDuration}
-                  aria-label={`${formatTime(timeRemaining)} remaining`}
-                  style={{ backgroundColor: "#e8e1d9" }}
-                >
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-3 pt-1">
                   <div
-                    className="h-full transition-all duration-1000 rounded-full"
-                    style={{
-                      width: `${(timeRemaining / sessionDuration) * 100}%`,
-                      backgroundColor: timeRemaining <= 300 ? "#c4a882" : "#7aab80",
-                    }}
-                  />
+                    className="flex-1 h-1 rounded-full overflow-hidden"
+                    role="progressbar"
+                    aria-valuenow={timeRemaining}
+                    aria-valuemax={sessionDuration}
+                    aria-label={`${formatTime(timeRemaining)} remaining`}
+                    style={{ backgroundColor: "#e8e1d9" }}
+                  >
+                    <div
+                      className="h-full transition-all duration-1000 rounded-full"
+                      style={{
+                        width: `${(timeRemaining / sessionDuration) * 100}%`,
+                        backgroundColor: timeRemaining <= 300 ? "#c4a882" : "#7aab80",
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs whitespace-nowrap" style={{ color: "#8a8278" }}>
+                    {formatTime(timeRemaining)}
+                  </span>
                 </div>
-                <span className="text-xs whitespace-nowrap" style={{ color: "#8a8278" }}>
-                  {formatTime(timeRemaining)}
-                </span>
+
+                {showEndWarning && !sessionEnded && (
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    {!isExtended ? (
+                      <button
+                        onClick={handleExtendSession}
+                        disabled={extending}
+                        className="text-sm px-3 py-2 rounded-lg min-h-[44px] transition-colors underline"
+                        style={{ color: "#3d6642" }}
+                      >
+                        {extending ? "Adding time..." : "Add 10 more minutes"}
+                      </button>
+                    ) : (
+                      <span className="text-xs" style={{ color: "#8a8278" }}>
+                        10 extra minutes added to this session.
+                      </span>
+                    )}
+                    <span className="text-xs" style={{ color: "#8a8278" }}>
+                      Need more time because of a disability?{" "}
+                      <a href="mailto:hello@seehere.ai" className="underline" style={{ color: "#3d6642" }}>
+                        hello@seehere.ai
+                      </a>
+                    </span>
+                  </div>
+                )}
               </div>
             )}
+
             <div className="flex justify-end">
               <button
                 onClick={sessionEnded ? () => navigate("/cooldown") : handleEndSession}
@@ -854,6 +912,7 @@ const Mirror = () => {
             ) : (
               <textarea
                 ref={textareaRef}
+                aria-label="Share what's on your mind"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}

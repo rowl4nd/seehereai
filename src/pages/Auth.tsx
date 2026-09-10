@@ -8,14 +8,18 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 import { cn } from "@/lib/utils";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const Auth = () => {
   const [mode, setMode] = useState<"login" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const { user, signIn, resetPassword } = useAuth();
   const navigate = useNavigate();
+
+  usePageMeta("Sign in | SeeHere", "Sign in to your SeeHere account.");
 
   // SEO - noindex
   useEffect(() => {
@@ -37,11 +41,13 @@ const Auth = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError(null);
 
     try {
       if (mode === "forgot") {
         const { error } = await resetPassword(email);
         if (error) {
+          setFormError(error.message);
           toast.error(error.message);
         } else {
           toast.success("Check your email for a reset link");
@@ -50,6 +56,7 @@ const Auth = () => {
       } else {
         const { error } = await signIn(email, password);
         if (error) {
+          setFormError(error.message);
           toast.error(error.message);
         } else {
           toast.success("Welcome back");
@@ -60,6 +67,7 @@ const Auth = () => {
       setIsSubmitting(false);
     }
   };
+
 
   const buttonLabel = isSubmitting ? "Please wait..." : mode === "forgot" ? "Send reset link" : "Sign in";
 
@@ -78,7 +86,7 @@ const Auth = () => {
       </div>
 
       {/* Main content */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4">
+      <main id="main-content" className="relative z-10 flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-xs space-y-6 animate-fade-in">
           {/* Title */}
           <div className="text-center -mt-3 space-y-2">
@@ -98,9 +106,12 @@ const Auth = () => {
                 <Input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  aria-invalid={!!formError}
+                  aria-describedby={formError ? "auth-form-error" : undefined}
                   className="h-8 text-sm bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
                   placeholder="you@example.com"
                 />
@@ -114,16 +125,26 @@ const Auth = () => {
                   <Input
                     id="password"
                     type="password"
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
+                    aria-invalid={!!formError}
+                    aria-describedby={formError ? "auth-form-error" : undefined}
                     className="h-8 text-sm bg-card border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/30"
                     placeholder="••••••••"
                   />
                 </div>
               )}
+
+              {formError && (
+                <p id="auth-form-error" role="alert" className="text-xs text-destructive">
+                  {formError}
+                </p>
+              )}
             </div>
+
 
             <div className={cn("text-right -mt-1", mode !== "login" && "invisible")}>
               <button
@@ -204,7 +225,7 @@ const Auth = () => {
                 <Button
                   type="button"
                   onClick={() => navigate("/try")}
-                  className="w-full h-8 text-xs text-white bg-[#b9a3e0] hover:bg-[#a48fd0]"
+                  className="w-full h-8 text-xs text-white bg-[#6f5c99] hover:bg-[#5f4d85]"
                 >
                   New here? Try for free
                 </Button>

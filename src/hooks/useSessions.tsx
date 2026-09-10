@@ -11,7 +11,9 @@ export interface Session {
   duration_minutes: number | null;
   is_active: boolean;
   created_at: string;
+  extended_until?: string | null;
 }
+
 
 export function useSessions() {
   const { user } = useAuth();
@@ -184,6 +186,23 @@ export function useSessions() {
     return { error: null };
   };
 
+  /** One-time accessibility extension: adds 10 minutes, persisted server-side. */
+  const extendSession = async (sessionId: string) => {
+    const { data, error } = await supabase.rpc("extend_session", { _session_id: sessionId });
+    if (error) {
+      console.error("Error extending session:", error);
+      return { error, extendedUntil: null as string | null };
+    }
+    const row = Array.isArray(data) ? data[0] : data;
+    if (!row?.success) {
+      return { error: new Error(row?.message || "Could not extend session"), extendedUntil: null };
+    }
+    const extendedUntil = row.extended_until as string;
+    setSessions((prev) => prev.map((s) => (s.id === sessionId ? { ...s, extended_until: extendedUntil } : s)));
+    setActiveSession((prev) => (prev && prev.id === sessionId ? { ...prev, extended_until: extendedUntil } : prev));
+    return { error: null, extendedUntil };
+  };
+
 
   const deleteSession = async (sessionId: string) => {
     if (!user) return { error: new Error("Not authenticated") };
@@ -226,5 +245,7 @@ export function useSessions() {
     endSession,
     addSessionToState,
     deleteSession,
+    extendSession,
+
   };
 }
