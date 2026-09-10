@@ -308,7 +308,11 @@ const Index = () => {
           ) : (
             <div className="w-full max-w-2xl mx-auto">
               <form onSubmit={handleHeroSubmit} className="relative group">
+                <label htmlFor="hero-message" className="sr-only">
+                  Share what's on your mind
+                </label>
                 <textarea
+                  id="hero-message"
                   ref={textareaRef}
                   value={heroInput}
                   onChange={(e) => setHeroInput(e.target.value)}
@@ -324,11 +328,13 @@ const Index = () => {
                 />
                 <button
                   type="submit"
+                  aria-label="Send message"
                   disabled={!heroInput.trim()}
                   className="absolute right-3 bottom-3 p-3.5 rounded-xl bg-[#4a7a4f] hover:bg-[#3d6542] text-white shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4" />
                 </button>
+
               </form>
               <p className="mt-3 text-xs text-[#3d3a35]/50 italic text-center">
                 ·{" "}

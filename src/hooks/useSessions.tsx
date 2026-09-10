@@ -11,7 +11,9 @@ export interface Session {
   duration_minutes: number | null;
   is_active: boolean;
   created_at: string;
+  extended_until?: string | null;
 }
+
 
 export function useSessions() {
   const { user } = useAuth();
