@@ -47,6 +47,8 @@ const Mirror = () => {
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics();
 
+  usePageMeta("Your session | SeeHere", "A private space to talk things through at your own pace.");
+
   // Retry wrapper for edge function calls — handles mobile connection drops
   const invokeWithRetry = async (functionName: string, body: any, retries = 1) => {
     for (let attempt = 0; attempt <= retries; attempt++) {
