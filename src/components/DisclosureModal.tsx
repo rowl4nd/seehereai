@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface DisclosureModalProps {
   open: boolean;
@@ -9,20 +14,12 @@ interface DisclosureModalProps {
 }
 
 const DisclosureModal = ({ open, onAccept, onClose }: DisclosureModalProps) => {
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm">
-      <div className="bg-[#f8f6f3] rounded-3xl shadow-2xl max-w-md w-full p-10 space-y-6 border border-white/60 relative">
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-[#3d3a35]/60 hover:text-[#3d3a35] transition-colors"
-            aria-label="Close"
-          >
-            <X size={20} />
-          </button>
-        )}
+    <Dialog open={open} onOpenChange={(next) => { if (!next) onClose?.(); }}>
+      <DialogContent className="bg-[#f8f6f3] rounded-3xl shadow-2xl max-w-md w-full p-10 space-y-6 border border-white/60">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Before we begin</DialogTitle>
+        </DialogHeader>
         <div className="space-y-4 text-[#3d3a35]">
           <p className="text-base leading-relaxed">
             Welcome to SeeHere. I'm a warm, AI-powered space for you to share whatever is on your mind.
@@ -60,8 +57,8 @@ const DisclosureModal = ({ open, onAccept, onClose }: DisclosureModalProps) => {
             Already have an account? <span className="underline font-semibold">Log in</span>
           </Link>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
