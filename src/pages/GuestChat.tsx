@@ -31,6 +31,8 @@ const GuestChat = () => {
   const location = useLocation();
   const initialMessageSent = useRef(false);
 
+  usePageMeta("Try SeeHere | A quiet space to talk", "Start a free conversation with SeeHere — no account needed to begin.");
+
   // SEO - noindex
   useEffect(() => {
     const meta = document.createElement("meta");
@@ -72,6 +74,8 @@ const GuestChat = () => {
   const [sessionStartedAt, setSessionStartedAt] = useState<string | null>(null);
   const [sessionEnded, setSessionEnded] = useState(false);
   const [showEndWarning, setShowEndWarning] = useState(false);
+  const [extendedUntil, setExtendedUntil] = useState<string | null>(null);
+  const [extending, setExtending] = useState(false);
   const [pastConversations, setPastConversations] = useState<
     Array<{ messages: Array<{ role: string; content: string }> }>
   >([]);
