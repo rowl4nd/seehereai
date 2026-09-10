@@ -119,6 +119,16 @@ const Cooldown = () => {
 
               {/* ── Context-aware nudge ── */}
 
+              {/* Organisation access: unlimited, no payment framing */}
+              {isOrg && (
+                <div className="pt-2 border-t border-[#af9cd3]/20">
+                  <p className="text-sm text-[#857f77] font-light italic">
+                    Your organisation gives you unlimited access — ready when you are.
+                  </p>
+                </div>
+              )}
+
+
               {/* Post session 1: quiet reminder of second free session */}
               {isPostSession1 && (
                 <div className="pt-2 border-t border-[#af9cd3]/20">
