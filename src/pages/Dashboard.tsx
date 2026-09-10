@@ -110,7 +110,7 @@ const Dashboard = () => {
       </header>
 
       {/* Main content */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
+      <main id="main-content" className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
         <div className="w-full max-w-md space-y-8 animate-fade-in">
           {/* Welcome message */}
           <div className="text-center space-y-2">

@@ -728,7 +728,7 @@ const Mirror = () => {
       </header>
 
       {/* Messages */}
-      <main className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-8 flex flex-col">
+      <main id="main-content" className="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 py-8 flex flex-col">
         <div
           className="max-w-2xl mx-auto space-y-5 mt-auto w-full"
           role="log"

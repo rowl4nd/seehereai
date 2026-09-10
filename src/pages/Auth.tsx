@@ -86,7 +86,7 @@ const Auth = () => {
       </div>
 
       {/* Main content */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4">
+      <main id="main-content" className="relative z-10 flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-xs space-y-6 animate-fade-in">
           {/* Title */}
           <div className="text-center -mt-3 space-y-2">
