@@ -245,5 +245,7 @@ export function useSessions() {
     endSession,
     addSessionToState,
     deleteSession,
+    extendSession,
+
   };
 }

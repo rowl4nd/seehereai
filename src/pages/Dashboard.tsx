@@ -13,6 +13,9 @@ import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 import AccessCodeRedeem from "@/components/AccessCodeRedeem";
+import { getSecondsRemaining, getSessionEndTime } from "@/lib/sessionTiming";
+import { usePageMeta } from "@/hooks/usePageMeta";
+
 
 const Dashboard = () => {
   const {
@@ -46,15 +49,11 @@ const Dashboard = () => {
     }
   }, [user, authLoading, navigate]);
 
-  // Auto-end expired active sessions
+  // Auto-end expired active sessions (honours a one-time extension stored on the session)
   useEffect(() => {
     if (!activeSession || sessionsLoading) return;
 
-    const sessionDuration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
-    const startTime = new Date(activeSession.started_at).getTime();
-    const endTime = startTime + sessionDuration * 1000;
-
-    if (Date.now() >= endTime) {
+    if (Date.now() >= getSessionEndTime(activeSession)) {
       // Session has expired while away — auto-end it
       endSession(activeSession.id);
     }
@@ -63,11 +62,9 @@ const Dashboard = () => {
   // Calculate time remaining on active session
   const getActiveSessionTimeRemaining = () => {
     if (!activeSession) return 0;
-    const sessionDuration = activeSession.session_type === "paid" ? 45 * 60 : 25 * 60;
-    const startTime = new Date(activeSession.started_at).getTime();
-    const endTime = startTime + sessionDuration * 1000;
-    return Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+    return getSecondsRemaining(activeSession);
   };
+
 
   const activeTimeRemaining = activeSession ? getActiveSessionTimeRemaining() : 0;
   const hasActiveResumableSession = !!activeSession && activeTimeRemaining > 0;
