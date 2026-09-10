@@ -37,7 +37,7 @@ const Contact = () => {
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-contact-email", {
-        body: { name: name.trim(), email: email.trim(), message: message.trim() },
+        body: { name: name.trim(), email: email.trim(), message: message.trim(), reason },
       });
 
       if (error) throw error;
