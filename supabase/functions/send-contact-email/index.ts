@@ -9,14 +9,22 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { name, email, message } = await req.json();
+    const { name, email, message, reason } = await req.json();
 
-    if (!email || !message) {
-      return new Response(JSON.stringify({ error: 'Email and message are required' }), {
+    const SUBJECT_PREFIXES: Record<string, string> = {
+      organisation: 'Organisation inquiry',
+      personal_access: 'Personal access request',
+      other: 'General inquiry',
+    };
+
+    if (!email || !message || !reason || !(reason in SUBJECT_PREFIXES)) {
+      return new Response(JSON.stringify({ error: 'A valid reason, email, and message are required' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    const displayName = (typeof name === 'string' && name.trim()) ? name.trim() : 'Not provided';
 
     const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
     if (!RESEND_API_KEY) {
@@ -33,9 +41,10 @@ Deno.serve(async (req) => {
         from: 'See Here Contact <hello@seehere.ai>',
         to: ['hello@seehere.ai'],
         reply_to: email,
-        subject: `Contact Form: ${name || 'Anonymous'}`,
+        subject: `${SUBJECT_PREFIXES[reason]}: ${displayName}`,
         html: `
-          <p><strong>From:</strong> ${name || 'Not provided'}</p>
+          <p><strong>Topic:</strong> ${SUBJECT_PREFIXES[reason]}</p>
+          <p><strong>From:</strong> ${displayName}</p>
           <p><strong>Email:</strong> ${email}</p>
           <hr />
           <p>${message.replace(/\n/g, '<br />')}</p>

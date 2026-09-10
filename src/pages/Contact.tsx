@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Send } from "lucide-react";
@@ -11,6 +12,7 @@ import { ArrowLeft, Send } from "lucide-react";
 const Contact = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [reason, setReason] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -27,15 +29,15 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email.trim() || !message.trim()) {
-      toast.error("Please fill in your email and message.");
+    if (!reason || !email.trim() || !message.trim()) {
+      toast.error("Please choose what this is about, and fill in your email and message.");
       return;
     }
 
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-contact-email", {
-        body: { name: name.trim(), email: email.trim(), message: message.trim() },
+        body: { name: name.trim(), email: email.trim(), message: message.trim(), reason },
       });
 
       if (error) throw error;
@@ -86,6 +88,20 @@ const Contact = () => {
                 onChange={(e) => setName(e.target.value)}
                 maxLength={100}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="reason">What's this about?</Label>
+              <Select value={reason} onValueChange={setReason}>
+                <SelectTrigger id="reason" aria-label="What's this about?">
+                  <SelectValue placeholder="Choose one…" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="organisation">Offering SeeHere to my organisation</SelectItem>
+                  <SelectItem value="personal_access">Personal access</SelectItem>
+                  <SelectItem value="other">Something else</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
