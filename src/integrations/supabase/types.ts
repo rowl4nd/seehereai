@@ -252,6 +252,7 @@ export type Database = {
           created_at: string
           duration_minutes: number | null
           ended_at: string | null
+          extended_until: string | null
           id: string
           is_active: boolean
           session_type: string
@@ -262,6 +263,7 @@ export type Database = {
           created_at?: string
           duration_minutes?: number | null
           ended_at?: string | null
+          extended_until?: string | null
           id?: string
           is_active?: boolean
           session_type?: string
@@ -272,6 +274,7 @@ export type Database = {
           created_at?: string
           duration_minutes?: number | null
           ended_at?: string | null
+          extended_until?: string | null
           id?: string
           is_active?: boolean
           session_type?: string
@@ -286,6 +289,14 @@ export type Database = {
     }
     Functions: {
       auto_end_expired_sessions: { Args: never; Returns: undefined }
+      extend_session: {
+        Args: { _session_id: string }
+        Returns: {
+          extended_until: string
+          message: string
+          success: boolean
+        }[]
+      }
       get_next_session_time: { Args: { _user_id: string }; Returns: string }
       has_cooldown_passed: { Args: { _user_id: string }; Returns: boolean }
       redeem_access_code: {
