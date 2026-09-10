@@ -41,9 +41,10 @@ Deno.serve(async (req) => {
         from: 'See Here Contact <hello@seehere.ai>',
         to: ['hello@seehere.ai'],
         reply_to: email,
-        subject: `Contact Form: ${name || 'Anonymous'}`,
+        subject: `${SUBJECT_PREFIXES[reason]}: ${displayName}`,
         html: `
-          <p><strong>From:</strong> ${name || 'Not provided'}</p>
+          <p><strong>Topic:</strong> ${SUBJECT_PREFIXES[reason]}</p>
+          <p><strong>From:</strong> ${displayName}</p>
           <p><strong>Email:</strong> ${email}</p>
           <hr />
           <p>${message.replace(/\n/g, '<br />')}</p>
