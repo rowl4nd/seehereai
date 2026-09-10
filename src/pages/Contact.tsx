@@ -29,8 +29,8 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email.trim() || !message.trim()) {
-      toast.error("Please fill in your email and message.");
+    if (!reason || !email.trim() || !message.trim()) {
+      toast.error("Please choose what this is about, and fill in your email and message.");
       return;
     }
 
