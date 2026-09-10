@@ -126,19 +126,20 @@ const Cooldown = () => {
                 </div>
               )}
 
-              {/* Post session 2: soft transition to paid */}
+              {/* Post session 2: access code or personal access */}
               {isPostSession2 && (
-                <div className="pt-4 border-t border-[#af9cd3]/20 space-y-3">
-                  <p className="text-sm text-[#857f77] font-light leading-relaxed">
+                <div className="pt-4 border-t border-[#af9cd3]/20 space-y-3 text-left">
+                  <p className="text-sm text-[#857f77] font-light leading-relaxed text-center">
                     You've completed your free sessions.
                     <br />
-                    If you'd like to continue, sessions start from <span className="text-[#3d3a35]">£2</span>.
+                    Continued access comes through an organisation code, or one we arrange with you.
                   </p>
+                  <AccessCodeRedeem onRedeemed={() => navigate("/dashboard")} />
                   <Link
-                    to="/credits"
-                    className="inline-block text-xs uppercase tracking-[0.2em] text-[#af9cd3] hover:text-[#3d3a35] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-sm"
+                    to="/contact"
+                    className="block text-center text-xs text-[#857f77] hover:text-[#3d3a35] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#af9cd3] focus-visible:ring-offset-2 rounded-sm"
                   >
-                    → See session options
+                    Don't have a code? Contact us for personal access
                   </Link>
                 </div>
               )}
