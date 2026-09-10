@@ -122,7 +122,9 @@ const Credits = () => {
                   </div>
                 )}
                 <CardHeader className="text-center pb-2">
-                  <CardTitle className="font-serif font-light text-2xl">{pkg.sessions} sessions</CardTitle>
+                  <h2 className="font-serif font-light text-2xl leading-none tracking-tight">
+                    {pkg.sessions} sessions
+                  </h2>
                   <CardDescription>{pkg.pricePerSession}/session</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -132,6 +134,7 @@ const Credits = () => {
                   <Button
                     onClick={() => handlePurchase(pkg.id)}
                     disabled={purchasingId !== null}
+                    aria-label={`Purchase ${pkg.sessions} sessions for ${pkg.priceDisplay}`}
                     variant={pkg.popular ? "default" : "outline"}
                     className={`w-full ${
                       pkg.popular
@@ -142,6 +145,7 @@ const Credits = () => {
                     {purchasingId === pkg.id ? "Redirecting..." : "Purchase"}
                   </Button>
                 </CardContent>
+
               </Card>
             ))}
           </div>
@@ -155,6 +159,7 @@ const Credits = () => {
             <button
               onClick={() => handlePurchase(singleSession.id)}
               disabled={purchasingId !== null}
+              aria-label="Purchase a single session for £5"
               className="underline underline-offset-2 hover:text-muted-foreground transition-colors disabled:opacity-50"
             >
               Single session — £5
