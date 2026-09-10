@@ -12,6 +12,7 @@ import { ArrowLeft, Send } from "lucide-react";
 const Contact = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [reason, setReason] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
